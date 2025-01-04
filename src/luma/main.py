@@ -39,13 +39,14 @@ def init():
         raise typer.Exit(1)
 
     project_root = os.path.join(os.getcwd(), "docs/")
+    node_root = get_node_root(project_root)
 
     logger.info(f"Initializing project directory to '{project_root}'.")
     download_starter_files(project_root)
-    download_node_code(get_node_root(project_root))
+    download_node_code(node_root)
 
     _insert_package_name_in_config(project_root, package_name)
-    install_node_modules(project_root)
+    install_node_modules(node_root)
     link_config_file(project_root)
     link_existing_pages(project_root)
 
@@ -63,6 +64,12 @@ def _insert_package_name_in_config(project_root: str, package_name: str):
 @app.command()
 def dev(port: Annotated[Optional[int], typer.Option()] = None):
     project_root = get_project_root()
+
+    node_root = get_node_root(project_root)
+    if not os.path.exists(node_root):
+        download_node_code(node_root)
+        install_node_modules(node_root)
+
     prepare_references(project_root)
     link_config_file(project_root)
     link_existing_pages(project_root)
