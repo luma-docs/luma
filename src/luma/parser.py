@@ -33,8 +33,32 @@ def prepare_references(project_root: str) -> None:
         # TODO: Raise helpful error.
         raise
 
-    for api in _parse_apis(package):
-        _write_api(api, project_root)
+    from luma.utils import get_apis
+    
+    for qualname in get_apis():
+        name = qualname.split(".")[-1]
+        module_name = ".".join(qualname.split(".")[:-1])
+        print(module_name)
+        try:
+            module = importlib.import_module(module_name)
+        except ImportError:
+            logger.warning(f"Couldn't import '{module_name}'")
+            continue
+
+        try:
+            obj = getattr(module, name)
+        except AttributeError:
+            logger.warning(f"Failed to get '{name}' from '{module.__name__}'")
+            continue
+        if isinstance(obj, FunctionType):
+            api = _parse_func(obj)
+            _write_api(api, project_root)
+
+    # for sub_module in _iter_submodules(module):
+        # yield from _parse_apis(sub_module)
+
+    # for api in _parse_apis(package):
+    #     _write_api(api, project_root)
 
 
 def _parse_apis(module: ModuleType) -> Iterable[PyObj]:
