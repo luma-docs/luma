@@ -1,15 +1,22 @@
 name: luma
-sidebar:
-  - heading: Overview
-    links:
-      - href: "/getting-started"
-        title: "Getting started"
+navigation:
+  - section: Overview
+    contents:
+      - path: getting-started.md
+        title: Getting started
 
-  - heading: Commands
-    links:
-      - href: "/init"
-        title: "init"
-      - href: "/dev"
-        title: "dev"
-      - href: "/deploy"
-        title: "deploy"
+  # TODO
+  # - section: Tags
+  #   contents:
+  #     - path: callout.md
+  #       title: Callout 
+
+  - section: CLI reference
+    contents:
+      - path: init.md
+        title: init
+      - path: dev.md
+        title: dev
+      - path: deploy.md
+        title: deploy
+
