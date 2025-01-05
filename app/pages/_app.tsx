@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import { SideNav, TableOfContents } from '../components';
-
+import { NavigationItem } from '../components/SideNav';
 import 'prismjs';
 // Import other Prism themes here
 import 'prismjs/components/prism-bash.min';
@@ -18,20 +18,12 @@ const TITLE = 'Markdoc';
 const DESCRIPTION = 'A powerful, flexible, Markdown-based authoring framework';
 
 interface Config {
-  sidebar: Section[];
+  package: string;
+  navigation: NavigationItem[];
 }
 
 import { TableOfContentsItem } from '../components/TableOfContents';
 
-interface Link {
-  href: string;
-  title: string;
-}
-
-interface Section {
-  heading: string;
-  links: Link[];
-}
 
 function collectHeadings(node: RenderableTreeNodes, sections: TableOfContentsItem[] = []) {
   if (Tag.isTag(node)) {
@@ -95,6 +87,7 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
     : [];
 
 
+  console.log(config)
   return (
     <>
       <Head>
@@ -107,7 +100,7 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="page">
-        <SideNav items={config?.sidebar || []} />
+        <SideNav items={config?.navigation || []} />
         <main className="flex column">
           <Component {...pageProps} />
         </main>
