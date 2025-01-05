@@ -2,6 +2,6 @@ name: math
 navigation:
 - path: getting-started.md
   title: Getting Started
-- section: API Reference
+- section: Reference
   contents:
   - ref: luma.examples.fib
