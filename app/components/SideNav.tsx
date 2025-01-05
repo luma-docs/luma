@@ -88,6 +88,7 @@ export function SideNav({ items }: SideNavProps) {
             position: sticky;
             flex: 0 0 auto;
             overflow-y: auto;
+            height: 100vh;
             padding: 1.5rem 2rem 2rem;
             border-right: 1px solid var(--border-color);
           }
