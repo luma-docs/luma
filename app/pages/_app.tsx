@@ -117,6 +117,7 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
           main {
             overflow: auto;
             flex-grow: 1;
+            height: 100vh;
             font-size: 16px;
             padding: 0 2rem 2rem;
           }
