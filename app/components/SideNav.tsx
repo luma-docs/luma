@@ -55,7 +55,7 @@ export function SideNav({ items }: SideNavProps) {
                 {item.contents.map((content, contentIndex) => {
                   if ('path' in content) {
                     // Remove the '.md' extension from the path
-                    const href = content.path.slice(0, -3);
+                    const href = `/${content.path.slice(0, -3)}`;                    // Add leading '/' to the href
                     return (
                       <li
                         key={`content-page-${itemIndex}-${contentIndex}`}
@@ -65,7 +65,7 @@ export function SideNav({ items }: SideNavProps) {
                     );
                   }
                   if ('ref' in content) {
-                    const href = `api/${content.ref}`;
+                    const href = `/reference/${content.ref}`;
                     return (
                       <li key={`content-ref-${itemIndex}-${contentIndex}`}>
                         <Link href={href}>{content.ref}</Link>

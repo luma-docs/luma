@@ -1,0 +1,10 @@
+{
+    "name": "rich.get_console",
+    "type": "func",
+    "summary": "Get a global :class:`~rich.console.Console` instance. This function is used when Rich requires a Console,",
+    "desc": "and hasn't been explicitly given one.",
+    "examples": [],
+    "signature": "rich.get_console() -> 'Console'",
+    "args": [],
+    "returns": "A console instance."
+}

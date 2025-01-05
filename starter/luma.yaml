@@ -8,4 +8,4 @@ navigation:
     title: Getting Started
   - path: math.md
     title: Math
-  - ref: math.abs
+  - ref: rich.get_console
