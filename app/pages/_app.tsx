@@ -110,14 +110,12 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
         {`
           .page {
             position: fixed; 
-            top: var(--top-nav-height);
             display: flex;
             width: 100vw;
             flex-grow: 1;
           }
           main {
             overflow: auto;
-            height: calc(100vh - var(--top-nav-height));
             flex-grow: 1;
             font-size: 16px;
             padding: 0 2rem 2rem;

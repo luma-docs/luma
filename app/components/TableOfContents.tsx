@@ -49,8 +49,6 @@ export function TableOfContents({ toc }: TableOfContentsProps) {
         {`
           nav {
             position: sticky;
-            top: calc(2.5rem + var(--top-nav-height));
-            max-height: calc(100vh - var(--top-nav-height));
             flex: 0 0 auto;
             align-self: flex-start;
             margin-bottom: 1rem;
