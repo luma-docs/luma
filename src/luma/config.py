@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from typing import Optional
 import importlib
 
+
 class Page(BaseModel):
     title: str
     path: str
@@ -36,13 +37,13 @@ def load_config(dir: str) -> Config:
         raise FileNotFoundError(f"Config file not found: '{dir}'")
 
     filename = os.path.basename(config_path)
-    assert filename == 'luma.yaml', f'Invalid config file: {filename}'
+    assert filename == "luma.yaml", f"Invalid config file: {filename}"
 
     with open(config_path) as file:
         try:
             config_data: Dict = yaml.safe_load(file)
         except yaml.YAMLError as e:
-            raise ValueError(f'Error parsing config file: {e}')
+            raise ValueError(f"Error parsing config file: {e}")
 
     return Config.model_validate(config_data)
 
@@ -58,13 +59,13 @@ def _discover_config(dir: str) -> Optional[str]:
         config_path = parent / "luma.yaml"
         if config_path.exists():
             return str(config_path)
-        
+
     return None
 
 
 def create_or_update_config(dir: str, package_name: str) -> Config:
     assert os.path.isdir(dir), f"'dir' must be a directory: '{dir}'"
-    
+
     try:
         config = load_config(dir)
     except FileNotFoundError:
@@ -82,7 +83,7 @@ def create_or_update_config(dir: str, package_name: str) -> Config:
 def validate_config(config: Config, project_root: str) -> None:
     for item in config.navigation:
         assert isinstance(item, (Section, Page, Reference)), f"Invalid item: {item}"
-    
+
         if isinstance(item, Section):
             _validate_section(item, project_root)
         if isinstance(item, Reference):

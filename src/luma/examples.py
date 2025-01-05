@@ -1,12 +1,12 @@
 def fib(n: int) -> int:
     """Calculate the nth Fibonacci number.
-    
+
     Args:
         n: The index of the Fibonacci number to calculate.
 
     Returns:
         The nth Fibonacci number.
-    
+
     Raises:
         ValueError: If n is less than 0.
 
@@ -63,7 +63,9 @@ class Account:
 
 # Derived class representing a savings account (inherits from Account)
 class SavingsAccount(Account):
-    def __init__(self, account_holder: str, balance: float = 0.0, interest_rate: float = 0.02):
+    def __init__(
+        self, account_holder: str, balance: float = 0.0, interest_rate: float = 0.02
+    ):
         super().__init__(account_holder, balance)  # Call the base class constructor
         self.interest_rate = interest_rate  # Interest rate for the savings account
 
@@ -76,9 +78,13 @@ class SavingsAccount(Account):
 
 # Derived class representing a checking account (inherits from Account)
 class CheckingAccount(Account):
-    def __init__(self, account_holder: str, balance: float = 0.0, overdraft_limit: float = 500.0):
+    def __init__(
+        self, account_holder: str, balance: float = 0.0, overdraft_limit: float = 500.0
+    ):
         super().__init__(account_holder, balance)
-        self.overdraft_limit = overdraft_limit  # Overdraft limit for the checking account
+        self.overdraft_limit = (
+            overdraft_limit  # Overdraft limit for the checking account
+        )
 
     def withdraw(self, amount: float) -> None:
         """Withdraw money, considering overdraft limit."""
@@ -88,4 +94,3 @@ class CheckingAccount(Account):
             raise ValueError("Insufficient funds, including overdraft limit")
         self.balance -= amount
         print(f"Withdrew {amount}. New balance: {self.balance}")
-

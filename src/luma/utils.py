@@ -1,9 +1,6 @@
 import logging
 import os
-import importlib
 import typer
-import yaml
-from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +13,3 @@ def get_project_root():
         raise typer.Exit(1)
 
     return project_root
-
-
-

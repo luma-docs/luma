@@ -3,11 +3,9 @@ import inspect
 import json
 import logging
 import os
-import pkgutil
-from types import FunctionType, ModuleType
+from types import FunctionType
 from typing import Iterable
 
-import yaml
 from docstring_parser import parse
 
 from .models import DocstringExample, PyArg, PyFunc, PyObj
@@ -32,7 +30,7 @@ def prepare_references(project_root: str, config: Config) -> None:
         except AttributeError:
             logger.warning(f"Failed to get '{attr_name}' from '{module.__name__}'")
             continue
-    
+
         if isinstance(obj, FunctionType):
             api = _parse_func(obj)
             _write_api(api, project_root)
