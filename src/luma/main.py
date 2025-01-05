@@ -4,7 +4,6 @@ import os
 from typing import Optional
 
 import typer
-import yaml
 from typing_extensions import Annotated
 
 from .bootstrap import download_node_code, download_starter_files
@@ -12,7 +11,8 @@ from .deploy import build_project, cleanup_build, deploy_project, monitor_deploy
 from .link import link_config_file, link_existing_pages, link_page_on_creation
 from .node import get_node_root, install_node_modules, is_node_installed, run_node_dev
 from .parser import prepare_references
-from .utils import get_package_name, get_project_root
+from .utils import get_project_root
+from .config import load_config, create_or_update_config, validate_config
 
 app = typer.Typer()
 logger = logging.getLogger(__name__)
@@ -45,20 +45,10 @@ def init():
     download_starter_files(project_root)
     download_node_code(node_root)
 
-    _insert_package_name_in_config(project_root, package_name)
+    create_or_update_config(project_root, package_name)
     install_node_modules(node_root)
     link_config_file(project_root)
     link_existing_pages(project_root)
-
-
-def _insert_package_name_in_config(project_root: str, package_name: str):
-    # TODO: Refactor. This code is garbage.
-    config_path = os.path.join(project_root, "luma.yaml")
-    with open(config_path, "r") as file:
-        config = yaml.safe_load(file)
-    config = {"name": package_name, **config}
-    with open(config_path, "w") as file:
-        yaml.dump(config, file, default_flow_style=False)
 
 
 @app.command()
@@ -70,22 +60,29 @@ def dev(port: Annotated[Optional[int], typer.Option()] = None):
         download_node_code(node_root)
         install_node_modules(node_root)
 
-    prepare_references(project_root)
+    config = load_config(project_root)
+    validate_config(config, project_root)
+    prepare_references(project_root, config)
+
     link_config_file(project_root)
     link_existing_pages(project_root)
     link_page_on_creation(project_root)
+
     run_node_dev(project_root, port)
 
 
 @app.command()
 def deploy():
-    node_root = get_node_root(get_project_root())
-    package_name = get_package_name()
+    project_root = get_project_root()
+    node_root = get_node_root(project_root)
+
+    config = load_config(os.getcwd())
+    validate_config(config, project_root)
 
     try:
         build_path = build_project(node_root)
-        deployment_id = deploy_project(build_path, package_name)
-        monitor_deployment(deployment_id, package_name)
+        deployment_id = deploy_project(build_path, config.package_name)
+        monitor_deployment(deployment_id, config.package_name)
     finally:
         cleanup_build(build_path)
 

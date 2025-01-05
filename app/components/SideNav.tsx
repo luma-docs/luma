@@ -31,7 +31,7 @@ export function SideNav({ items }: SideNavProps) {
       {items.map((item, itemIndex) => {
         if ('path' in item) {
           // Remove the '.md' extension from the path
-          const href = item.path.slice(0, -3);
+          const href = `/${item.path.slice(0, -3)}`;                    // Add leading '/' to the href
           return (
             <li key={`page-${itemIndex}`}>
               <Link href={href}>{item.title}</Link>

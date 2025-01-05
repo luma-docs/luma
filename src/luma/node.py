@@ -73,4 +73,3 @@ def run_node_dev(project_root: str, port: Optional[int]):
         if completed_process.returncode != 0:
             logger.error("Error occurred while running development server.")
             logger.error(completed_process.stderr)
-

@@ -15,7 +15,6 @@ def link_config_file(project_root: str):
     dst = os.path.join(get_node_root(project_root), "public", "luma.yaml")
 
     if os.path.exists(dst):
-        logger.warning(f"Overwriting old copy of config '{src}'.")
         os.remove(dst)
 
     logger.debug(f"Linking config file from '{src}' to '{dst}'")
@@ -41,7 +40,6 @@ def _link_page(project_root: str, relative_path: str):
     dst = os.path.join(get_node_root(project_root), "pages", relative_path)
 
     if os.path.exists(dst):
-        logger.warning(f"Overwriting old copy of page '{dst}'.")
         os.remove(dst)
 
     logger.debug(f"Linking page from '{src}' to '{dst}'")

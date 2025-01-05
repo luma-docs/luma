@@ -12,33 +12,15 @@ from docstring_parser import parse
 
 from .models import DocstringExample, PyArg, PyFunc, PyObj
 from .node import get_node_root
+from .config import Config, Reference, Section
 
 logger = logging.getLogger(__name__)
 
 
-# TODO: Merge with https://github.com/luma-docs/luma/pull/2.
-def get_package_name(project_root: str) -> str:
-    config_path = os.path.join(project_root, "luma.yaml")
+def prepare_references(project_root: str, config: Config) -> None:
+    for qualname in _list_api_qualnames(config):
+        module_name, attr_name = qualname.rsplit(".", 1)
 
-    with open(config_path) as file:
-        data = yaml.safe_load(file)
-        return data["name"]
-
-
-def prepare_references(project_root: str) -> None:
-    package_name = get_package_name(project_root)
-    try:
-        package = importlib.import_module(package_name)
-    except ImportError:
-        # TODO: Raise helpful error.
-        raise
-
-    from luma.utils import get_apis
-    
-    for qualname in get_apis():
-        name = qualname.split(".")[-1]
-        module_name = ".".join(qualname.split(".")[:-1])
-        print(module_name)
         try:
             module = importlib.import_module(module_name)
         except ImportError:
@@ -46,34 +28,24 @@ def prepare_references(project_root: str) -> None:
             continue
 
         try:
-            obj = getattr(module, name)
+            obj = getattr(module, attr_name)
         except AttributeError:
-            logger.warning(f"Failed to get '{name}' from '{module.__name__}'")
+            logger.warning(f"Failed to get '{attr_name}' from '{module.__name__}'")
             continue
+    
         if isinstance(obj, FunctionType):
             api = _parse_func(obj)
             _write_api(api, project_root)
 
-    # for sub_module in _iter_submodules(module):
-        # yield from _parse_apis(sub_module)
 
-    # for api in _parse_apis(package):
-    #     _write_api(api, project_root)
-
-
-def _parse_apis(module: ModuleType) -> Iterable[PyObj]:
-    names = getattr(module, "__all__", [])
-    for name in names:
-        try:
-            obj = getattr(module, name)
-        except AttributeError:
-            logger.warning(f"Failed to get '{name}' from '{module.__name__}'")
-            continue
-        if isinstance(obj, FunctionType):
-            yield _parse_func(obj)
-
-    for sub_module in _iter_submodules(module):
-        yield from _parse_apis(sub_module)
+def _list_api_qualnames(config: Config) -> Iterable[str]:
+    for item in config.navigation:
+        if isinstance(item, Reference):
+            yield item.ref
+        if isinstance(item, Section):
+            for sub_item in item.contents:
+                if isinstance(sub_item, Reference):
+                    yield sub_item.ref
 
 
 def _parse_func(func: FunctionType) -> PyFunc:
@@ -105,25 +77,6 @@ def _parse_func(func: FunctionType) -> PyFunc:
         returns=returns,
         examples=examples,
     )
-
-
-def _iter_submodules(package: ModuleType) -> Iterable[ModuleType]:
-    if not _is_package(package):
-        return
-
-    for module_info in pkgutil.iter_modules(package.__path__):
-        module_name = package.__name__ + "." + module_info.name
-        try:
-            module = importlib.import_module(module_name)
-        except ImportError:
-            logger.warning(f"Couldn't import '{module_name}'")
-            continue
-
-        yield module
-
-
-def _is_package(module: ModuleType) -> bool:
-    return hasattr(module, "__path__")
 
 
 def _write_api(api: PyObj, project_root: str) -> None:

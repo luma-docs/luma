@@ -4,8 +4,4 @@ navigation:
   title: Getting Started
 - section: API Reference
   contents:
-  - path: getting-started.md
-    title: Getting Started
-  - path: math.md
-    title: Math
-  - ref: rich.get_console
+  - ref: luma.examples.fib

@@ -3,7 +3,7 @@ import os
 
 from rich.logging import RichHandler
 
-DEFAULT_LOG_LEVEL = int(os.getenv("LUMA_LOG_LEVEL", logging.INFO))
+LUMA_DEBUG = int(os.getenv("LUMA_DEBUG", 0))
 
 logger = logging.getLogger(__name__)
 
@@ -23,4 +23,4 @@ def setup_logger(level: int) -> None:
     logger.setLevel(level)
 
 
-setup_logger(DEFAULT_LOG_LEVEL)
+setup_logger(logging.DEBUG if LUMA_DEBUG else logging.INFO)
