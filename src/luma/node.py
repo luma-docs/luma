@@ -25,8 +25,7 @@ def is_node_installed() -> bool:
         return False
 
 
-def install_node_modules(project_root: str):
-    node_root = get_node_root(project_root)
+def install_node_modules(node_root: str):
     assert os.path.exists(node_root), f"Path '{node_root}' doesn't exist."
 
     package_json_path = os.path.join(node_root, "package.json")
@@ -62,12 +61,16 @@ def run_node_dev(project_root: str, port: Optional[int]):
         if port is not None:
             command.extend(["--", "--port", f"{port}"])
 
-        subprocess.run(
+        completed_process = subprocess.run(
             command,
-            check=True,
             capture_output=True,
             text=True,
             cwd=node_root,
         )
     except KeyboardInterrupt:
         logger.info("Development server stopped.")
+    else:
+        if completed_process.returncode != 0:
+            logger.error("Error occurred while running development server.")
+            logger.error(completed_process.stderr)
+

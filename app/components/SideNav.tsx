@@ -2,18 +2,24 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
-interface Link {
-  href: string;
-  title: string;
+interface Page {
+  title: string;  // Name of the page
+  path: string;  // Path to the page
+}
+
+interface Reference {
+  ref: string;  // Name of the Python object
 }
 
 interface Section {
-  heading: string;
-  links: Link[];
+  section: string; // Name of the section
+  contents: (Page | Reference)[];
 }
 
+export type NavigationItem = Page | Reference | Section;
+
 interface SideNavProps {
-  items: Section[]; // `items` is an array of `Section` objects
+  items: NavigationItem[];
 }
 
 
@@ -22,24 +28,57 @@ export function SideNav({ items }: SideNavProps) {
 
   return (
     <nav className="sidenav">
-      {items.map((item, itemIndex) => (
-        <div key={`item-${itemIndex}`}>
-          {item.heading && <span>{item.heading}</span>}
-          <ul className="flex column">
-            {item.links.map((link, linkIndex) => {
-              const active = router.pathname === link.href;
-              return (
-                <li
-                  key={`link-${itemIndex}-${linkIndex}`}
-                  className={active ? 'active' : ''}
-                >
-                  <Link href={link.href}>{link.title}</Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ))}
+      {items.map((item, itemIndex) => {
+        if ('path' in item) {
+          // Remove the '.md' extension from the path
+          const href = item.path.slice(0, -3);
+          return (
+            <li key={`page-${itemIndex}`}>
+              <Link href={href}>{item.title}</Link>
+            </li>
+          );
+        }
+
+        if ('ref' in item) {
+          return (
+            <li key={`ref-${itemIndex}`}>
+              <span>{item.ref}</span>
+            </li>
+          );
+        }
+
+        if ('section' in item) {
+          return (
+            <div key={`section-${itemIndex}`}>
+              <span>{item.section}</span>
+              <ul className="flex column">
+                {item.contents.map((content, contentIndex) => {
+                  if ('path' in content) {
+                    // Remove the '.md' extension from the path
+                    const href = `/${content.path.slice(0, -3)}`;                    // Add leading '/' to the href
+                    return (
+                      <li
+                        key={`content-page-${itemIndex}-${contentIndex}`}
+                      >
+                        <Link href={href}>{content.title}</Link>
+                      </li>
+                    );
+                  }
+                  if ('ref' in content) {
+                    const href = `/reference/${content.ref}`;
+                    return (
+                      <li key={`content-ref-${itemIndex}-${contentIndex}`}>
+                        <Link href={href}>{content.ref}</Link>
+                      </li>
+                    );
+                  }
+                  return null; // Default case for type safety
+                })}
+              </ul>
+            </div>
+          );
+        }
+      })}
       <style jsx>
         {`
           nav {
