@@ -21,11 +21,8 @@ def download_node_code(path: str):
 
 def _copy_files_from_luma_repo(src: str, dst: str):
     zip_path = os.path.join(_get_cache_dir(), "luma.zip")
-    if not os.path.exists(zip_path):
-        _download_luma_repo_as_zip(zip_path)
-    else:
-        logger.debug(f"Discovered cached repo arcihve at {zip_path}")
-
+    # TODO: Check if the ZIP file is already downloaded
+    _download_luma_repo_as_zip(zip_path)
     with zipfile.ZipFile(zip_path) as zip_ref:
         # All files in the ZIP file are in a directory named after the repository.
         _copy_files_from_zip(os.path.join(f"{REPO_NAME}-main", src), dst, zip_ref)
