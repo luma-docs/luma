@@ -33,9 +33,10 @@ export function SideNav({ items }: SideNavProps) {
         {items.map((item, itemIndex) => {
           if ('path' in item) {
             // Remove the '.md' extension from the path
-            const href = `/${item.path.slice(0, -3)}`;                    // Add leading '/' to the href
+            const href = `/${item.path.slice(0, -3)}`;
+            const active = router.asPath === href;
             return (
-              <li key={`page-${itemIndex}`}>
+              <li key={`page-${itemIndex}`} className={active ? 'active' : ''}>
                 <Link href={href}>{item.title}</Link>
               </li>
             );
@@ -56,10 +57,12 @@ export function SideNav({ items }: SideNavProps) {
                   {item.contents.map((content, contentIndex) => {
                     if ('path' in content) {
                       // Remove the '.md' extension from the path
-                      const href = `/${content.path.slice(0, -3)}`;                    // Add leading '/' to the href
+                      const href = `/${content.path.slice(0, -3)}`;
+                      const active = router.asPath === href;
                       return (
                         <li
                           key={`content-page-${itemIndex}-${contentIndex}`}
+                          className={active ? 'active' : ''}
                         >
                           <Link href={href}>{content.title}</Link>
                         </li>
@@ -67,8 +70,12 @@ export function SideNav({ items }: SideNavProps) {
                     }
                     if ('ref' in content) {
                       const href = `/reference/${content.ref}`;
+                      const active = router.asPath === href;
                       return (
-                        <li key={`content-ref-${itemIndex}-${contentIndex}`}>
+                        <li
+                          key={`content-ref-${itemIndex}-${contentIndex}`}
+                          className={active ? 'active' : ''}
+                        >
                           <Link href={href}>{content.ref}</Link>
                         </li>
                       );
