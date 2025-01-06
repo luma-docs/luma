@@ -81,8 +81,8 @@ def deploy():
 
     try:
         build_path = build_project(node_root)
-        deployment_id = deploy_project(build_path, config.package_name)
-        monitor_deployment(deployment_id, config.package_name)
+        deployment_id = deploy_project(build_path, config.name)
+        monitor_deployment(deployment_id, config.name)
     finally:
         cleanup_build(build_path)
 

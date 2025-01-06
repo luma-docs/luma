@@ -1,5 +1,4 @@
 import React from 'react';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 interface Page {
@@ -24,8 +23,6 @@ interface SideNavProps {
 
 
 export function SideNav({ items }: SideNavProps) {
-  const router = useRouter();
-
   return (
     <nav className="sidenav">
       {items.map((item, itemIndex) => {
