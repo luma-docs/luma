@@ -14,7 +14,7 @@ export function FuncReference({ name }: FuncReferenceProps) {
             .then((response) => response.json())
             .then((json) => setFunc(json as PyFunc))
             .catch((error) => console.error("Error fetching the file:", error));
-    }, []);
+    }, [name]);
 
     return (
         <div>
@@ -28,14 +28,18 @@ export function FuncReference({ name }: FuncReferenceProps) {
                     <ul>
                         {func.args.map((arg, index) => (
                             <li key={index}>
-                                <b>{arg.name}</b>: {arg.type ?? "any"} - {arg.desc}
+                                <b>{arg.name}</b>: {arg.desc}
                             </li>
                         ))}
                     </ul>
                 </>
             ) : null}
-            <h2>Returns</h2>
-            <p>{func?.returns ?? "Loading"}</p>
+            {func?.returns != null ? (
+                <>
+                    <h2>Returns</h2>
+                    <p>{func.returns}</p>
+                </>
+            ) : null}
             {func?.examples && func.examples.length > 0 ? (
                 <>
                     <h2>Examples</h2>

@@ -1,0 +1,16 @@
+{
+    "name": "luma.examples.Account.deposit",
+    "type": "func",
+    "summary": "Deposit money into the account.",
+    "desc": null,
+    "examples": [],
+    "signature": "luma.examples.Account.deposit(amount: float) -> None",
+    "args": [
+        {
+            "name": "amount",
+            "type": null,
+            "desc": "The amount to deposit."
+        }
+    ],
+    "returns": null
+}

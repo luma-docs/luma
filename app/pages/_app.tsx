@@ -6,6 +6,7 @@ import { NavigationItem } from '../components/SideNav';
 import 'prismjs';
 // Import other Prism themes here
 import 'prismjs/components/prism-bash.min';
+import 'prismjs/components/prism-python.min';
 import 'prismjs/themes/prism.css';
 
 import '../public/globals.css'

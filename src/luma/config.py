@@ -4,8 +4,7 @@ from pathlib import Path
 import yaml
 from pydantic import BaseModel
 from typing import Optional
-import importlib
-
+from .utils import get_obj, get_module_and_qualname
 
 class Page(BaseModel):
     title: str
@@ -101,24 +100,24 @@ def _validate_section(section: Section, project_root: str):
 
 
 def _validate_reference(reference: Reference):
-    qualname = reference.ref
-    module_name, attr_name = qualname.rsplit(".", 1)
+    fully_qualified_name = reference.ref
 
     try:
-        module = importlib.import_module(module_name)
+        module, qualname = get_module_and_qualname(fully_qualified_name)
     except ImportError:
+        package_name = fully_qualified_name.split(".")[0]
         raise ValueError(
-            f"Your config references '{qualname}', but Luma couldn't import the module "
-            f"'{module_name}'. Make sure the module is installed in the current "
-            "environment."
+            f"Your config references '{fully_qualified_name}', but Luma couldn't "
+            f"import the package '{package_name}'. Make sure the module is installed "
+            "in the current environment."
         )
 
     try:
-        getattr(module, attr_name)
+        get_obj(module, qualname)
     except AttributeError:
         raise ValueError(
             f"Your config references '{qualname}'. Luma imported the module "
-            f"'{module_name}, but couldn't get the attribute '{attr_name}'. Are you "
+            f"'{module.__name__}',' but couldn't get the object '{qualname}'. Are you "
             "sure the referenced object exists?"
         )
 

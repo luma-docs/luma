@@ -1,0 +1,10 @@
+{
+    "name": "luma.examples.Account.get_balance",
+    "type": "func",
+    "summary": "Return the current balance.",
+    "desc": null,
+    "examples": [],
+    "signature": "luma.examples.Account.get_balance(self) -> float",
+    "args": [],
+    "returns": null
+}

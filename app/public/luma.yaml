@@ -5,3 +5,5 @@ navigation:
 - section: Reference
   contents:
   - ref: luma.examples.fib
+  - ref: luma.examples.Account
+  - ref: luma.examples.Account.deposit

@@ -4,36 +4,43 @@ import json
 import logging
 import os
 from types import FunctionType
-from typing import Iterable
+from typing import Iterable, Union
 
 from docstring_parser import parse
 
-from .models import DocstringExample, PyArg, PyFunc, PyObj
+from .models import DocstringExample, PyArg, PyFunc, PyObj, PyClass
 from .node import get_node_root
 from .config import Config, Reference, Section
+from .utils import get_module_and_qualname, get_obj
 
 logger = logging.getLogger(__name__)
 
 
 def prepare_references(project_root: str, config: Config) -> None:
     for qualname in _list_api_qualnames(config):
-        module_name, attr_name = qualname.rsplit(".", 1)
-
         try:
-            module = importlib.import_module(module_name)
+            module, qualname = get_module_and_qualname(qualname)
         except ImportError:
-            logger.warning(f"Couldn't import '{module_name}'")
+            logger.warning(f"Couldn't import '{module.__name__}'")
             continue
 
         try:
-            obj = getattr(module, attr_name)
+            obj = get_obj(module, qualname)
         except AttributeError:
-            logger.warning(f"Failed to get '{attr_name}' from '{module.__name__}'")
+            logger.warning(f"Failed to get '{qualname}' from '{module.__name__}'")
             continue
 
         if isinstance(obj, FunctionType):
-            api = _parse_func(obj)
-            _write_api(api, project_root)
+            func_info = _parse_func(obj)
+            _write_api(func_info, project_root)
+        elif isinstance(obj, type):
+            cls_info = _parse_cls(obj)
+            _write_api(cls_info, project_root)
+            for method_info in cls_info.methods:
+                _write_api(method_info, project_root)
+        else:
+            logger.warning(f"Unsupported API type: {type(obj)}")
+
 
 
 def _list_api_qualnames(config: Config) -> Iterable[str]:
@@ -50,7 +57,7 @@ def _parse_func(func: FunctionType) -> PyFunc:
     assert isinstance(func, FunctionType), func
 
     name = func.__module__ + "." + func.__qualname__
-    signature = name + repr(inspect.signature(func))[len("<Signature ") : -len(">")]
+    signature = _get_signature(func)
     parsed = parse(func.__doc__)
     summary = parsed.short_description
     desc = parsed.long_description
@@ -77,6 +84,52 @@ def _parse_func(func: FunctionType) -> PyFunc:
     )
 
 
+def _parse_cls(cls: type) -> PyClass:
+    assert isinstance(cls, type), cls
+
+    parsed = parse(cls.__doc__)
+    summary = parsed.short_description
+    desc = parsed.long_description
+
+    examples = []
+    for example in parsed.examples:
+        examples.append(DocstringExample(desc=None, code=example.description))
+
+    args = _parse_func(cls.__init__).args
+
+    methods = []
+    for name, func in inspect.getmembers(cls, predicate=inspect.isfunction):
+        # Ignore private methods
+        if name.startswith("_"):
+            continue
+    
+        methods.append(_parse_func(func))
+    
+    return PyClass(
+        name=cls.__module__ + "." + cls.__qualname__,
+        signature=_get_signature(cls),
+        summary=summary,
+        desc=desc,
+        examples=examples,
+        args=args,
+        methods=methods
+    )
+
+
+def _get_signature(obj: Union[FunctionType, type]) -> str:
+    assert isinstance(obj, (FunctionType, type)), obj
+
+    init_or_func = obj.__init__ if isinstance(obj, type) else obj
+    name = obj.__module__ + "." + obj.__qualname__
+    parameters: str = repr(inspect.signature(init_or_func))[len("<Signature ") : -len(">")]
+
+    # HACK: Remove 'self' parameter from class methods.
+    if parameters.startswith("(self"):
+        parameters = parameters.replace("(self, ", "(")
+
+    return f"{name}{parameters}"
+
+    
 def _write_api(api: PyObj, project_root: str) -> None:
     node_path = get_node_root(project_root)
     api_folder = os.path.join(node_path, "public", "api")

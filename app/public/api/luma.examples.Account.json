@@ -1,0 +1,69 @@
+{
+    "name": "luma.examples.Account",
+    "type": "class",
+    "summary": "Base class representing a bank account.",
+    "desc": null,
+    "examples": [
+        {
+            "desc": null,
+            "code": ">>> account = Account(\"Alice\", 100.0)\n>>> account.deposit(50.0)\nDeposited 50.0. New balance: 150.0\n>>> account.withdraw(20.0)\nWithdrew 20.0. New balance: 130.0\n>>> account.get_balance()\n130.0"
+        }
+    ],
+    "signature": "luma.examples.Account(account_holder: str, balance: float = 0.0)",
+    "args": [
+        {
+            "name": "account_holder",
+            "type": null,
+            "desc": "The name of the account holder."
+        },
+        {
+            "name": "balance",
+            "type": null,
+            "desc": "The initial balance of the account (default 0.0)."
+        }
+    ],
+    "methods": [
+        {
+            "name": "luma.examples.Account.deposit",
+            "type": "func",
+            "summary": "Deposit money into the account.",
+            "desc": null,
+            "examples": [],
+            "signature": "luma.examples.Account.deposit(amount: float) -> None",
+            "args": [
+                {
+                    "name": "amount",
+                    "type": null,
+                    "desc": "The amount to deposit."
+                }
+            ],
+            "returns": null
+        },
+        {
+            "name": "luma.examples.Account.get_balance",
+            "type": "func",
+            "summary": "Return the current balance.",
+            "desc": null,
+            "examples": [],
+            "signature": "luma.examples.Account.get_balance(self) -> float",
+            "args": [],
+            "returns": null
+        },
+        {
+            "name": "luma.examples.Account.withdraw",
+            "type": "func",
+            "summary": "Withdraw money from the account.",
+            "desc": null,
+            "examples": [],
+            "signature": "luma.examples.Account.withdraw(amount: float) -> None",
+            "args": [
+                {
+                    "name": "amount",
+                    "type": null,
+                    "desc": "The amount to withdraw."
+                }
+            ],
+            "returns": null
+        }
+    ]
+}
