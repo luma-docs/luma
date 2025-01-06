@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from typing import Optional
 from .utils import get_obj, get_module_and_qualname
 
+
 class Page(BaseModel):
     title: str
     path: str

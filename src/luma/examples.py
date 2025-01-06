@@ -55,7 +55,7 @@ class Account:
 
     def deposit(self, amount: float) -> None:
         """Deposit money into the account.
-        
+
         Args:
             amount: The amount to deposit.
         """
@@ -66,7 +66,7 @@ class Account:
 
     def withdraw(self, amount: float) -> None:
         """Withdraw money from the account.
-        
+
         Args:
             amount: The amount to withdraw.
         """

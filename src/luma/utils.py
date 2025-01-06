@@ -48,5 +48,5 @@ def get_obj(module: ModuleType, qualname: str) -> object:
             obj = getattr(obj, attr)
         except AttributeError:
             raise ValueError(f"Couldn't get attribute: {attr}")
-        
+
     return obj

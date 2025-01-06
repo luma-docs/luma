@@ -1,4 +1,3 @@
-import importlib
 import inspect
 import json
 import logging
@@ -40,7 +39,6 @@ def prepare_references(project_root: str, config: Config) -> None:
                 _write_api(method_info, project_root)
         else:
             logger.warning(f"Unsupported API type: {type(obj)}")
-
 
 
 def _list_api_qualnames(config: Config) -> Iterable[str]:
@@ -102,9 +100,9 @@ def _parse_cls(cls: type) -> PyClass:
         # Ignore private methods
         if name.startswith("_"):
             continue
-    
+
         methods.append(_parse_func(func))
-    
+
     return PyClass(
         name=cls.__module__ + "." + cls.__qualname__,
         signature=_get_signature(cls),
@@ -112,7 +110,7 @@ def _parse_cls(cls: type) -> PyClass:
         desc=desc,
         examples=examples,
         args=args,
-        methods=methods
+        methods=methods,
     )
 
 
@@ -121,7 +119,9 @@ def _get_signature(obj: Union[FunctionType, type]) -> str:
 
     init_or_func = obj.__init__ if isinstance(obj, type) else obj
     name = obj.__module__ + "." + obj.__qualname__
-    parameters: str = repr(inspect.signature(init_or_func))[len("<Signature ") : -len(">")]
+    parameters: str = repr(inspect.signature(init_or_func))[
+        len("<Signature ") : -len(">")
+    ]
 
     # HACK: Remove 'self' parameter from class methods.
     if parameters.startswith("(self"):
@@ -129,7 +129,7 @@ def _get_signature(obj: Union[FunctionType, type]) -> str:
 
     return f"{name}{parameters}"
 
-    
+
 def _write_api(api: PyObj, project_root: str) -> None:
     node_path = get_node_root(project_root)
     api_folder = os.path.join(node_path, "public", "api")
