@@ -1,0 +1,16 @@
+{
+    "name": "luma.examples.Account.withdraw",
+    "type": "func",
+    "summary": "Withdraw money from the account.",
+    "desc": null,
+    "examples": [],
+    "signature": "luma.examples.Account.withdraw(amount: float) -> None",
+    "args": [
+        {
+            "name": "amount",
+            "type": null,
+            "desc": "The amount to withdraw."
+        }
+    ],
+    "returns": null
+}
