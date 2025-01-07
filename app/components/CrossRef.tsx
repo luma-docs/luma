@@ -8,7 +8,7 @@ interface CrossRefProps {
 
 export function CrossRef({href, children}: CrossRefProps) {
     return (
-        <Link href={href.includes("https://") || href.includes("http://") ? href : `reference/${href}`}>
+        <Link href={href.includes("https://") || href.includes("http://") ? href : `/reference/${href}`}>
           {children}
         </Link>
       );
