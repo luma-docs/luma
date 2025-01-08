@@ -78,7 +78,7 @@ def deploy_project(build_path: str, package_name: str) -> str:
         body = response.json()
         return body["deploymentId"]
     else:
-        logger.info(f"Deployment failed: {response.status_code} {response.text}")
+        logger.error(f"Deployment failed: {response.status_code} {response.text}")
         raise typer.Exit(1)
 
 
@@ -99,10 +99,10 @@ def monitor_deployment(deployment_id: str, package_name: str):
                 logger.info(f"Deployment successful! {body["deploymentUrl"]}")
                 return
             elif status == "ERROR":
-                logger.info(f"Deployment failed: {body["errorMessage"]}")
+                logger.error(f"Deployment failed: {body["errorMessage"]}")
                 return
             elif status == "CANCELED":
-                logger.info(f"Deployment canceled: {body["errorMessage"]}")
+                logger.warn(f"Deployment canceled: {body["errorMessage"]}")
                 return
 
             time.sleep(POLLING_INTERVAL_SECONDS)

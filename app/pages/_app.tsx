@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import Link from 'next/link';
 
 import { SideNav, TableOfContents } from '../components';
 import { NavigationItem } from '../components/SideNav';
