@@ -1,22 +1,8 @@
 name: luma
 navigation:
-  - section: Overview
+  - path: getting-started.md
+    title: Overview
+  - section: Guides
     contents:
       - path: getting-started.md
         title: Getting started
-
-  # TODO
-  # - section: Tags
-  #   contents:
-  #     - path: callout.md
-  #       title: Callout 
-
-  - section: CLI reference
-    contents:
-      - path: init.md
-        title: init
-      - path: dev.md
-        title: dev
-      - path: deploy.md
-        title: deploy
-
