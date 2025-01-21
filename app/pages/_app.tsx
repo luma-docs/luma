@@ -19,7 +19,7 @@ const TITLE = 'Markdoc';
 const DESCRIPTION = 'A powerful, flexible, Markdown-based authoring framework';
 
 interface Config {
-  package: string;
+  name: string;
   navigation: NavigationItem[];
 }
 
@@ -92,7 +92,7 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
   return (
     <>
       <Head>
-        <title>{title}</title>
+        <title>{config?.name || "Untitled"}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="referrer" content="strict-origin" />
         <meta name="title" content={title} />
