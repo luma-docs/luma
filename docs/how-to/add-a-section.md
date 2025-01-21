@@ -4,7 +4,7 @@ Sections allow you to group related pages and API references in the sidebar.
 
 To add a section, specify a `section` in `luma.yaml`.
 
-```
+```yaml
 name: mypackage
 navigation:
   - section: My section
