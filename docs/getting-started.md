@@ -8,21 +8,21 @@ Luma is better way to document your Python library. It's a modern replacement fo
 [Sphinx](https://www.sphinx-doc.org/en/master/).
 
 Here are some of the key benefits of Luma:
-- **Easier to use**. Markdown-native and easy to configure. Avoid Sphinx’s steep learning curve. 
-- Iterate faster. Development server. No need to manually rebuild. 
-- *Python-specific functionality*. Automatic function and class reference generation
-  and easy cross-referencing.
+- **Easy to use**. Markdown-native and simple to configure. Avoid Sphinx’s steep learning curve. 
+- **Iterate rapidly**. Built-in development server and publishing. No need to manual rebuild or 
+  set up hosting.
+- **Built for Python**. Automatically generate function and class references with 
+  seamless cross-referencing.
 
+## Getting started
 
-## Installing Luma
+### Install Luma
 
-To install Luma, run the following command:
+To install Luma, install the package from PyPI:
 
 ```bash
 pip install luma-docs
 ```
-
-##  Quickstart
 
 ### Create a new Luma project
 
@@ -32,7 +32,7 @@ Once you've installed Luma, run the `init` command, and answer the prompts:
 luma init
 ```
 
-After running the command, you should see a `docs/` folder in your current working 
+After running the command, you'll see a `docs/` folder in your current working 
 directory.
 
 ### Run the development server
@@ -46,14 +46,17 @@ cd docs
 luma dev
 ```
 
+Hit `Ctrl + C` to stop the development server.
+
 ### Publish your documentation
 
-Hit `Ctrl + C` to stop the development server. Then, run the `deploy` command to deploy
+
+Join [our Discord](...) to acquire an API key. Then, run the `deploy` command to publish
 your documentation.
 
 ```
 luma deploy
 ```
 
-After a minute, your documentation will be accessible on the Internet at an address
-like `TODO`.
+After a minute, your documentation will be accessible at 
+`https://{your-package}.luma-docs.org`.

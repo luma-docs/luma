@@ -2,7 +2,24 @@ name: luma
 navigation:
   - path: getting-started.md
     title: Overview
-  - section: Guides
+  - section: How to
     contents:
-      - path: getting-started.md
-        title: Getting started
+      - path: how-to/add-a-page.md
+        title: Add a page
+      - path: how-to/add-a-section.md
+        title: Add a section
+      - path: how-to/add-an-api-reference.md
+        title: Add an API reference
+      - path: how-to/link-to-an-api.md
+        title: Link to an API reference
+  - section: Tags
+    contents:
+      - path: tags/callout.md
+        title: Callout
+  - section: Example references
+    contents:
+      - ref: luma.examples.fib
+      - ref: luma.examples.Account
+      - ref: luma.examples.Account.deposit
+      - ref: luma.examples.Account.withdraw
+      - ref: luma.examples.Account.get_balance
