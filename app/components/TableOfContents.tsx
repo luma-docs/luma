@@ -52,6 +52,7 @@ export function TableOfContents({ toc }: TableOfContentsProps) {
             flex: 0 0 auto;
             align-self: flex-start;
             margin-bottom: 1rem;
+            margin-top: 2rem;
             padding: 0.5rem 0 0;
             border-left: 1px solid var(--border-color);
           }
