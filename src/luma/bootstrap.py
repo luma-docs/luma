@@ -20,20 +20,18 @@ def download_starter_files(path: str):
 
 
 def download_or_update_scaffold(path: str) -> None:
+    current_version = importlib.metadata.version("luma-docs")
     if not os.path.exists(path):
         _copy_files_from_luma_repo("app/", path, version=current_version)
         install_node_modules(path)
-    else:
-        current_version = importlib.metadata.version("luma-docs")
-        scaffold_version = _get_scaffold_version(path)
-        if current_version != scaffold_version:
-            logger.info(
-                f"You're using Luma {current_version}, but this project was last "
-                f"updated with Luma {scaffold_version}. Updating project..."
-            )
-            shutil.rmtree(path)
-            _copy_files_from_luma_repo("app/", path, version=current_version)
-            install_node_modules(path)
+    elif current_version != _get_scaffold_version(path):
+        logger.info(
+            f"You're using Luma {current_version}, but this project was last "
+            f"updated with Luma {scaffold_version}. Updating project..."
+        )
+        shutil.rmtree(path)
+        _copy_files_from_luma_repo("app/", path, version=current_version)
+        install_node_modules(path)
 
 
 def _get_scaffold_version(path: str) -> str:
@@ -46,7 +44,7 @@ def _get_scaffold_version(path: str) -> str:
 def _copy_files_from_luma_repo(src: str, dst: str, version: Optional[str] = None):
     zip_path = os.path.join(_get_cache_dir(), "luma.zip")
     # TODO: Check if the ZIP file is already downloaded
-    _download_luma_repo_as_zip(zip_path, version)
+    _download_luma_repo_as_zip(zip_path, version=version)
     with zipfile.ZipFile(zip_path) as zip_ref:
         # All files in the ZIP file are in a directory named after the repository.
         _copy_files_from_zip(os.path.join(f"{REPO_NAME}-main", src), dst, zip_ref)
