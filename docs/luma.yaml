@@ -1,6 +1,6 @@
 name: Luma Documentation
 navigation:
-  - path: getting-started.md
+  - path: overview.md
     title: Overview
   - section: How to
     contents:
