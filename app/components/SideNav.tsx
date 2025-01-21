@@ -51,8 +51,10 @@ export function SideNav({ items }: SideNavProps) {
           }
           if ('section' in item) {
             return (
-              <div key={`section-${itemIndex}`}>
-                <span>{item.section}</span>
+              <div>
+                <span style={{ paddingTop: itemIndex === 0 ? '0' : '1rem' }}>
+                  {item.section}
+                </span>
                 <ul className="flex column">
                   {item.contents.map((content, contentIndex) => {
                     if ('path' in content) {
@@ -102,7 +104,8 @@ export function SideNav({ items }: SideNavProps) {
           span {
             font-size: larger;
             font-weight: 500;
-            padding: 0.5rem 0 0.5rem;
+            padding: 1rem 0 0.5rem;
+            display: inline-block; 
           }
           ul {
             padding: 0;
