@@ -12,10 +12,6 @@ navigation:
         title: Add an API reference
       - path: how-to/link-to-an-api.md
         title: Link to an API reference
-  - section: Tags
-    contents:
-      - path: tags/callout.md
-        title: Callout
   - section: Example references
     contents:
       - ref: luma.examples.fib
