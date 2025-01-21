@@ -1,7 +1,7 @@
 # These files are copied into the scaffold when the user runs commands like `dev`.
 pages/**/*.md
-app/public/luma.yml
-app/public/api/*.json
+public/luma.yaml
+public/api/**/*.json
 
 # Logs
 logs
