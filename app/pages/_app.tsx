@@ -25,6 +25,22 @@ interface Config {
 
 import { TableOfContentsItem } from '../components/TableOfContents';
 
+export function getConfig() {
+  const [config, setConfig] = useState<Config | null>(null);
+    
+  useEffect(() => {
+      const fetchConfig = async () => {
+          const res = await fetch('/luma.yaml');
+          const text = await res.text();
+          const data = yaml.load(text) as Config;
+          setConfig(data);
+      };
+
+      fetchConfig();
+  }, []);
+
+  return config;
+}
 
 function collectHeadings(node: RenderableTreeNodes, sections: TableOfContentsItem[] = []) {
   if (Tag.isTag(node)) {
@@ -32,7 +48,7 @@ function collectHeadings(node: RenderableTreeNodes, sections: TableOfContentsIte
       const title = node.children[0];
 
       const id = node.attributes.id || "ham" // Assuming you have an ID generator
-      const level = node.attributes.level || 1; // Delsfault to level 1 if not provided
+      const level = node.attributes.level || 1; // Default to level 1 if not provided
 
       if (typeof title === 'string') {
         sections.push({
@@ -59,18 +75,7 @@ export type MyAppProps = MarkdocNextJsPageProps
 
 export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
   const { markdoc } = pageProps;
-  const [config, setConfig] = useState<Config | null>(null);
-
-  useEffect(() => {
-    const fetchConfig = async () => {
-      const res = await fetch('/luma.yaml');
-      const text = await res.text();
-      const data = yaml.load(text) as Config;
-      setConfig(data);
-    };
-
-    fetchConfig();
-  }, []);
+  const config = getConfig();
 
   let title = TITLE;
   let description = DESCRIPTION;
