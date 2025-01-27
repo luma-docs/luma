@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="combined.svg" alt="Logo" width="200">
+</p>
+
 ## Developing Luma
 
 ```bash
