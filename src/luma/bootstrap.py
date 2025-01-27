@@ -21,17 +21,19 @@ def download_starter_files(path: str):
 
 def download_or_update_scaffold(path: str) -> None:
     current_version = importlib.metadata.version("luma-docs")
-    if not os.path.exists(path):
-        _copy_files_from_luma_repo("app/", path, version=current_version)
-        install_node_modules(path)
-    elif current_version != _get_scaffold_version(path):
-        logger.info(
-            f"You're using Luma {current_version}, but this project was last "
-            f"updated with Luma {scaffold_version}. Updating project..."
-        )
-        shutil.rmtree(path)
-        _copy_files_from_luma_repo("app/", path, version=current_version)
-        install_node_modules(path)
+
+    # Check if the scaffold directory already exists.
+    if os.path.exists(path):
+        scaffold_version = _get_scaffold_version(path)
+        if current_version != scaffold_version:
+            logger.info(
+                f"You're using Luma {current_version}, but this project was last "
+                f"updated with Luma {scaffold_version}. Updating project..."
+            )
+            shutil.rmtree(path)
+
+    _copy_files_from_luma_repo("app/", path, version=current_version)
+    install_node_modules(path)
 
 
 def _get_scaffold_version(path: str) -> str:
@@ -72,7 +74,9 @@ def _download_luma_repo_as_zip(path: str, version: Optional[str] = None):
     if version is None:
         url = f"https://github.com/{REPO_OWNER}/{REPO_NAME}/archive/refs/heads/main.zip"
     else:
-        url = f"https://github.com/{REPO_OWNER}/{REPO_NAME}/archive/refs/tags/{version}.zip"
+        # TODO: Create tags for releases. For now, use the main branch.
+        # url = f"https://github.com/{REPO_OWNER}/{REPO_NAME}/archive/refs/tags/{version}.zip"
+        url = f"https://github.com/{REPO_OWNER}/{REPO_NAME}/archive/refs/heads/main.zip"
 
     response = requests.get(url)
     if response.status_code != 200:
