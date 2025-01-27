@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.jpg" alt="Logo" width="200">
+  <img src="combined.svg" alt="Logo" width="200">
 </p>
 
 ## Developing Luma
