@@ -1,4 +1,4 @@
-![Logo](combined.svg)
+![Logo](combined.jpg)
 
 ## Developing Luma
 
