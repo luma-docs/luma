@@ -1,5 +1,5 @@
 <div align="center">
-<img src="combined.svg" alt="Reflex Logo" width="300px">
+<img src="docs/combined.svg" alt="Reflex Logo" width="300px">
 <hr>
 
 ### **✨ A better way to write Python documentation✨**
