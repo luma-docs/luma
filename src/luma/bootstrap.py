@@ -22,18 +22,27 @@ def download_starter_files(path: str):
 def download_or_update_scaffold(path: str) -> None:
     current_version = importlib.metadata.version("luma-docs")
 
+    should_download_scaffold = False
     # Check if the scaffold directory already exists.
     if os.path.exists(path):
         scaffold_version = _get_scaffold_version(path)
         if current_version != scaffold_version:
+            # Scaffold directory is outdated. Delete it and redownload the files.
             logger.info(
                 f"You're using Luma {current_version}, but this project was last "
                 f"updated with Luma {scaffold_version}. Updating project..."
             )
             shutil.rmtree(path)
+            should_download_scaffold = True
+            print("Out of date")
 
-    _copy_files_from_luma_repo("app/", path, version=current_version)
-    install_node_modules(path)
+    else:
+        # Scaffold directory doesn't exist. Download the files.
+        should_download_scaffold = True
+
+    if should_download_scaffold:
+        _copy_files_from_luma_repo("app/", path, version=current_version)
+        install_node_modules(path)
 
 
 def _get_scaffold_version(path: str) -> str:
