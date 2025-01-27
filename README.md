@@ -1,3 +1,5 @@
+![Logo](combined.svg)
+
 ## Developing Luma
 
 ```bash
