@@ -1,9 +1,13 @@
+import importlib
 import logging
 import os
 import platform
 import zipfile
-
+import json
 import requests
+import shutil
+from typing import Optional
+from .node import install_node_modules
 
 REPO_OWNER = "luma-docs"
 REPO_NAME = "luma"
@@ -15,14 +19,34 @@ def download_starter_files(path: str):
     _copy_files_from_luma_repo("starter/", path)
 
 
-def download_node_code(path: str):
-    _copy_files_from_luma_repo("app/", path)
+def download_or_update_scaffold(path: str) -> None:
+    current_version = importlib.metadata.version("luma-docs")
+
+    # Check if the scaffold directory already exists.
+    if os.path.exists(path):
+        scaffold_version = _get_scaffold_version(path)
+        if current_version != scaffold_version:
+            logger.info(
+                f"You're using Luma {current_version}, but this project was last "
+                f"updated with Luma {scaffold_version}. Updating project..."
+            )
+            shutil.rmtree(path)
+
+    _copy_files_from_luma_repo("app/", path, version=current_version)
+    install_node_modules(path)
 
 
-def _copy_files_from_luma_repo(src: str, dst: str):
+def _get_scaffold_version(path: str) -> str:
+    with open(os.path.join(path, "package.json")) as file:
+        package_json = json.load(file)
+
+    return package_json["version"]
+
+
+def _copy_files_from_luma_repo(src: str, dst: str, version: Optional[str] = None):
     zip_path = os.path.join(_get_cache_dir(), "luma.zip")
     # TODO: Check if the ZIP file is already downloaded
-    _download_luma_repo_as_zip(zip_path)
+    _download_luma_repo_as_zip(zip_path, version=version)
     with zipfile.ZipFile(zip_path) as zip_ref:
         # All files in the ZIP file are in a directory named after the repository.
         _copy_files_from_zip(os.path.join(f"{REPO_NAME}-main", src), dst, zip_ref)
@@ -45,9 +69,15 @@ def _get_cache_dir() -> str:
     return cache_dir
 
 
-def _download_luma_repo_as_zip(path: str):
+def _download_luma_repo_as_zip(path: str, version: Optional[str] = None):
     # URL to download the repository as a ZIP file
-    url = f"https://github.com/{REPO_OWNER}/{REPO_NAME}/archive/refs/heads/main.zip"
+    if version is None:
+        url = f"https://github.com/{REPO_OWNER}/{REPO_NAME}/archive/refs/heads/main.zip"
+    else:
+        # TODO: Create tags for releases. For now, use the main branch.
+        # url = f"https://github.com/{REPO_OWNER}/{REPO_NAME}/archive/refs/tags/{version}.zip"
+        url = f"https://github.com/{REPO_OWNER}/{REPO_NAME}/archive/refs/heads/main.zip"
+
     response = requests.get(url)
     if response.status_code != 200:
         logger.error(

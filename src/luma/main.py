@@ -6,7 +6,7 @@ from typing import Optional
 import typer
 from typing_extensions import Annotated
 
-from .bootstrap import download_node_code, download_starter_files
+from .bootstrap import download_or_update_scaffold, download_starter_files
 from .deploy import build_project, cleanup_build, deploy_project, monitor_deployment
 from .link import link_config_file, link_existing_pages, link_page_on_creation
 from .node import get_node_root, install_node_modules, is_node_installed, run_node_dev
@@ -43,10 +43,9 @@ def init():
 
     logger.info(f"Initializing project directory to '{project_root}'.")
     download_starter_files(project_root)
-    download_node_code(node_root)
+    download_or_update_scaffold(node_root)
 
     create_or_update_config(project_root, package_name)
-    install_node_modules(node_root)
     link_config_file(project_root)
     link_existing_pages(project_root)
 
@@ -56,10 +55,8 @@ def dev(port: Annotated[Optional[int], typer.Option()] = None):
     project_root = get_project_root()
 
     node_root = get_node_root(project_root)
-    if not os.path.exists(node_root):
-        download_node_code(node_root)
-        install_node_modules(node_root)
-
+    download_or_update_scaffold(node_root)
+    
     config = load_config(project_root)
     validate_config(config, project_root)
     prepare_references(project_root, config)
