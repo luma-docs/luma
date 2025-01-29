@@ -134,7 +134,9 @@ def test_parse_func_multiple_sections():
 
 def test_parse_func_no_summary():
     def f(x: int, y: int) -> int:
-        """This is the description.
+        """
+        
+        This is the description.
 
         Args:
             x: The first argument.
