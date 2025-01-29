@@ -98,6 +98,40 @@ def test_parse_func_multi_line_summary_first_line():
     )
 
 
+def test_parse_func_multiple_sections():
+    def f(x: int, y: int) -> int:
+        """Summary SummarySummarySummarySummarySummarySummarySummarySummarySummarySummarySummary
+        SummarySummarySummary
+
+        This is the description.
+
+        This is another section of the description.
+
+        Args:
+            x: The first argument.
+            y: The second argument.
+
+        Returns:
+            The sum of x and y.
+        """
+        return x + y
+
+    definition = _parse_func(f)
+
+    assert definition == PyFunc(
+        name="test_parser.test_parse_func_multiple_sections.<locals>.f",
+        signature="test_parser.test_parse_func_multiple_sections.<locals>.f(x: int, y: int) -> int",
+        summary="Summary SummarySummarySummarySummarySummarySummarySummarySummarySummarySummarySummary SummarySummarySummary",
+        desc="This is the description.\n\nThis is another section of the description.",
+        args=[
+            {"name": "x", "type": None, "desc": "The first argument."},
+            {"name": "y", "type": None, "desc": "The second argument."},
+        ],
+        returns="The sum of x and y.",
+        examples=[],
+    )
+
+
 def test_parse_func_no_summary():
     def f(x: int, y: int) -> int:
         """This is the description.
