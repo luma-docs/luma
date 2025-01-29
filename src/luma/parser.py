@@ -73,7 +73,6 @@ def _parse_func(func: FunctionType) -> PyFunc:
     signature = _get_signature(func)
     parsed = parse(func.__doc__)
     body = parsed.description.split('\n\n')
-    print(body)
     summary, desc = _get_summary_and_desc(body)
 
     args = []
@@ -87,16 +86,6 @@ def _parse_func(func: FunctionType) -> PyFunc:
     for example in parsed.examples:
         examples.append(DocstringExample(desc=None, code=example.description))
 
-    ret = PyFunc(
-        name=name,
-        signature=signature,
-        summary=summary,
-        desc=desc,
-        args=args,
-        returns=returns,
-        examples=examples,
-    )
-    print(ret)
     return PyFunc(
         name=name,
         signature=signature,
