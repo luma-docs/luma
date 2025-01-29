@@ -31,12 +31,12 @@ def prepare_references(project_root: str, config: Config) -> None:
 
         if isinstance(obj, FunctionType):
             func_info = _parse_func(obj)
-            _write_api(func_info, project_root)
+            _write_page(func_info, project_root)
         elif isinstance(obj, type):
             cls_info = _parse_cls(obj)
-            _write_api(cls_info, project_root)
+            _write_page(cls_info, project_root)
             for method_info in cls_info.methods:
-                _write_api(method_info, project_root)
+                _write_page(method_info, project_root)
         else:
             logger.warning(f"Unsupported API type: {type(obj)}")
 
@@ -130,13 +130,12 @@ def _get_signature(obj: Union[FunctionType, type]) -> str:
     return f"{name}{parameters}"
 
 
-def _write_api(api: PyObj, project_root: str) -> None:
+def _write_page(api: PyObj, project_root: str) -> None:
     node_path = get_node_root(project_root)
-    api_folder = os.path.join(node_path, "public", "api")
-    if not os.path.exists(api_folder):
-        os.makedirs(api_folder, exist_ok=True)
-
-    filename = f"{api.name}.json"
-    with open(os.path.join(api_folder, filename), "w") as f:
+    reference_folder = os.path.join(node_path, "pages", "reference")
+    os.makedirs(reference_folder, exist_ok=True)
+    
+    filename = f"{api.name}.md"
+    with open(os.path.join(reference_folder, filename), "w") as f:
         logger.debug(f"Writing '{f.name}'")
-        f.write(json.dumps(api.model_dump(), indent=4))
+        f.write(api.to_markdown())
