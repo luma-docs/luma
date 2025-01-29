@@ -3,7 +3,7 @@ import json
 import logging
 import os
 from types import FunctionType
-from typing import Iterable, Union
+from typing import Iterable, List, Tuple, Union
 
 from docstring_parser import parse
 
@@ -51,14 +51,30 @@ def _list_api_qualnames(config: Config) -> Iterable[str]:
                     yield sub_item.ref
 
 
+def _get_summary_and_desc(body: List[str]) -> Tuple[str, str]:
+    summary, desc = "", ""
+
+    if len(body) > 0:
+        summary = " ".join([line.strip() for line in body[0].split('\n')])
+
+    sections = []
+
+    if len(body) > 1:
+        for section in body[1:]:
+            sections.append(" ".join([line.strip() for line in section.split('\n')]))
+
+    return summary.strip(), "\n\n".join(sections)
+
+
 def _parse_func(func: FunctionType) -> PyFunc:
     assert isinstance(func, FunctionType), func
 
     name = func.__module__ + "." + func.__qualname__
     signature = _get_signature(func)
     parsed = parse(func.__doc__)
-    summary = parsed.short_description
-    desc = parsed.long_description
+    body = parsed.description.split('\n\n')
+    print(body)
+    summary, desc = _get_summary_and_desc(body)
 
     args = []
     for param in parsed.params:
@@ -71,6 +87,16 @@ def _parse_func(func: FunctionType) -> PyFunc:
     for example in parsed.examples:
         examples.append(DocstringExample(desc=None, code=example.description))
 
+    ret = PyFunc(
+        name=name,
+        signature=signature,
+        summary=summary,
+        desc=desc,
+        args=args,
+        returns=returns,
+        examples=examples,
+    )
+    print(ret)
     return PyFunc(
         name=name,
         signature=signature,
@@ -86,8 +112,8 @@ def _parse_cls(cls: type) -> PyClass:
     assert isinstance(cls, type), cls
 
     parsed = parse(cls.__doc__)
-    summary = parsed.short_description
-    desc = parsed.long_description
+    body = parsed.description.split('\n\n')
+    summary, desc = _get_summary_and_desc(body)
 
     examples = []
     for example in parsed.examples:
