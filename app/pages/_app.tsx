@@ -25,7 +25,7 @@ interface Config {
 
 import { TableOfContentsItem } from '../components/TableOfContents';
 
-export function getConfig() {
+export function GetConfig() {
   const [config, setConfig] = useState<Config | null>(null);
     
   useEffect(() => {
@@ -75,7 +75,7 @@ export type MyAppProps = MarkdocNextJsPageProps
 
 export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
   const { markdoc } = pageProps;
-  const config = getConfig();
+  const config = GetConfig();
 
   let title = TITLE;
   let description = DESCRIPTION;
