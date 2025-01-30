@@ -3,7 +3,7 @@ import json
 import logging
 import os
 from types import FunctionType
-from typing import Iterable, Union
+from typing import Iterable, List, Tuple, Union
 
 from docstring_parser import parse
 
@@ -51,14 +51,43 @@ def _list_api_qualnames(config: Config) -> Iterable[str]:
                     yield sub_item.ref
 
 
+def _get_summary_and_desc(lines: List[str]) -> Tuple[str, str]:
+    """Get summary and description from docstring lines.
+
+    Given a list of lines in a docstring containing the summary and/or
+    description, parse the lines and return the summary and description
+    as separate strings. The description may contain multiple sections
+    separated by blank newlines.
+
+    Args:
+        lines (str): the summary and description lines of the docstring,
+                     split on newlines
+
+    Returns:
+        A tuple of (summary, description) formatted as single strings
+    """
+    summary, desc = "", ""
+
+    if len(lines) > 0:
+        summary = " ".join([line.strip() for line in lines[0].split('\n')])
+
+    sections = []
+
+    if len(lines) > 1:
+        for section in lines[1:]:
+            sections.append(" ".join([line.strip() for line in section.split('\n')]))
+
+    return summary.strip(), "\n\n".join(sections)
+
+
 def _parse_func(func: FunctionType) -> PyFunc:
     assert isinstance(func, FunctionType), func
 
     name = func.__module__ + "." + func.__qualname__
     signature = _get_signature(func)
     parsed = parse(func.__doc__)
-    summary = parsed.short_description
-    desc = parsed.long_description
+    lines = parsed.description.split('\n\n')
+    summary, desc = _get_summary_and_desc(lines)
 
     args = []
     for param in parsed.params:
@@ -86,8 +115,8 @@ def _parse_cls(cls: type) -> PyClass:
     assert isinstance(cls, type), cls
 
     parsed = parse(cls.__doc__)
-    summary = parsed.short_description
-    desc = parsed.long_description
+    body = parsed.description.split('\n\n')
+    summary, desc = _get_summary_and_desc(body)
 
     examples = []
     for example in parsed.examples:
