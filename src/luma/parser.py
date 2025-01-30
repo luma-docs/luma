@@ -51,16 +51,30 @@ def _list_api_qualnames(config: Config) -> Iterable[str]:
                     yield sub_item.ref
 
 
-def _get_summary_and_desc(body: List[str]) -> Tuple[str, str]:
+def _get_summary_and_desc(lines: List[str]) -> Tuple[str, str]:
+    """Get summary and description from docstring lines.
+
+    Given a list of lines in a docstring containing the summary and/or
+    description, parse the lines and return the summary and description
+    as separate strings. The description may contain multiple sections
+    separated by blank newlines.
+
+    Args:
+        lines (str): the summary and description lines of the docstring,
+                     split on newlines
+
+    Returns:
+        A tuple of (summary, description) formatted as single strings
+    """
     summary, desc = "", ""
 
-    if len(body) > 0:
-        summary = " ".join([line.strip() for line in body[0].split('\n')])
+    if len(lines) > 0:
+        summary = " ".join([line.strip() for line in lines[0].split('\n')])
 
     sections = []
 
-    if len(body) > 1:
-        for section in body[1:]:
+    if len(lines) > 1:
+        for section in lines[1:]:
             sections.append(" ".join([line.strip() for line in section.split('\n')]))
 
     return summary.strip(), "\n\n".join(sections)
@@ -72,8 +86,8 @@ def _parse_func(func: FunctionType) -> PyFunc:
     name = func.__module__ + "." + func.__qualname__
     signature = _get_signature(func)
     parsed = parse(func.__doc__)
-    body = parsed.description.split('\n\n')
-    summary, desc = _get_summary_and_desc(body)
+    lines = parsed.description.split('\n\n')
+    summary, desc = _get_summary_and_desc(lines)
 
     args = []
     for param in parsed.params:
