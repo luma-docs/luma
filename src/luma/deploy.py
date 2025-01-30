@@ -16,16 +16,30 @@ logger = logging.getLogger(__name__)
 
 
 def _get_api_key():
-    api_key = keyring.get_password("ike", "api_key")
+    """
+    Get the Luma API key from the system's keyring. If the key isn't found, the CLI
+    will prompt for the API key and save to the system's keyring.
+    """
+    api_key = keyring.get_password("luma", "api_key")
 
     if not api_key:
         api_key = typer.prompt("Enter API key", hide_input=True)
-        keyring.set_password("ike", "api_key", api_key)
+        keyring.set_password("luma", "api_key", api_key)
 
     return api_key
 
 
 def _load_ignore_spec(node_root: str) -> PathSpec:
+    """
+    Load the `.gitignore` located at the node root of the Luma project for 
+    ignoring files when zipping the project for deployment.
+
+    Args:
+        node_root (str): The node root of the current Luma project
+
+    Returns:
+        A PathSpec object created from the Luma project's `.gitignore`
+    """
     ignore_path = os.path.join(node_root, ".gitignore")
 
     if not os.path.exists(ignore_path):
@@ -37,6 +51,16 @@ def _load_ignore_spec(node_root: str) -> PathSpec:
 
 
 def build_project(node_root: str) -> str:
+    """
+    Zip all files in the node root to a temp file, skipping any files 
+    specified in the `.gitignore`.
+
+    Args:
+        node_root (str): The node root of the current Luma project
+
+    Returns:
+        The path to the tempfile containing the zipped Luma project
+    """
     logger.info("Building project...")
     ignore_spec = _load_ignore_spec(node_root)
     temp_zip = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
@@ -61,6 +85,17 @@ def build_project(node_root: str) -> str:
 
 
 def deploy_project(build_path: str, package_name: str) -> str:
+    """
+    Deploy the current project to luma-docs.org.
+
+    Args:
+        build_path (str): The path to the temporary build file
+        package_name (str): The name of the package being deployed
+
+    Returns:
+        The string ID corresponding to the submitted deployment, used for 
+        monitoring deployment status.
+    """
     logger.info("Queueing deployment...")
 
     if not os.path.exists(build_path):
@@ -83,6 +118,15 @@ def deploy_project(build_path: str, package_name: str) -> str:
 
 
 def monitor_deployment(deployment_id: str, package_name: str):
+    """
+    Monitor the status of the given deployment for up to `POLLING_TIMEOUT_SECONDS`. Checks
+    the status returned from the Luma API for one of `READY|ERROR|CANCELED` to log, and will
+    continue to poll every `POLLING_INTERVAL_SECONDS` if the status is still `QUEUED`.
+
+    Args:
+        deployment_id (str): The id of the deployment to monitor
+        package_name (str): The name of the package being deployed
+    """
     logger.info("Monitoring deployment...")
     timeout = time.time() + POLLING_TIMEOUT_SECONDS
 
@@ -114,5 +158,11 @@ def monitor_deployment(deployment_id: str, package_name: str):
 
 
 def cleanup_build(build_path: str):
+    """
+    Clean up the Luma build by removing the temporary zip file located at `build_path`.
+
+    Args
+        build_path (str): The temporary file location of the zipped Luma project
+    """
     if os.path.exists(build_path):
         os.unlink(build_path)

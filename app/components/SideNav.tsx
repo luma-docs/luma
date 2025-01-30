@@ -51,7 +51,7 @@ export function SideNav({ items }: SideNavProps) {
           }
           if ('section' in item) {
             return (
-              <div>
+              <div key={`section-${itemIndex}`}>
                 <span style={{ paddingTop: itemIndex === 0 ? '0' : '1rem' }}>
                   {item.section}
                 </span>
