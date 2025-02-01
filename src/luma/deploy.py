@@ -31,7 +31,7 @@ def _get_api_key():
 
 def _load_ignore_spec(node_root: str) -> PathSpec:
     """
-    Load the `.gitignore` located at the node root of the Luma project for 
+    Load the `.gitignore` located at the node root of the Luma project for
     ignoring files when zipping the project for deployment.
 
     Args:
@@ -52,7 +52,7 @@ def _load_ignore_spec(node_root: str) -> PathSpec:
 
 def build_project(node_root: str) -> str:
     """
-    Zip all files in the node root to a temp file, skipping any files 
+    Zip all files in the node root to a temp file, skipping any files
     specified in the `.gitignore`.
 
     Args:
@@ -93,7 +93,7 @@ def deploy_project(build_path: str, package_name: str) -> str:
         package_name (str): The name of the package being deployed
 
     Returns:
-        The string ID corresponding to the submitted deployment, used for 
+        The string ID corresponding to the submitted deployment, used for
         monitoring deployment status.
     """
     logger.info("Queueing deployment...")

@@ -29,8 +29,8 @@ class PyObj(BaseModel, abc.ABC):
     examples: List[DocstringExample]
 
     @abc.abstractmethod
-    def to_markdown(self) -> str:
-        ...
+    def to_markdown(self) -> str: ...
+
 
 class PyFunc(PyObj):
     type: PyObjType = PyObjType.FUNC
@@ -62,7 +62,6 @@ class PyFunc(PyObj):
                 markdown += f"\n```python\n{example.code}\n```"
 
         return markdown
-
 
 
 class PyClass(PyObj):

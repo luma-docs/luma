@@ -1,5 +1,4 @@
-from luma.models import PyClass, PyFunc
-from luma.parser import _parse_func, _parse_cls
+from luma.parser import _parse_func
 
 
 def test_parse_func():
@@ -28,7 +27,10 @@ def test_parse_func_multi_line_summary():
 
     definition = _parse_func(f)
 
-    assert definition.summary == "Summary SummarySummarySummarySummarySummarySummarySummarySummarySummarySummarySummary SummarySummary"
+    assert (
+        definition.summary
+        == "Summary SummarySummarySummarySummarySummarySummarySummarySummarySummarySummarySummary SummarySummary"
+    )
     assert definition.desc == "This is the description."
 
 
@@ -43,7 +45,10 @@ def test_parse_func_multi_line_summary_first_line():
 
     definition = _parse_func(f)
 
-    assert definition.summary == "Summary SummarySummarySummarySummarySummarySummarySummarySummarySummarySummarySummary SummarySummarySummary"
+    assert (
+        definition.summary
+        == "Summary SummarySummarySummarySummarySummarySummarySummarySummarySummarySummarySummary SummarySummarySummary"
+    )
     assert definition.desc == "This is the description."
 
 
@@ -60,15 +65,20 @@ def test_parse_func_multiple_sections():
 
     definition = _parse_func(f)
 
-
-    assert definition.summary == "Summary SummarySummarySummarySummarySummarySummarySummarySummarySummarySummarySummary SummarySummarySummary"
-    assert definition.desc == "This is the description.\n\nThis is another section of the description."
+    assert (
+        definition.summary
+        == "Summary SummarySummarySummarySummarySummarySummarySummarySummarySummarySummarySummary SummarySummarySummary"
+    )
+    assert (
+        definition.desc
+        == "This is the description.\n\nThis is another section of the description."
+    )
 
 
 def test_parse_func_no_summary():
     def f(x: int, y: int) -> int:
         """
-        
+
         This is the description.
         """
         return x + y

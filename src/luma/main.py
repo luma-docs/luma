@@ -9,7 +9,7 @@ from typing_extensions import Annotated
 from .bootstrap import download_or_update_scaffold, download_starter_files
 from .deploy import build_project, cleanup_build, deploy_project, monitor_deployment
 from .link import link_config_file, link_existing_pages, link_page_on_creation
-from .node import get_node_root, install_node_modules, is_node_installed, run_node_dev
+from .node import get_node_root, is_node_installed, run_node_dev
 from .parser import prepare_references
 from .utils import get_project_root
 from .config import load_config, create_or_update_config, validate_config
@@ -56,7 +56,7 @@ def dev(port: Annotated[Optional[int], typer.Option()] = None):
 
     node_root = get_node_root(project_root)
     download_or_update_scaffold(node_root)
-    
+
     config = load_config(project_root)
     validate_config(config, project_root)
     prepare_references(project_root, config)

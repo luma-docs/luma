@@ -1,5 +1,4 @@
 import inspect
-import json
 import logging
 import os
 from types import FunctionType
@@ -7,9 +6,9 @@ from typing import Iterable, List, Tuple, Union
 
 from docstring_parser import parse
 
-from .models import DocstringExample, PyArg, PyFunc, PyObj, PyClass
-from .node import get_node_root
 from .config import Config, Reference, Section
+from .models import DocstringExample, PyArg, PyClass, PyFunc, PyObj
+from .node import get_node_root
 from .utils import get_module_and_qualname, get_obj
 
 logger = logging.getLogger(__name__)
@@ -66,16 +65,16 @@ def _get_summary_and_desc(lines: List[str]) -> Tuple[str, str]:
     Returns:
         A tuple of (summary, description) formatted as single strings
     """
-    summary, desc = "", ""
+    summary = ""
 
     if len(lines) > 0:
-        summary = " ".join([line.strip() for line in lines[0].split('\n')])
+        summary = " ".join([line.strip() for line in lines[0].split("\n")])
 
     sections = []
 
     if len(lines) > 1:
         for section in lines[1:]:
-            sections.append(" ".join([line.strip() for line in section.split('\n')]))
+            sections.append(" ".join([line.strip() for line in section.split("\n")]))
 
     return summary.strip(), "\n\n".join(sections)
 
@@ -86,7 +85,7 @@ def _parse_func(func: FunctionType) -> PyFunc:
     name = func.__module__ + "." + func.__qualname__
     signature = _get_signature(func)
     parsed = parse(func.__doc__)
-    lines = parsed.description.split('\n\n')
+    lines = parsed.description.split("\n\n")
     summary, desc = _get_summary_and_desc(lines)
 
     args = []
@@ -115,7 +114,7 @@ def _parse_cls(cls: type) -> PyClass:
     assert isinstance(cls, type), cls
 
     parsed = parse(cls.__doc__)
-    body = parsed.description.split('\n\n')
+    body = parsed.description.split("\n\n")
     summary, desc = _get_summary_and_desc(body)
 
     examples = []
@@ -163,7 +162,7 @@ def _write_page(api: PyObj, project_root: str) -> None:
     node_path = get_node_root(project_root)
     reference_folder = os.path.join(node_path, "pages", "reference")
     os.makedirs(reference_folder, exist_ok=True)
-    
+
     filename = f"{api.name}.md"
     with open(os.path.join(reference_folder, filename), "w") as f:
         logger.debug(f"Writing '{f.name}'")

@@ -1,19 +1,17 @@
+import multiprocessing
 import os
+import signal
+import socket
+import time
 
-from typer.testing import CliRunner
 import pytest
 import requests
 import yaml
-import threading
-import socket
-import signal
-
-import time
+from typer.testing import CliRunner
 
 from luma.main import app
 
 runner = CliRunner()
-import multiprocessing
 
 
 @pytest.fixture
