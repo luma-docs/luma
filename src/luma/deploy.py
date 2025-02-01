@@ -31,19 +31,19 @@ def _get_api_key():
 
 def _load_ignore_spec(node_root: str) -> PathSpec:
     """
-    Load the `.gitignore` located at the node root of the Luma project for
+    Load the `.deployignore` located at the node root of the Luma project for
     ignoring files when zipping the project for deployment.
 
     Args:
         node_root (str): The node root of the current Luma project
 
     Returns:
-        A PathSpec object created from the Luma project's `.gitignore`
+        A PathSpec object created from the Luma project's `.deployignore`
     """
-    ignore_path = os.path.join(node_root, ".gitignore")
+    ignore_path = os.path.join(node_root, ".deployignore")
 
     if not os.path.exists(ignore_path):
-        logger.error("Missing .gitignore in node root.")
+        logger.error("Missing .deployignore in node root.")
         raise typer.Exit(1)
 
     with open(ignore_path, "r") as file:
