@@ -7,12 +7,12 @@ import typer
 from typing_extensions import Annotated
 
 from .bootstrap import download_or_update_scaffold, download_starter_files
+from .config import create_or_update_config, load_config, validate_config
 from .deploy import build_project, cleanup_build, deploy_project, monitor_deployment
 from .link import link_config_file, link_existing_pages, link_page_on_creation
 from .node import get_node_root, is_node_installed, run_node_dev
 from .parser import prepare_references
 from .utils import get_project_root
-from .config import load_config, create_or_update_config, validate_config
 
 app = typer.Typer()
 logger = logging.getLogger(__name__)
@@ -71,10 +71,16 @@ def dev(port: Annotated[Optional[int], typer.Option()] = None):
 @app.command()
 def deploy():
     project_root = get_project_root()
+
     node_root = get_node_root(project_root)
+    download_or_update_scaffold(node_root)
 
     config = load_config(os.getcwd())
     validate_config(config, project_root)
+    prepare_references(project_root, config)
+
+    link_config_file(project_root)
+    link_existing_pages(project_root)
 
     try:
         build_path = build_project(node_root)
