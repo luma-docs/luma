@@ -136,5 +136,4 @@ dist
 .DS_Store
 .next/
 .vercel
-package-lock.json
 yarn.lock
