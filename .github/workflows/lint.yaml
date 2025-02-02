@@ -23,3 +23,24 @@ jobs:
 
       - name: Run Ruff lint
         run: poetry run ruff check
+
+  next:
+    runs-on: ubuntu-latest 
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+          cache-dependency-path: ./app/package-lock.json
+
+      - name: Install Node dependencies
+        working-directory: ./app
+        run: npm ci
+
+      - name: Run lint
+        working-directory: ./app
+        run: npm run lint
