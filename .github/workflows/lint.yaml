@@ -37,7 +37,9 @@ jobs:
           cache: 'npm'
 
       - name: Install Node dependencies
+        working-directory: ./app
         run: npm ci
 
       - name: Run lint
+        working-directory: ./app
         run: npm run lint
