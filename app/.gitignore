@@ -1,7 +1,6 @@
 # These files are copied into the scaffold when the user runs commands like `dev`.
 pages/**/*.md
 public/luma.yaml
-public/api/**/*.json
 
 # Logs
 logs
@@ -136,5 +135,4 @@ dist
 .DS_Store
 .next/
 .vercel
-package-lock.json
 yarn.lock
