@@ -7,6 +7,7 @@ import "prismjs";
 import "prismjs/components/prism-bash.min";
 import "prismjs/components/prism-python.min";
 import "prismjs/components/prism-yaml.min";
+import "prismjs/components/prism-markdown.min";
 import "../styles/prism-theme.css";
 import { useRouter } from "next/router";
 
