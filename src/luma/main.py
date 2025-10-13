@@ -7,8 +7,7 @@ import typer
 from typing_extensions import Annotated
 
 from .bootstrap import download_or_update_scaffold, download_starter_files
-from .config import create_or_update_config, load_config
-from .config_resolution import resolve_config
+from .config import create_or_update_config, load_config, resolve_config
 from .deploy import build_project, cleanup_build, deploy_project, monitor_deployment
 from .link import (
     link_config,

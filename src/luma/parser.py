@@ -7,9 +7,9 @@ from typing import Any, Iterable, Optional, Tuple, Union
 
 from docstring_parser import Docstring, parse
 
+from .config import ResolvedConfig, ResolvedReference, ResolvedSection
 from .models import DocstringExample, PyArg, PyClass, PyFunc, PyObj
 from .node import get_node_root
-from .resolved_config import ResolvedConfig, ResolvedReference, ResolvedSection
 from .utils import get_module_and_relative_name, get_obj
 
 logger = logging.getLogger(__name__)

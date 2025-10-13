@@ -1,10 +1,16 @@
+"""Config resolution logic.
+
+Converts user-facing config into resolved config with inferred titles,
+resolved paths, and validated references.
+"""
+
 import os
 import re
 from typing import Optional
 
 import frontmatter
 
-from .config import Config, Link, NavigationItem, Page, Reference, Section
+from .user_config import Config, Link, NavigationItem, Page, Reference, Section
 from .resolved_config import (
     ResolvedConfig,
     ResolvedLink,
@@ -14,7 +20,16 @@ from .resolved_config import (
 )
 
 
-def resolve_config(config: Config, project_root: str):
+def resolve_config(config: Config, project_root: str) -> ResolvedConfig:
+    """Convert user config to resolved config.
+
+    Args:
+        config: The user-facing config
+        project_root: The project root directory
+
+    Returns:
+        The resolved config with inferred titles and validated references
+    """
     resolved_navigation = [
         _resolve_navigation_item(item, project_root) for item in config.navigation
     ]
@@ -24,6 +39,15 @@ def resolve_config(config: Config, project_root: str):
 
 
 def _resolve_navigation_item(item: NavigationItem, project_root: str):
+    """Resolve a single navigation item.
+
+    Args:
+        item: The navigation item to resolve
+        project_root: The project root directory
+
+    Returns:
+        The resolved navigation item
+    """
     if isinstance(item, Page):
         return resolve_page(item, project_root)
     elif isinstance(item, Link):
@@ -37,6 +61,14 @@ def _resolve_navigation_item(item: NavigationItem, project_root: str):
 
 
 def _resolve_link(link: Link) -> ResolvedLink:
+    """Resolve a link navigation item.
+
+    Args:
+        link: The link to resolve
+
+    Returns:
+        The resolved link with title
+    """
     href = link.link
 
     title = link.title
@@ -47,13 +79,30 @@ def _resolve_link(link: Link) -> ResolvedLink:
 
 
 def _resolve_section(section: Section, project_root: str) -> ResolvedSection:
+    """Resolve a section navigation item.
+
+    Args:
+        section: The section to resolve
+        project_root: The project root directory
+
+    Returns:
+        The resolved section with resolved contents
+    """
     resolved_contents = [
         _resolve_navigation_item(item, project_root) for item in section.contents
     ]
     return ResolvedSection(title=section.section, contents=resolved_contents)
 
 
-def _resolve_reference(reference: Reference):
+def _resolve_reference(reference: Reference) -> ResolvedReference:
+    """Resolve a reference navigation item.
+
+    Args:
+        reference: The reference to resolve
+
+    Returns:
+        The resolved reference with generated path
+    """
     relative_path = f"{reference.reference.lower().replace(' ', '-')}.md"
     return ResolvedReference(
         title=reference.reference,
@@ -62,16 +111,38 @@ def _resolve_reference(reference: Reference):
     )
 
 
-def resolve_page(relative_path: str, project_root: str):
+def resolve_page(relative_path: str, project_root: str) -> ResolvedPage:
+    """Resolve a page navigation item.
+
+    Args:
+        relative_path: The relative path to the page
+        project_root: The project root directory
+
+    Returns:
+        The resolved page with inferred title
+
+    Raises:
+        ValueError: If the page doesn't exist
+    """
     local_path = os.path.join(project_root, relative_path)
     if not os.path.exists(local_path):
-        raise ValueError(...)
+        raise ValueError(
+            f"Page at '{relative_path}' doesn't exist in project root '{project_root}'"
+        )
 
     title = _infer_title(local_path)
     return ResolvedPage(title=title, path=relative_path)
 
 
 def _infer_title(local_path: str) -> str:
+    """Infer the title of a page from its frontmatter or first heading.
+
+    Args:
+        local_path: The local path to the page
+
+    Returns:
+        The inferred title, or "Untitled Page" if no title is found
+    """
     post = frontmatter.load(local_path)
     title = post.metadata.get("title", None)
 
@@ -85,6 +156,14 @@ def _infer_title(local_path: str) -> str:
 
 
 def _get_first_heading(local_path: str) -> Optional[str]:
+    """Get the first heading from a markdown file.
+
+    Args:
+        local_path: The local path to the markdown file
+
+    Returns:
+        The first heading text, or None if no heading is found
+    """
     with open(local_path, "r", encoding="utf-8") as f:
         for line in f:
             match = re.match(r"^(#{1,6})\s+(.*)", line.strip())
