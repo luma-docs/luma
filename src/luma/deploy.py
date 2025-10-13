@@ -188,7 +188,7 @@ def has_deployment_finished(package_name: str) -> bool:
             return False
     except requests.exceptions.RequestException as e:
         logger.error(f"Error while checking deployment status: {e}")
-        raise typer.Exit(1)
+        return False
 
     return True
 
