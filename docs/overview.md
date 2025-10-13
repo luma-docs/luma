@@ -4,18 +4,15 @@ title: Quickstart
 
 # Luma: Modern Python documentation
 
-Luma is a better way to write Python documentation. It's a modern replacement for
-[Sphinx](https://www.sphinx-doc.org/en/master/) that's built on the same tooling Stripe
-uses for their documentation.
+Luma is next-gen Python documentation. It's a modern replacement for
+[Sphinx](https://www.sphinx-doc.org/en/master/) that's built on the same [tooling
+Stripe uses](https://markdoc.dev/) for their documentation.
 
-Here are the key benefits of Luma:
+Key benefits of Luma:
 
-- **Easy to use**. Markdown-native and simple to configure. Avoid Sphinx’s obscure
-  syntax.
-- **Iterate rapidly**. Built-in development server and publishing. No need to set up
-  hosting.
-- **Built for Python**. Automatically generate function and class references with
-  seamless cross-referencing.
+- **Markdown-native**. Avoid Sphinx’s obscure syntax.
+- **Built for Python**. API generation and cross-referencing work out-of-the-box.
+- **Live rendering**. Preview your changes as you write.
 
 ## Getting started
 
