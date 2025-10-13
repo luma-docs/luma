@@ -1,6 +1,7 @@
 import Head from "next/head";
 
 import { SideNav, TableOfContents } from "../components";
+import { Footer } from "../components/Footer";
 import VersionSelector from "../components/VersionSelector";
 import "prismjs";
 // Import other Prism themes here
@@ -129,7 +130,10 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
         <main className="main">
           <div className="container">
             <div className="content">
-              <Component {...pageProps} />
+              <div className="content-wrapper">
+                <Component {...pageProps} />
+              </div>
+              <Footer />
             </div>
             {validTocItems.length > 1 ? (
               <TableOfContents toc={validTocItems} />
@@ -163,13 +167,21 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
             padding-right: 4rem;
             display: flex;
             justify-content: center;
+            min-height: 100%;
           }
           .content {
             width: 640px;
-            margin: 0 auto 96px;
+            margin: 0 auto 1rem;
             padding-top: 48px;
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 48px - 96px - 4rem);
           }
-          .content :global(*:first-child) {
+          .content-wrapper {
+            flex: 1 0 auto;
+            padding-bottom: 2rem;
+          }
+          .content-wrapper :global(*:first-child) {
             margin-top: 0;
           }
           .toc-placeholder {
