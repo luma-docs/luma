@@ -4,12 +4,12 @@ include = [
     { path = "starter", format = "wheel" },
     { path = "app", format = "wheel" },
 ]
-version = "0.0.9"
+version = "0.0.10"
 description = ""
-authors = ["Balaji Veeramani <bveeramani@berkeley.edu>", "Nicholas Spevacek <nspevacek@wisc.edu>"]
+authors = ["The Luma Team <bveeramani@berkeley.edu>"]
 readme = "README.md"
 packages = [{ include = "luma", from = "src" }]
-license = "Apache 2.0"
+license = "Apache-2.0"
 
 [tool.poetry.scripts]
 luma = "luma.main:main"
