@@ -1,0 +1,8 @@
+name: My documentation
+navigation:
+  - getting-started.md
+  - reference: Example references
+    apis:
+      - luma.examples.fib
+      - luma.examples.Account
+      - luma.examples.Account.deposit

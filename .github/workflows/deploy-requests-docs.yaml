@@ -1,0 +1,43 @@
+name: Deploy requests documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "examples/requests/**"
+      - "src/**"
+      - ".github/workflows/deploy-requests-docs.yaml"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install Luma dependencies
+        env:
+          POETRY_VIRTUALENVS_CREATE: "false" # 👈 disables Poetry’s own venv
+        run: poetry install --no-interaction --no-ansi
+
+      - name: Install requests in editable mode
+        working-directory: examples/requests
+        run: pip install -e .
+
+      - name: Deploy requests documentation
+        working-directory: examples/requests/docs
+        env:
+          LUMA_API_KEY: ${{ secrets.LUMA_API_KEY }}
+        run: |
+          luma deploy --version 2.32.5

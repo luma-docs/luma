@@ -1,0 +1,31 @@
+div.callout {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+div.info {
+  color: #0c4a6e;
+  background: #f7fcff;
+  border-color: #d1ecfa;
+}
+
+div.warning {
+  color: #783510;
+  background: #fffdf5;
+  border-color: #ffceb8;
+}
+
+div.tip {
+  color: #064e3b;
+  background: #f5fefa;
+  border-color: #d1f1e2;
+}
+
+div.callout :global(p) {
+  margin: 0;
+}

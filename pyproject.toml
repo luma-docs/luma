@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "luma-docs"
+include = [
+    { path = "starter", format = "wheel" },
+    { path = "app", format = "wheel" },
+]
+version = "0.0.7"
+description = ""
+authors = ["The Luma Team <spam@ham.com>"]
+readme = "README.md"
+packages = [{ include = "luma", from = "src" }]
+license = "Proprietary"
+
+[tool.poetry.scripts]
+luma = "luma.main:main"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+typer = "^0.13.1"
+requests = "^2.32.3"
+rich = "^13.9.4"
+watchdog = "^6.0.0"
+keyring = "^25.5.0"
+pathspec = "^0.12.1"
+pydantic = "^2.10.3"
+docstring-parser = "^0.16"
+pyyaml = "^6.0.2"
+python-frontmatter = "^1.1.0"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.8.0"
+pytest = "^8.3.3"
+mypy = "^1.13.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

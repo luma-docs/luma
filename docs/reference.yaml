@@ -1,0 +1,16 @@
+package: math
+
+navigation:
+- page: installation.md
+- page: quick-start.md
+- section: Getting Started
+  contents:
+    - page: installation.md
+    - page: quick-start.md
+    - ref: ray.data.range
+- section: API Reference
+  contents:
+    - ref: ray.data.range
+    - ref: ray.data.concat
+    - ref: ray.data.shuffle
+- page: telemetry.md

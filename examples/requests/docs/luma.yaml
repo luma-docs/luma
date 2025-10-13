@@ -1,0 +1,90 @@
+favicon: null
+name: requests
+navigation:
+  - overview.md
+  - section: User guide
+    contents:
+      - user/install.md
+      - user/quickstart.md
+      # TODO: This is a big file.
+      # - path: user/advanced.md
+      - user/authentication.md
+
+  - section: Community guide
+    contents:
+      - community/recommended.md
+      - community/faq.md
+      - community/out-there.md
+      - community/support.md
+      - community/vulnerabilities.md
+      - community/release-process.md
+      - community/updates.md
+
+  - section: API reference
+    contents:
+      - reference: Main interface
+        apis:
+          - requests.request
+          - requests.head
+          - requests.get
+          - requests.post
+          - requests.put
+          - requests.patch
+          - requests.delete
+
+      - reference: Exceptions
+        apis:
+          - requests.RequestException
+          - requests.ConnectionError
+          - requests.HTTPError
+          - requests.TooManyRedirects
+          - requests.ConnectTimeout
+          - requests.ReadTimeout
+          - requests.Timeout
+          - requests.JSONDecodeError
+
+      - reference: Request sessions
+        apis:
+          - requests.Session
+
+      - reference: Lower-level classes
+        apis:
+          - requests.Request
+          - requests.Response
+
+      - reference: Lower-lower-level classes
+        apis:
+          - requests.PreparedRequest
+          - requests.adapters.BaseAdapter
+          - requests.adapters.HTTPAdapter
+
+      - reference: Authentication
+        apis:
+          - requests.auth.AuthBase
+          - requests.auth.HTTPBasicAuth
+          - requests.auth.HTTPProxyAuth
+          - requests.auth.HTTPDigestAuth
+
+      - reference: Encodings
+        apis:
+          - requests.utils.get_encodings_from_content
+          - requests.utils.get_encoding_from_headers
+          - requests.utils.get_unicode_from_response
+
+      - reference: Cookies
+        apis:
+          - requests.utils.dict_from_cookiejar
+          - requests.utils.add_dict_to_cookiejar
+          - requests.cookies.cookiejar_from_dict
+          - requests.cookies.RequestsCookieJar
+          - requests.cookies.CookieConflictError
+
+      - reference/status-code.md
+      - reference/migrating-1x.md
+      - reference/migrating-2x.md
+
+  - section: Contributor guide
+    contents:
+      - dev/contributing.md
+      # TODO: Need to replace RST links with Markdown links.
+      # - path: dev/authors.md
