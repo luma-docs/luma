@@ -32,7 +32,7 @@ jobs:
         run: poetry install --no-interaction --no-ansi
 
       - name: Deploy Luma documentation
-        working-directory: examples/luma/docs
+        working-directory: docs
         env:
           LUMA_API_KEY: ${{ secrets.LUMA_API_KEY }}
         run: |
