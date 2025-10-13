@@ -1,4 +1,4 @@
-name: Deploy requests documentation
+name: Deploy Luma documentation
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     paths:
       - "examples/requests/**"
       - "src/**"
-      - ".github/workflows/deploy-requests-docs.yaml"
+      - ".github/workflows/deploy-luma-docs.yaml"
 
 jobs:
   deploy:
@@ -31,13 +31,9 @@ jobs:
           POETRY_VIRTUALENVS_CREATE: "false" # 👈 disables Poetry’s own venv
         run: poetry install --no-interaction --no-ansi
 
-      - name: Install requests in editable mode
-        working-directory: examples/requests
-        run: pip install -e .
-
-      - name: Deploy requests documentation
-        working-directory: examples/requests/docs
+      - name: Deploy Luma documentation
+        working-directory: examples/luma/docs
         env:
           LUMA_API_KEY: ${{ secrets.LUMA_API_KEY }}
         run: |
-          luma deploy --version 2.32.5
+          luma deploy
