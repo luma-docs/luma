@@ -26,12 +26,15 @@ export function CodeBlock({
         {`
           .code {
             position: relative;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
           }
 
           /* Override Prism styles */
           .code :global(pre[class*="language-"]) {
             text-shadow: none;
             border-radius: 4px;
+            margin: 0;
           }
         `}
       </style>
