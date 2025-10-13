@@ -1,7 +1,6 @@
 import pytest
 
-from luma.config_resolution import resolve_page
-from luma.resolved_config import ResolvedPage
+from luma.config import resolve_page, ResolvedPage
 
 
 @pytest.mark.parametrize(

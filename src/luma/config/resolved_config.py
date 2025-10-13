@@ -1,4 +1,8 @@
-"""This module defines the internal config model used by the frontend."""
+"""Internal configuration models used by the frontend.
+
+These models represent the resolved/processed version of the user config
+after validation, path resolution, and title inference.
+"""
 
 from typing import List, Literal, Optional, Union
 

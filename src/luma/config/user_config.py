@@ -1,3 +1,5 @@
+"""User-facing configuration models."""
+
 import logging
 import os
 from pathlib import Path
@@ -6,7 +8,7 @@ from typing import Dict, List, Optional, Union
 import yaml
 from pydantic import BaseModel, model_validator
 
-from .utils import get_module_and_relative_name, get_obj
+from .validation import validate_api_reference, validate_favicon_exists, validate_page_exists
 
 CONFIG_FILENAME = "luma.yaml"
 
@@ -23,28 +25,8 @@ class Reference(BaseModel):
     @model_validator(mode="after")
     def validate_can_get_apis(self):
         for qualname in self.apis:
-            self._validate_can_get_api(qualname)
+            validate_api_reference(qualname)
         return self
-
-    def _validate_can_get_api(self, qualname: str):
-        try:
-            module, relative_name = get_module_and_relative_name(qualname)
-        except ImportError:
-            package_name = qualname.split(".")[0]
-            raise ValueError(
-                f"Your config references '{qualname}', but Luma couldn't import the "
-                f"package '{package_name}'. Make sure the module is installed in the "
-                "current environment."
-            )
-
-        try:
-            get_obj(module, relative_name)
-        except AttributeError:
-            raise ValueError(
-                f"Your config references '{qualname}'. Luma imported the module "
-                f"'{module.__name__}', but couldn't get the object '{relative_name}'. Are "
-                "you sure the referenced object exists?"
-            )
 
 
 class Link(BaseModel):
@@ -74,43 +56,20 @@ class Config(BaseModel):
         if self.favicon is None:
             return self
 
-        local_path = os.path.join(self.project_root, self.favicon)
-        if not os.path.exists(local_path):
-            raise ValueError(
-                f"Your config specifies a favicon at '{self.favicon}', but the file doesn't "
-                "exist. Create the file or update the config to point to an existing file."
-            )
-
+        validate_favicon_exists(self.favicon, self.project_root)
         return self
 
     @model_validator(mode="after")
     def validate_pages_exist(self):
         for item in self.navigation:
             if isinstance(item, str):
-                self._validate_page_exists(item)
+                validate_page_exists(item, self.project_root)
             elif isinstance(item, Section):
                 for subitem in item.contents:
                     if isinstance(subitem, str):
-                        self._validate_page_exists(subitem)
+                        validate_page_exists(subitem, self.project_root)
 
         return self
-
-    def _validate_page_exists(self, path: str):
-        if path.startswith(("http://", "https://")):
-            return
-
-        local_path = os.path.join(self.project_root, path)
-        if not os.path.exists(local_path):
-            raise ValueError(
-                f"Your config references a page at '{path}', but the file doesn't "
-                "exist. Create the file or update the config to point to an existing file."
-            )
-
-        if not path.endswith(".md"):
-            raise ValueError(
-                f"Your config references a page at '{path}', but the file isn't a "
-                "Markdown file. Luma only supports Markdown files."
-            )
 
 
 def load_config(dir: str) -> Config:

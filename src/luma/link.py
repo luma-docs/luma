@@ -6,7 +6,7 @@ from pathlib import Path
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-from .config_resolution import ResolvedConfig
+from .config import ResolvedConfig
 from .node import get_node_root
 
 logger = logging.getLogger(__name__)
