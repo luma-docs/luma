@@ -1,8 +1,7 @@
 <div align="center">
-<img src="docs/combined.svg" alt="Luma Logo" width="300px">
 <hr>
 
-### **✨ Next-gen Python documentation✨**
+### **✨ Luma: Next-gen Python documentation✨**
 
 [![PyPI version](https://badge.fury.io/py/luma-docs.svg)](https://badge.fury.io/py/luma-docs)
 ![versions](https://img.shields.io/pypi/pyversions/luma-docs.svg)
@@ -12,8 +11,10 @@
 </div>
 
 ---
+<img width="1624" height="954" alt="image" src="https://github.com/user-attachments/assets/c9e45aac-12da-4856-870f-2094075ea2b8" />
 
-Luma is next-gen Python documentation. It's a modern replacement for
+
+Luma is better way to write Python documentation. It's a modern replacement for
 [Sphinx](https://www.sphinx-doc.org/en/master/) that's built on the same [tooling
 Stripe uses](https://markdoc.dev/) for their documentation.
 
