@@ -1,10 +1,11 @@
 import Prism from "prismjs";
-
 import * as React from "react";
 
+import styles from "./CodeBlock.module.css";
+
 interface CodeBlockProps {
-  children: React.ReactNode; // Typing children as ReactNode allows any valid React child
-  "data-language": string; // Assuming language is a string
+  children: React.ReactNode;
+  "data-language": string;
 }
 
 export function CodeBlock({
@@ -18,26 +19,10 @@ export function CodeBlock({
   }, [children]);
 
   return (
-    <div className="code" aria-live="polite">
+    <div className={styles.code} aria-live="polite">
       <pre ref={ref} className={`language-${language}`}>
         {children}
       </pre>
-      <style jsx>
-        {`
-          .code {
-            position: relative;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-          }
-
-          /* Override Prism styles */
-          .code :global(pre[class*="language-"]) {
-            text-shadow: none;
-            border-radius: 4px;
-            margin: 0;
-          }
-        `}
-      </style>
     </div>
   );
 }
