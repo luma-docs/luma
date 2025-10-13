@@ -12,7 +12,7 @@
 
 ---
 
-<img width="1624" height="954" alt="image" src="https://github.com/user-attachments/assets/e98fbd5d-acfd-4caa-9a06-cfcaa4e303c9" />
+<img width="1624" height="954" alt="image" src="https://github.com/user-attachments/assets/cc6ca138-f85d-4619-9b41-a8baa79da106" />
 
 Luma is better way to write Python documentation. It's a modern replacement for
 [Sphinx](https://www.sphinx-doc.org/en/master/) that's built on the same [tooling
