@@ -2,9 +2,9 @@
 title: Quickstart
 ---
 
-# Luma: Modern Python documentation
+# Luma: Next-gen Python documentation
 
-Luma is next-gen Python documentation. It's a modern replacement for
+Luma is a better way to write Python documentation. It's a modern replacement for
 [Sphinx](https://www.sphinx-doc.org/en/master/) that's built on the same [tooling
 Stripe uses](https://markdoc.dev/) for their documentation.
 
