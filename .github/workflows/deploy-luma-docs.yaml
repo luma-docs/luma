@@ -2,8 +2,8 @@ name: Deploy requests documentation
 
 on:
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
     paths:
       - "examples/requests/**"
       - "src/**"
