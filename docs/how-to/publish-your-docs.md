@@ -3,7 +3,7 @@
 Join [our Discord](https://discord.gg/e7TP6nqCS5) to acquire an API key. Then, run the `deploy` command to publish
 your documentation.
 
-```
+```bash
 luma deploy
 ```
 
