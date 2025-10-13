@@ -8,6 +8,7 @@ nav.container {
   height: 100vh;
   padding: 1.5rem 1rem 1rem;
   border-right: 1px solid var(--border-color);
+  min-width: 15rem;
 }
 
 span.sectionTitle {
