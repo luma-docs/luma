@@ -117,12 +117,14 @@ def _parse_func(func: FunctionType, qualname: str) -> PyFunc:
     signature = _get_signature(func, qualname)
     parsed = parse(func.__doc__)
     summary, desc = _get_summary_and_desc(parsed)
+    param_types = _get_param_types(func, qualname)
 
     args = []
     for param in parsed.params:
         args.append(
-            PyArg(name=param.arg_name, type=param.type_name, desc=param.description)
+            PyArg(name=param.arg_name, type=param_types.get(param.arg_name, None), desc=param.description)
         )
+
     returns = parsed.returns.description if parsed.returns else None
 
     examples = []
@@ -195,3 +197,19 @@ def _get_signature(obj: Union[FunctionType, type], name: str) -> str:
         parameters = parameters.replace("(self, ", "(")
 
     return f"{name}{parameters}"
+
+
+def _get_param_types(obj: Union[FunctionType, type], name: str) -> dict:
+    assert isinstance(obj, (FunctionType, type)), obj
+    parameters = {}
+
+    init_or_func = obj.__init__ if isinstance(obj, type) else obj
+    if init_or_func != object.__init__:
+        signature = inspect.signature(init_or_func)
+
+        for param_name, param in signature.parameters.items():
+            if param.annotation.__name__ != "_empty":
+                parameters[param_name] = param.annotation.__name__
+
+    return parameters
+

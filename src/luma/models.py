@@ -51,7 +51,10 @@ class PyFunc(PyObj):
         if self.args:
             markdown += "\n**Arguments**\n\n"
             for arg in self.args:
-                markdown += f"- **{arg.name}**: {arg.desc}\n"
+                if arg.type:
+                    markdown += f"- **{arg.name}** ({arg.type}): {arg.desc}\n"
+                else:
+                    markdown += f"- **{arg.name}**: {arg.desc}\n"
 
         if self.returns:
             markdown += f"\n**Returns**\n\n{self.returns}\n"
@@ -83,7 +86,10 @@ class PyClass(PyObj):
         if self.args:
             markdown += "\n**Arguments**\n\n"
             for arg in self.args:
-                markdown += f"- **{arg.name}**: {arg.desc}\n"
+                if arg.type:
+                    markdown += f"- **{arg.name}** ({arg.type}): {arg.desc}\n"
+                else:
+                    markdown += f"- **{arg.name}**: {arg.desc}\n"
 
         if self.examples:
             markdown += "\n**Examples**\n"
