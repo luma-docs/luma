@@ -1,0 +1,21 @@
+.footer {
+  margin-top: auto;
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.link {
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: var(--color-text-primary);
+}

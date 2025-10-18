@@ -1,0 +1,122 @@
+# See https://help.github.com/articles/about-codeowners/
+# for more info about CODEOWNERS file
+
+# It uses the same pattern rule for gitignore file,
+# see https://git-scm.com/docs/gitignore#_pattern_format.
+
+
+# ==== Documentation ====
+
+# Authors responsible for copy-editing of the documentation.
+# NOTE: Add @ray-project/ray-docs to all following docs subdirs.
+/doc/ @ray-project/ray-docs
+/doc/source/use-cases.rst @pcmoritz
+
+# ==== Ray core ====
+
+# All C++ code.
+/src/ @ray-project/ray-core
+
+# Python worker.
+/python/ray/ @ray-project/ray-core
+
+# Java worker.
+/java/ @kfstorm @raulchen @WangTaoTheTonic @SongGuyang @ray-project/ray-core
+
+# C++ worker
+/cpp/ @SongGuyang @raulchen @kfstorm @ray-project/ray-core
+
+/doc/source/cluster/ @ray-project/ray-core @ray-project/ray-docs
+/doc/source/ray-core/ @ray-project/ray-core @ray-project/ray-docs
+
+# Public protobuf files.
+/src/ray/protobuf/public/ @edoakes @jjyao
+
+# ==== Libraries and frameworks ====
+
+# Dependencies
+/python/setup.py @richardliaw @edoakes @aslonnie
+
+# Common directory shared by core and the libraries.
+# @edoakes is the czar for now because the pattern is new.
+/python/ray/_common/ @edoakes @jjyao
+
+# Ray data.
+/python/ray/data/ @ray-project/ray-data
+/doc/source/data/ @ray-project/ray-data
+/python/ray/dashboard/modules/data/ @ray-project/ray-data
+/python/ray/dashboard/modules/metrics/dashboards/data_dashboard_panels.py @ray-project/ray-data
+
+# Ray workflows.
+/python/ray/workflow/ @ray-project/ray-core
+/doc/source/workflows/ @ray-project/ray-core @ray-project/ray-docs
+
+# RLlib.
+/rllib/ @ray-project/ray-rllib
+/doc/source/rllib/ @ray-project/ray-rllib @ray-project/ray-docs
+
+# Ray Tune
+/python/ray/tune/ @ray-project/ray-tune
+/doc/source/tune/ @ray-project/ray-tune @ray-project/ray-docs
+
+# Ray Train
+/python/ray/train/ @ray-project/ray-train
+/doc/source/train/ @ray-project/ray-train @ray-project/ray-docs
+
+# Ray AIR
+/python/ray/air/ @ray-project/ray-train
+
+# LLM
+/python/ray/llm/ @ray-project/ray-llm
+/python/ray/data/llm.py @ray-project/ray-llm
+
+# Ray Serve
+/python/ray/serve/ @ray-project/ray-serve
+/java/serve/ @ray-project/ray-serve
+/src/ray/protobuf/serve.proto @ray-project/ray-serve
+/python/ray/dashboard/modules/serve/ @ray-project/ray-serve
+/doc/source/serve/ @ray-project/ray-serve @ray-project/ray-docs
+
+# ML Docker Dependencies
+/python/requirements/ml/dl-cpu-requirements.txt @richardliaw @matthewdeng
+/python/requirements/ml/dl-gpu-requirements.txt @richardliaw @matthewdeng
+
+# Ray symbol export
+/src/ray/ray_version_script.lds @ray-project/ray-core
+/src/ray/ray_exported_symbols.lds @ray-project/ray-core
+
+# Ray usage stats
+/python/ray/_private/usage/ @edoakes @richardliaw @jjyao
+/python/ray/dashboard/modules/usage_stats/ @edoakes @richardliaw @jjyao
+/src/ray/protobuf/usage.proto @pcmoritz @thomasdesr
+
+
+# ==== Build and CI ====
+
+# Bazel.
+#/BUILD.bazel @ray-project/ray-core @ray-project/ray-ci
+#/WORKSPACE @ray-project/ray-core @ray-project/ray-ci
+#/bazel/ @ray-project/ray-core @ray-project/ray-ci
+
+# CI scripts.
+#/ci/ @ray-project/ray-core @ray-project/ray-ci
+
+# CI
+/ci/lint/format.sh @ray-project/ray-ci
+/ci/docker @ray-project/ray-ci
+/ci/ray_ci @ray-project/ray-ci
+
+# Buildkite pipeline management
+.buildkite/hooks @ray-project/ray-ci
+
+/release/ray_release @ray-project/ray-ci
+
+# Allow people to add BYOD post-installation shell scripts
+# on their own.
+/release/ray_release/byod/*.sh
+
+/.github/ISSUE_TEMPLATE/ @ray-project/ray-ci
+
+/.github/workflows/ @ray-project/ray-ci
+
+/.gemini/ @edoakes @ray-project/ray-ci

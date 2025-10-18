@@ -6,9 +6,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Union
 
 import yaml
-from pydantic import BaseModel, model_validator
-
-from .validation import validate_api_reference, validate_favicon_exists, validate_page_exists
+from pydantic import BaseModel
 
 CONFIG_FILENAME = "luma.yaml"
 
@@ -21,12 +19,6 @@ Page = str
 class Reference(BaseModel):
     reference: str
     apis: List[str]
-
-    @model_validator(mode="after")
-    def validate_can_get_apis(self):
-        for qualname in self.apis:
-            validate_api_reference(qualname)
-        return self
 
 
 class Link(BaseModel):
@@ -51,26 +43,6 @@ class Config(BaseModel):
     # it.
     project_root: str
 
-    @model_validator(mode="after")
-    def validate_favicon_exists(self):
-        if self.favicon is None:
-            return self
-
-        validate_favicon_exists(self.favicon, self.project_root)
-        return self
-
-    @model_validator(mode="after")
-    def validate_pages_exist(self):
-        for item in self.navigation:
-            if isinstance(item, str):
-                validate_page_exists(item, self.project_root)
-            elif isinstance(item, Section):
-                for subitem in item.contents:
-                    if isinstance(subitem, str):
-                        validate_page_exists(subitem, self.project_root)
-
-        return self
-
 
 def load_config(dir: str) -> Config:
     assert os.path.isdir(dir), f"'dir' must be a directory: '{dir}'"
@@ -92,7 +64,13 @@ def load_config(dir: str) -> Config:
         except yaml.YAMLError as e:
             raise ValueError(f"Error parsing config file: {e}")
 
-    return Config.model_validate(config_data)
+    config = Config.model_validate(config_data)
+
+    # Explicitly validate the config after parsing
+    from .validation import validate_config
+    validate_config(config)
+
+    return config
 
 
 def _discover_project_root(dir: str) -> Optional[str]:

@@ -19,6 +19,7 @@ from .resolved_config import (
     ResolvedSection,
 )
 from .resolution import resolve_config, resolve_page
+from .validation import validate_config
 
 __all__ = [
     # User-facing config
@@ -40,4 +41,6 @@ __all__ = [
     # Resolution
     "resolve_config",
     "resolve_page",
+    # Validation
+    "validate_config",
 ]
