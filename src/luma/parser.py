@@ -117,7 +117,7 @@ def _parse_func(func: FunctionType, qualname: str) -> PyFunc:
     signature = _get_signature(func, qualname)
     parsed = parse(func.__doc__)
     summary, desc = _get_summary_and_desc(parsed)
-    param_types = _get_param_types(func, qualname)
+    param_types = _get_param_types(func)
 
     args = []
     for param in parsed.params:
@@ -199,11 +199,12 @@ def _get_signature(obj: Union[FunctionType, type], name: str) -> str:
     return f"{name}{parameters}"
 
 
-def _get_param_types(obj: Union[FunctionType, type], name: str) -> dict:
+def _get_param_types(obj: Union[FunctionType, type]) -> dict:
     assert isinstance(obj, (FunctionType, type)), obj
+    
+    init_or_func = obj.__init__ if isinstance(obj, type) else obj
     parameters = {}
 
-    init_or_func = obj.__init__ if isinstance(obj, type) else obj
     if init_or_func != object.__init__:
         signature = inspect.signature(init_or_func)
 
