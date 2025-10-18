@@ -48,7 +48,7 @@ def test_comprehensive():
     assert class_definition.examples == [DocstringExample(desc=None, code=">>> A(0)")]
     assert class_definition.signature == "A(x: int)"
     assert class_definition.args == [
-        PyArg(name="x", type=None, desc="Constructor arg description.")
+        PyArg(name="x", type="int", desc="Constructor arg description.")
     ]
     assert len(class_definition.methods) == 1
 
