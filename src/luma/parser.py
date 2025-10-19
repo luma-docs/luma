@@ -214,4 +214,3 @@ def _get_param_types(obj: Union[FunctionType, type]) -> dict:
                 parameters[param_name] = param.annotation.__name__
 
     return parameters
-
