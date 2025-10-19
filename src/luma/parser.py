@@ -122,7 +122,9 @@ def _parse_func(func: FunctionType, qualname: str) -> PyFunc:
     args = []
     for param in parsed.params:
         args.append(
-            PyArg(name=param.arg_name, type=param_types.get(param.arg_name, None), desc=param.description)
+            PyArg(name=param.arg_name, 
+                  type=param_types.get(param.arg_name, param.type_name), 
+                  desc=param.description)
         )
 
     returns = parsed.returns.description if parsed.returns else None
@@ -202,11 +204,10 @@ def _get_signature(obj: Union[FunctionType, type], name: str) -> str:
 def _get_param_types(obj: Union[FunctionType, type]) -> dict:
     assert isinstance(obj, (FunctionType, type)), obj
     
-    init_or_func = obj.__init__ if isinstance(obj, type) else obj
     parameters = {}
 
-    if init_or_func != object.__init__:
-        signature = inspect.signature(init_or_func)
+    if not isinstance(obj, type):
+        signature = inspect.signature(obj)
 
         for param_name, param in signature.parameters.items():
             if param.annotation.__name__ != "_empty":
