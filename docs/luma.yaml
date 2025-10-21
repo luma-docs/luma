@@ -1,5 +1,10 @@
 name: Luma
 favicon: favicon.ico
+
+socials:
+  - github: https://github.com/luma-docs/luma
+  - discord: https://discord.gg/yT9KPAddxw
+
 navigation:
   - overview.md
 

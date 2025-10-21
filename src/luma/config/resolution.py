@@ -10,14 +10,15 @@ from typing import Optional
 
 import frontmatter
 
-from .user_config import Config, Link, NavigationItem, Page, Reference, Section
 from .resolved_config import (
     ResolvedConfig,
     ResolvedLink,
     ResolvedPage,
     ResolvedReference,
     ResolvedSection,
+    ResolvedSocial,
 )
+from .user_config import Config, Link, NavigationItem, Page, Reference, Section, Social
 
 
 def resolve_config(config: Config, project_root: str) -> ResolvedConfig:
@@ -33,8 +34,16 @@ def resolve_config(config: Config, project_root: str) -> ResolvedConfig:
     resolved_navigation = [
         _resolve_navigation_item(item, project_root) for item in config.navigation
     ]
+
+    resolved_socials = None
+    if config.socials is not None:
+        resolved_socials = _resolve_socials(config.socials)
+
     return ResolvedConfig(
-        name=config.name, favicon=config.favicon, navigation=resolved_navigation
+        name=config.name,
+        favicon=config.favicon,
+        navigation=resolved_navigation,
+        socials=resolved_socials,
     )
 
 
@@ -170,3 +179,19 @@ def _get_first_heading(local_path: str) -> Optional[str]:
             if match:
                 return match.group(2)  # the heading text
     return None
+
+
+def _resolve_socials(socials: list[Social]) -> list[ResolvedSocial]:
+    """Convert user-provided socials to resolved socials.
+
+    Args:
+        socials: List of social dicts, each with one platform-url pair
+
+    Returns:
+        List of ResolvedSocial objects
+    """
+    resolved = []
+    for social in socials:
+        platform, url = list(social.items())[0]
+        resolved.append(ResolvedSocial(platform=platform, url=url))
+    return resolved
