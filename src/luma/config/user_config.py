@@ -8,11 +8,7 @@ from typing import Dict, List, Optional, Union
 import yaml
 from pydantic import BaseModel, model_validator
 
-from .validation import (
-    validate_api_reference,
-    validate_favicon_exists,
-    validate_page_exists,
-)
+from .validation import validate_favicon_exists, validate_page_exists
 
 CONFIG_FILENAME = "luma.yaml"
 SUPPORTED_SOCIAL_PLATFORMS = {"discord", "github", "twitter", "slack"}
@@ -27,12 +23,6 @@ Social = Dict[str, str]  # Maps platform name to URL
 class Reference(BaseModel):
     reference: str
     apis: List[str]
-
-    @model_validator(mode="after")
-    def validate_can_get_apis(self):
-        for qualname in self.apis:
-            validate_api_reference(qualname)
-        return self
 
 
 class Link(BaseModel):
@@ -120,7 +110,14 @@ def load_config(dir: str) -> Config:
         except yaml.YAMLError as e:
             raise ValueError(f"Error parsing config file: {e}")
 
-    return Config.model_validate(config_data)
+    config = Config.model_validate(config_data)
+
+    # Perform validation after Pydantic parsing
+    from .validation import validate_config
+
+    validate_config(config)
+
+    return config
 
 
 def _discover_project_root(dir: str) -> Optional[str]:
