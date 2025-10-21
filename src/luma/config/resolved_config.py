@@ -9,6 +9,11 @@ from typing import List, Literal, Optional, Union
 from pydantic import BaseModel
 
 
+class ResolvedSocial(BaseModel):
+    platform: str
+    url: str
+
+
 class ResolvedPage(BaseModel):
     type: Literal["page"] = "page"
     title: str
@@ -40,3 +45,4 @@ class ResolvedConfig(BaseModel):
     navigation: List[
         Union[ResolvedPage, ResolvedSection, ResolvedReference, ResolvedLink]
     ]
+    socials: Optional[List[ResolvedSocial]] = None

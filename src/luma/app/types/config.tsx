@@ -25,8 +25,14 @@ export interface Section {
 
 export type NavigationItem = Page | Reference | Section | Link;
 
+export interface Social {
+  platform: string;
+  url: string;
+}
+
 export interface Config {
   name: string;
   favicon: string | null;
   navigation: NavigationItem[];
+  socials?: Social[];
 }

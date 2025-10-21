@@ -4,8 +4,34 @@
   padding-bottom: 4rem;
   border-top: 1px solid var(--border-color);
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
   flex-shrink: 0;
+}
+
+.socials {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.socialIcon {
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.socialIcon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.socialIcon:hover {
+  color: var(--color-text-primary);
 }
 
 .link {
@@ -14,6 +40,7 @@
   font-size: 14px;
   font-weight: 400;
   transition: color 0.2s;
+  margin-left: auto;
 }
 
 .link:hover {

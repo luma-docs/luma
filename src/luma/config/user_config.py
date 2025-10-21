@@ -8,14 +8,20 @@ from typing import Dict, List, Optional, Union
 import yaml
 from pydantic import BaseModel, model_validator
 
-from .validation import validate_api_reference, validate_favicon_exists, validate_page_exists
+from .validation import (
+    validate_api_reference,
+    validate_favicon_exists,
+    validate_page_exists,
+)
 
 CONFIG_FILENAME = "luma.yaml"
+SUPPORTED_SOCIAL_PLATFORMS = {"discord", "github", "twitter", "slack"}
 
 logger = logging.getLogger(__name__)
 
 
 Page = str
+Social = Dict[str, str]  # Maps platform name to URL
 
 
 class Reference(BaseModel):
@@ -46,6 +52,7 @@ class Config(BaseModel):
     name: str
     favicon: Optional[str] = None
     navigation: List[NavigationItem]
+    socials: Optional[List[Social]] = None
 
     # We manually add this field when we read the config file. The user can't specify
     # it.
@@ -68,6 +75,27 @@ class Config(BaseModel):
                 for subitem in item.contents:
                     if isinstance(subitem, str):
                         validate_page_exists(subitem, self.project_root)
+
+        return self
+
+    @model_validator(mode="after")
+    def validate_socials(self):
+        if self.socials is None:
+            return self
+
+        for social in self.socials:
+            if len(social) != 1:
+                raise ValueError(
+                    "Each social entry must have exactly one platform-url pair, "
+                    f"got: {social}"
+                )
+
+            platform = list(social.keys())[0]
+            if platform not in SUPPORTED_SOCIAL_PLATFORMS:
+                raise ValueError(
+                    f"Invalid social platform '{platform}'. Valid platforms are: "
+                    f"{', '.join(sorted(SUPPORTED_SOCIAL_PLATFORMS))}"
+                )
 
         return self
 

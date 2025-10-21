@@ -134,7 +134,7 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
               <div className="content-wrapper">
                 <Component {...pageProps} />
               </div>
-              <Footer />
+              <Footer socials={config?.socials} />
             </div>
             {validTocItems.length > 1 ? (
               <TableOfContents toc={validTocItems} />
