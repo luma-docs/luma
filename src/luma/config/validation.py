@@ -2,10 +2,16 @@
 
 import logging
 import os
+from typing import TYPE_CHECKING, Any, Dict, List
 
 from ..utils import get_module_and_relative_name, get_obj
 
+if TYPE_CHECKING:
+    from .user_config import Config
+
 logger = logging.getLogger(__name__)
+
+SUPPORTED_SOCIAL_PLATFORMS = {"discord", "github", "twitter", "slack"}
 
 
 def validate_page_exists(path: str, project_root: str) -> None:
@@ -80,3 +86,87 @@ def validate_api_reference(qualname: str) -> None:
             f"'{module.__name__}', but couldn't get the object '{relative_name}'. Are "
             "you sure the referenced object exists?"
         )
+
+
+def validate_socials(socials: List[Dict[str, str]]) -> None:
+    """Validate social media platform entries.
+
+    Args:
+        socials: List of social media platform dictionaries
+
+    Raises:
+        ValueError: If any social entry is invalid
+    """
+    for social in socials:
+        if len(social) != 1:
+            raise ValueError(
+                "Each social entry must have exactly one platform-url pair, "
+                f"got: {social}"
+            )
+
+        platform = list(social.keys())[0]
+        if platform not in SUPPORTED_SOCIAL_PLATFORMS:
+            raise ValueError(
+                f"Invalid social platform '{platform}'. Valid platforms are: "
+                f"{', '.join(sorted(SUPPORTED_SOCIAL_PLATFORMS))}"
+            )
+
+
+def validate_references(apis: List[str]) -> None:
+    """Validate a list of API references.
+
+    Args:
+        apis: List of fully qualified API names
+
+    Raises:
+        ValueError: If any API reference is invalid
+    """
+    for qualname in apis:
+        validate_api_reference(qualname)
+
+
+def validate_navigation(navigation: List[Any], project_root: str) -> None:
+    """Validate all navigation items.
+
+    Args:
+        navigation: List of navigation items (can be strings, Sections, References, or Links)
+        project_root: The project root directory
+
+    Raises:
+        ValueError: If any navigation item is invalid
+    """
+    # Import here to avoid circular imports
+    from .user_config import Reference, Section
+
+    for item in navigation:
+        if isinstance(item, str):
+            validate_page_exists(item, project_root)
+        elif isinstance(item, Section):
+            for subitem in item.contents:
+                if isinstance(subitem, str):
+                    validate_page_exists(subitem, project_root)
+                elif isinstance(subitem, Reference):
+                    validate_references(subitem.apis)
+        elif isinstance(item, Reference):
+            validate_references(item.apis)
+
+
+def validate_config(config: "Config") -> None:
+    """Validate an entire config object.
+
+    Args:
+        config: The config object to validate
+
+    Raises:
+        ValueError: If any part of the config is invalid
+    """
+    # Validate favicon if present
+    if config.favicon is not None:
+        validate_favicon_exists(config.favicon, config.project_root)
+
+    # Validate navigation
+    validate_navigation(config.navigation, config.project_root)
+
+    # Validate socials if present
+    if config.socials is not None:
+        validate_socials(config.socials)
