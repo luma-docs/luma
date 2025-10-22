@@ -27,7 +27,7 @@ desc
 
 **Arguments**
 
-- **arg**: arg desc
+- **arg** (int): arg desc
 
 **Returns**
 
@@ -78,7 +78,7 @@ desc
 
 **Arguments**
 
-- **arg**: arg desc
+- **arg** (int): arg desc
 
 **Examples**
 

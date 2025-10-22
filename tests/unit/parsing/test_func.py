@@ -155,7 +155,7 @@ def test_args():
     definition = parse_obj(f, "f")
 
     # TODO: Infer parameter type from the signature.
-    assert definition.args == [PyArg(name="x", type=None, desc="A number.")]
+    assert definition.args == [PyArg(name="x", type="int", desc="A number.")]
 
 
 def test_returns():
@@ -204,7 +204,7 @@ def test_comprehensive():
     ]
     assert definition.signature == "f(x: int, y: int) -> int"
     assert definition.args == [
-        PyArg(name="x", type=None, desc="The first number."),
-        PyArg(name="y", type=None, desc="The second number."),
+        PyArg(name="x", type="int", desc="The first number."),
+        PyArg(name="y", type="int", desc="The second number."),
     ]
     assert definition.returns == "The sum of x and y."

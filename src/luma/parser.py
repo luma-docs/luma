@@ -3,7 +3,7 @@ import json
 import logging
 import os
 from types import FunctionType
-from typing import Any, Iterable, Optional, Tuple, Union
+from typing import Any, Dict, Iterable, Optional, Tuple, Union
 
 from docstring_parser import Docstring, parse
 
@@ -117,12 +117,16 @@ def _parse_func(func: FunctionType, qualname: str) -> PyFunc:
     signature = _get_signature(func, qualname)
     parsed = parse(func.__doc__)
     summary, desc = _get_summary_and_desc(parsed)
+    param_types = _get_param_types(func)
 
     args = []
     for param in parsed.params:
         args.append(
-            PyArg(name=param.arg_name, type=param.type_name, desc=param.description)
+            PyArg(name=param.arg_name, 
+                  type=param_types.get(param.arg_name, param.type_name), 
+                  desc=param.description)
         )
+
     returns = parsed.returns.description if parsed.returns else None
 
     examples = []
@@ -195,3 +199,26 @@ def _get_signature(obj: Union[FunctionType, type], name: str) -> str:
         parameters = parameters.replace("(self, ", "(")
 
     return f"{name}{parameters}"
+
+
+def _get_param_types(obj: Union[FunctionType, type]) -> Dict[str, Optional[str]]:
+    """Get parameter types from type hints specified in a function signature.
+
+    Args:
+        obj: The function to parse.
+
+    Returns:
+        A dictionary of parameter names mapped to signature type hints. 
+    """
+    assert isinstance(obj, (FunctionType, type)), obj
+    
+    parameters = {}
+
+    if not isinstance(obj, type):
+        signature = inspect.signature(obj)
+
+        for param_name, param in signature.parameters.items():
+            if param.annotation.__name__ != "_empty":
+                parameters[param_name] = param.annotation.__name__
+
+    return parameters
