@@ -3,7 +3,7 @@ import json
 import logging
 import os
 from types import FunctionType
-from typing import Any, Iterable, Optional, Tuple, Union
+from typing import Any, Dict, Iterable, Optional, Tuple, Union
 
 from docstring_parser import Docstring, parse
 
@@ -201,7 +201,15 @@ def _get_signature(obj: Union[FunctionType, type], name: str) -> str:
     return f"{name}{parameters}"
 
 
-def _get_param_types(obj: Union[FunctionType, type]) -> dict:
+def _get_param_types(obj: Union[FunctionType, type]) -> Dict[str, Optional[str]]:
+    """Get parameter types from type hints specified in a function signature.
+
+    Args:
+        obj: The function to parse.
+
+    Returns:
+        A dictionary of parameter names mapped to signature type hints. 
+    """
     assert isinstance(obj, (FunctionType, type)), obj
     
     parameters = {}
