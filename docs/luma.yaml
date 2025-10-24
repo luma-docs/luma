@@ -25,3 +25,4 @@ navigation:
   - section: Components
     contents:
       - components/callouts.md
+      - components/tabs.md

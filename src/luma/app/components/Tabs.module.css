@@ -1,0 +1,46 @@
+div.tabs {
+  margin-bottom: 1rem;
+}
+
+div.tabButtons {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 1rem;
+}
+
+button.tabButton {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: var(--font-size-paragraph);
+  font-weight: 500;
+  color: #6b7280;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+
+button.tabButton:hover {
+  color: #111827;
+}
+
+button.tabButton.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+div.tabContent {
+  padding: 0;
+}
+
+div.tabContent :global(p:first-child) {
+  margin-top: 0;
+}
+
+div.tabContent :global(p:last-child) {
+  margin-bottom: 0;
+}
