@@ -20,7 +20,7 @@ export function Tabs({ children }: TabsProps) {
   // Extract tab information from children
   const tabs = React.Children.toArray(children).filter(
     (child): child is React.ReactElement<TabProps> =>
-      React.isValidElement(child) && child.type === Tab
+      React.isValidElement(child) && child.type === Tab,
   );
 
   if (tabs.length === 0) {
