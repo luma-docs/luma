@@ -8,6 +8,7 @@
   --font-weight-medium: 500;
   --font-weight-semibold: 590;
   --font-weight-bold: 600;
+  --font-size-paragraph: 1.5rem;
   --color-text-primary: #282a31;
   --color-text-tertiary: rgba(75, 85, 99, 1);
   --color-link-primary: #0070f3;
@@ -30,6 +31,7 @@ body {
 
 p,
 li {
+  font-size: var(--font-size-paragraph);
   line-height: 1.5em;
 }
 
