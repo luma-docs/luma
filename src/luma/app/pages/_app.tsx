@@ -159,7 +159,7 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
             overflow: auto;
             flex-grow: 1;
             height: 100vh;
-            font-size: 16px;
+            font-size: var(--font-size-base);
           }
           .container {
             position: relative;

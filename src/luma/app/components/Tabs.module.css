@@ -14,7 +14,7 @@ button.tabButton {
   border: none;
   padding: 8px 16px;
   cursor: pointer;
-  font-size: var(--font-size-paragraph);
+  font-size: var(--font-size-base);
   font-weight: 500;
   color: #6b7280;
   border-bottom: 2px solid transparent;
