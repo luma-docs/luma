@@ -7,7 +7,7 @@ from typing import Any, Dict, Iterable, Optional, Tuple, Union
 
 from docstring_parser import Docstring, parse
 
-from .config import ResolvedConfig, ResolvedReference, ResolvedSection
+from .config import ResolvedConfig, ResolvedReference, ResolvedSection, ResolvedTab
 from .models import DocstringExample, PyArg, PyClass, PyFunc, PyObj
 from .node import get_node_root
 from .utils import get_module_and_relative_name, get_obj
@@ -69,10 +69,18 @@ def _list_references_in_config(config: ResolvedConfig) -> Iterable[ResolvedRefer
     for item in config.navigation:
         if isinstance(item, ResolvedReference):
             yield item
-        if isinstance(item, ResolvedSection):
+        elif isinstance(item, ResolvedSection):
             for sub_item in item.contents:
                 if isinstance(sub_item, ResolvedReference):
                     yield sub_item
+        elif isinstance(item, ResolvedTab):
+            for sub_item in item.contents:
+                if isinstance(sub_item, ResolvedReference):
+                    yield sub_item
+                elif isinstance(sub_item, ResolvedSection):
+                    for sub_sub_item in sub_item.contents:
+                        if isinstance(sub_sub_item, ResolvedReference):
+                            yield sub_sub_item
 
 
 def _get_summary_and_desc(parsed: Docstring) -> Tuple[Optional[str], Optional[str]]:
@@ -214,11 +222,11 @@ def _get_param_types(obj: Union[FunctionType, type]) -> Dict[str, Optional[str]]
     
     parameters = {}
 
-    if not isinstance(obj, type):
-        signature = inspect.signature(obj)
+    # if not isinstance(obj, type):
+    #     signature = inspect.signature(obj)
 
-        for param_name, param in signature.parameters.items():
-            if param.annotation.__name__ != "_empty":
-                parameters[param_name] = param.annotation.__name__
+    #     for param_name, param in signature.parameters.items():
+    #         if param.annotation.__name__ != "_empty":
+    #             parameters[param_name] = param.annotation.__name__
 
     return parameters

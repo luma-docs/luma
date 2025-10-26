@@ -1,6 +1,7 @@
 import Head from "next/head";
 
 import { SideNav, TableOfContents } from "../components";
+import { TopNav } from "../components/TopNav";
 import { Footer } from "../components/Footer";
 import VersionSelector from "../components/VersionSelector";
 import "prismjs";
@@ -25,10 +26,40 @@ import type { MarkdocNextJsPageProps } from "@markdoc/next.js";
 import { RenderableTreeNodes, Tag } from "@markdoc/markdoc";
 
 import configData from "../data/config.json";
-import { Config } from "../types/config";
+import { Config, Tab, NavigationItem } from "../types/config";
 const config = configData as Config;
 
 import { TableOfContentsItem } from "../components/TableOfContents";
+
+function hasTabs(navigation: NavigationItem[]): boolean {
+  return navigation.length > 0 && navigation[0].type === "tab";
+}
+
+function findActiveTabIndex(
+  tabs: Tab[],
+  currentPath: string,
+): number {
+  function pathMatchesItem(item: NavigationItem, path: string): boolean {
+    if (item.type === "page") {
+      const pagePath = `/${item.path.slice(0, -3)}`;
+      return path === pagePath;
+    } else if (item.type === "reference") {
+      const refPath = `/${item.relative_path.slice(0, -3)}`;
+      return path === refPath;
+    } else if (item.type === "section") {
+      return item.contents.some((subitem) => pathMatchesItem(subitem, path));
+    }
+    return false;
+  }
+
+  for (let i = 0; i < tabs.length; i++) {
+    if (tabs[i].contents.some((item) => pathMatchesItem(item, currentPath))) {
+      return i;
+    }
+  }
+
+  return 0; // Default to first tab
+}
 
 function collectHeadings(
   node: RenderableTreeNodes,
@@ -83,6 +114,14 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
     };
   }, [router]);
 
+  // Determine if we're using tabs
+  const usingTabs = config?.navigation && hasTabs(config.navigation);
+  const tabs = usingTabs ? (config.navigation as Tab[]) : [];
+  const activeTabIndex = usingTabs ? findActiveTabIndex(tabs, router.asPath) : 0;
+  const sideNavItems = usingTabs
+    ? tabs[activeTabIndex]?.contents || []
+    : config?.navigation || [];
+
   // The Luma CLI should copy the user-provided favicon to 'favicon.ico' in the public
   // directory. If no favicon is provided, use the default favicon.
   const faviconHref = config?.favicon
@@ -127,9 +166,11 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
         <link rel="icon" href={faviconHref} />
       </Head>
       <div className="page">
-        <SideNav items={config?.navigation || []} />
-        <main className="main">
-          <div className="container">
+        <SideNav items={sideNavItems} usingTabs={usingTabs} />
+        <div className="main-wrapper">
+          {usingTabs && <TopNav tabs={tabs} activeTabIndex={activeTabIndex} />}
+          <main className="main">
+            <div className="container">
             <div className="content">
               <div className="content-wrapper">
                 <Component {...pageProps} />
@@ -146,6 +187,7 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
             <VersionSelector />
           )}
         </main>
+        </div>
       </div>
       <style jsx>
         {`
@@ -154,6 +196,12 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
             display: flex;
             width: 100vw;
             flex-grow: 1;
+          }
+          .main-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden;
           }
           .main {
             overflow: auto;
@@ -176,7 +224,7 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
             padding-top: 48px;
             display: flex;
             flex-direction: column;
-            min-height: calc(100vh - 48px - 96px - 4rem);
+            min-height: calc(100% - 48px - 96px - 4rem);
           }
           .content-wrapper {
             flex: 1 0 auto;

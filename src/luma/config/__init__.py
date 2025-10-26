@@ -16,6 +16,7 @@ from .resolved_config import (
     ResolvedLink,
     ResolvedPage,
     ResolvedReference,
+    ResolvedTab,
     ResolvedSection,
 )
 from .resolution import resolve_config, resolve_page

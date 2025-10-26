@@ -13,6 +13,8 @@
   --color-text-tertiary: rgba(75, 85, 99, 1);
   --color-link-primary: #0070f3;
   --color-link-hover: #0056b3;
+  --topnav-height: 3rem;
+  --sidenav-width: 15rem;
 }
 
 *,
@@ -46,6 +48,7 @@ h1,
 h2,
 h3 {
   font-weight: var(--font-weight-semibold);
+  scroll-margin-top: var(--topnav-height);
 }
 
 a {

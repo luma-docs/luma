@@ -1,0 +1,40 @@
+nav.container {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: var(--topnav-height);
+  background: white;
+  border-bottom: 1px solid var(--border-color);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.tabList {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0 2rem;
+  align-items: center;
+  height: 100%;
+}
+
+a.tab {
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+a.tab:hover {
+  color: var(--color-text-primary);
+}
+
+a.tabActive {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-bold);
+}

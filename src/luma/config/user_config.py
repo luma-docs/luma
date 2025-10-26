@@ -35,7 +35,12 @@ class Section(BaseModel):
     contents: List[Union[Page, Reference, Link]]
 
 
-NavigationItem = Union[Page, Section, Reference, Link]
+class Tab(BaseModel):
+    tab: str
+    contents: List[Union[Page, Section, Reference, Link]]
+
+
+NavigationItem = Union[Page, Section, Reference, Link, Tab]
 
 
 class Config(BaseModel):

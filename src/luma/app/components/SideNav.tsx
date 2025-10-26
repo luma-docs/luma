@@ -12,6 +12,7 @@ import {
 
 interface SideNavProps {
   items: NavigationItem[];
+  usingTabs?: boolean;
 }
 
 function SideNavLink({
@@ -52,7 +53,7 @@ function SideNavLink({
   );
 }
 
-export function SideNav({ items }: SideNavProps) {
+export function SideNav({ items, usingTabs }: SideNavProps) {
   return (
     <nav className={styles.container}>
       <ul className={`${styles.sidenav}`}>
@@ -62,22 +63,24 @@ export function SideNav({ items }: SideNavProps) {
           }
           if (item.type == "section") {
             return (
-              <div key={`section-${itemIndex}`}>
+              <li key={`section-${itemIndex}`}>
                 <span
                   className={styles.sectionTitle}
                   style={{ paddingTop: itemIndex === 0 ? "0" : "1rem" }}
                 >
                   {item.title}
                 </span>
-                {item.contents.map((subitem, subitemIndex) => {
-                  return (
-                    <SideNavLink
-                      item={subitem}
-                      key={`section-${itemIndex}-content-${subitemIndex}`}
-                    />
-                  );
-                })}
-              </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                  {item.contents.map((subitem, subitemIndex) => {
+                    return (
+                      <SideNavLink
+                        item={subitem}
+                        key={`section-${itemIndex}-content-${subitemIndex}`}
+                      />
+                    );
+                  })}
+                </ul>
+              </li>
             );
           }
         })}
