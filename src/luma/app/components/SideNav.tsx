@@ -12,7 +12,6 @@ import {
 
 interface SideNavProps {
   items: NavigationItem[];
-  usingTabs?: boolean;
 }
 
 function SideNavLink({
@@ -23,7 +22,7 @@ function SideNavLink({
   key: string;
 }) {
   const router = useRouter();
-  const currentPath = router.asPath.split('#')[0].split('?')[0];
+  const currentPath = router.asPath.split("#")[0].split("?")[0];
 
   let href: string;
   let isActive: boolean;
@@ -53,7 +52,7 @@ function SideNavLink({
   );
 }
 
-export function SideNav({ items, usingTabs }: SideNavProps) {
+export function SideNav({ items }: SideNavProps) {
   return (
     <nav className={styles.container}>
       <ul className={`${styles.sidenav}`}>

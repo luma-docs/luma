@@ -35,10 +35,7 @@ function hasTabs(navigation: NavigationItem[]): boolean {
   return navigation.length > 0 && navigation[0].type === "tab";
 }
 
-function findActiveTabIndex(
-  tabs: Tab[],
-  currentPath: string,
-): number {
+function findActiveTabIndex(tabs: Tab[], currentPath: string): number {
   function pathMatchesItem(item: NavigationItem, path: string): boolean {
     if (item.type === "page") {
       const pagePath = `/${item.path.slice(0, -3)}`;
@@ -117,7 +114,7 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
   // Determine if we're using tabs
   const usingTabs = config?.navigation && hasTabs(config.navigation);
   const tabs = usingTabs ? (config.navigation as Tab[]) : [];
-  const currentPath = router.asPath.split('#')[0].split('?')[0];
+  const currentPath = router.asPath.split("#")[0].split("?")[0];
   const activeTabIndex = usingTabs ? findActiveTabIndex(tabs, currentPath) : 0;
   const sideNavItems = usingTabs
     ? tabs[activeTabIndex]?.contents || []
@@ -167,27 +164,27 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
         <link rel="icon" href={faviconHref} />
       </Head>
       <div className="page">
-        <SideNav items={sideNavItems} usingTabs={usingTabs} />
+        <SideNav items={sideNavItems} />
         <div className="main-wrapper">
           {usingTabs && <TopNav tabs={tabs} activeTabIndex={activeTabIndex} />}
           <main className="main">
             <div className="container">
-            <div className="content">
-              <div className="content-wrapper">
-                <Component {...pageProps} />
+              <div className="content">
+                <div className="content-wrapper">
+                  <Component {...pageProps} />
+                </div>
+                <Footer socials={config?.socials} />
               </div>
-              <Footer socials={config?.socials} />
+              {validTocItems.length > 1 ? (
+                <TableOfContents toc={validTocItems} />
+              ) : (
+                <div className="toc-placeholder" />
+              )}
             </div>
-            {validTocItems.length > 1 ? (
-              <TableOfContents toc={validTocItems} />
-            ) : (
-              <div className="toc-placeholder" />
+            {process.env.NEXT_PUBLIC_RELEASE_VERSION != null && (
+              <VersionSelector />
             )}
-          </div>
-          {process.env.NEXT_PUBLIC_RELEASE_VERSION != null && (
-            <VersionSelector />
-          )}
-        </main>
+          </main>
         </div>
       </div>
       <style jsx>

@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import styles from "./TopNav.module.css";
-import { Tab, NavigationItem, Page, Reference, Section } from "../types/config";
+import { Tab, NavigationItem } from "../types/config";
 
 interface TopNavProps {
   tabs: Tab[];
