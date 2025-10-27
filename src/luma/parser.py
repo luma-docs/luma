@@ -130,9 +130,11 @@ def _parse_func(func: FunctionType, qualname: str) -> PyFunc:
     args = []
     for param in parsed.params:
         args.append(
-            PyArg(name=param.arg_name, 
-                  type=param_types.get(param.arg_name, param.type_name), 
-                  desc=param.description)
+            PyArg(
+                name=param.arg_name,
+                type=param_types.get(param.arg_name, param.type_name),
+                desc=param.description,
+            )
         )
 
     returns = parsed.returns.description if parsed.returns else None
@@ -216,17 +218,17 @@ def _get_param_types(obj: Union[FunctionType, type]) -> Dict[str, Optional[str]]
         obj: The function to parse.
 
     Returns:
-        A dictionary of parameter names mapped to signature type hints. 
+        A dictionary of parameter names mapped to signature type hints.
     """
     assert isinstance(obj, (FunctionType, type)), obj
-    
+
     parameters = {}
 
-    # if not isinstance(obj, type):
-    #     signature = inspect.signature(obj)
+    if not isinstance(obj, type):
+        signature = inspect.signature(obj)
 
-    #     for param_name, param in signature.parameters.items():
-    #         if param.annotation.__name__ != "_empty":
-    #             parameters[param_name] = param.annotation.__name__
+        for param_name, param in signature.parameters.items():
+            if param.annotation.__name__ != "_empty":
+                parameters[param_name] = param.annotation.__name__
 
     return parameters

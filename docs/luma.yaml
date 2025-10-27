@@ -6,16 +6,21 @@ socials:
   - discord: https://discord.gg/yT9KPAddxw
 
 navigation:
-  - tab: User guide
-    contents:
-      - overview.md
+  - overview.md
 
-  - tab: API Reference
+  - section: Showcase
     contents:
-      - section: Showcase
-        contents:
-          - link: https://requests.luma-docs.org/
-            title: requests
+      - link: https://requests.luma-docs.org/
+        title: requests
+
+  - section: Write your docs
+    contents:
+      - how-to/add-a-page.md
+      - how-to/add-a-section.md
+      - how-to/add-an-api-reference.md
+      - how-to/customize-the-favicon.md
+      - how-to/link-to-an-api.md
+      - how-to/publish-your-docs.md
 
   - section: Components
     contents:
