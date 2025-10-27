@@ -117,7 +117,8 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
   // Determine if we're using tabs
   const usingTabs = config?.navigation && hasTabs(config.navigation);
   const tabs = usingTabs ? (config.navigation as Tab[]) : [];
-  const activeTabIndex = usingTabs ? findActiveTabIndex(tabs, router.asPath) : 0;
+  const currentPath = router.asPath.split('#')[0].split('?')[0];
+  const activeTabIndex = usingTabs ? findActiveTabIndex(tabs, currentPath) : 0;
   const sideNavItems = usingTabs
     ? tabs[activeTabIndex]?.contents || []
     : config?.navigation || [];

@@ -23,22 +23,22 @@ function SideNavLink({
   key: string;
 }) {
   const router = useRouter();
+  const currentPath = router.asPath.split('#')[0].split('?')[0];
 
   let href: string;
   let isActive: boolean;
   let linkText: string;
   if (item.type == "page") {
     href = `/${item.path.slice(0, -3)}`;
-    isActive = router.asPath === href;
+    isActive = currentPath === href;
     linkText = item.title;
   } else if (item.type == "link") {
     href = item.href;
     isActive = false;
     linkText = item.title;
   } else if (item.type == "reference") {
-    const safe = item.title.toLowerCase().replace(/ /g, "-");
-    href = `/${safe}`;
-    isActive = router.asPath === href;
+    href = `/${item.relative_path.slice(0, -3)}`;
+    isActive = currentPath === href;
     linkText = item.title;
   } else {
     return null;
