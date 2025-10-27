@@ -22,22 +22,22 @@ function SideNavLink({
   key: string;
 }) {
   const router = useRouter();
+  const currentPath = router.asPath.split("#")[0].split("?")[0];
 
   let href: string;
   let isActive: boolean;
   let linkText: string;
   if (item.type == "page") {
     href = `/${item.path.slice(0, -3)}`;
-    isActive = router.asPath === href;
+    isActive = currentPath === href;
     linkText = item.title;
   } else if (item.type == "link") {
     href = item.href;
     isActive = false;
     linkText = item.title;
   } else if (item.type == "reference") {
-    const safe = item.title.toLowerCase().replace(/ /g, "-");
-    href = `/${safe}`;
-    isActive = router.asPath === href;
+    href = `/${item.relative_path.slice(0, -3)}`;
+    isActive = currentPath === href;
     linkText = item.title;
   } else {
     return null;
@@ -62,22 +62,24 @@ export function SideNav({ items }: SideNavProps) {
           }
           if (item.type == "section") {
             return (
-              <div key={`section-${itemIndex}`}>
+              <li key={`section-${itemIndex}`}>
                 <span
                   className={styles.sectionTitle}
                   style={{ paddingTop: itemIndex === 0 ? "0" : "1rem" }}
                 >
                   {item.title}
                 </span>
-                {item.contents.map((subitem, subitemIndex) => {
-                  return (
-                    <SideNavLink
-                      item={subitem}
-                      key={`section-${itemIndex}-content-${subitemIndex}`}
-                    />
-                  );
-                })}
-              </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                  {item.contents.map((subitem, subitemIndex) => {
+                    return (
+                      <SideNavLink
+                        item={subitem}
+                        key={`section-${itemIndex}-content-${subitemIndex}`}
+                      />
+                    );
+                  })}
+                </ul>
+              </li>
             );
           }
         })}

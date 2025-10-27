@@ -7,7 +7,7 @@ from typing import Any, Dict, Iterable, Optional, Tuple, Union
 
 from docstring_parser import Docstring, parse
 
-from .config import ResolvedConfig, ResolvedReference, ResolvedSection
+from .config import ResolvedConfig, ResolvedReference, ResolvedSection, ResolvedTab
 from .models import DocstringExample, PyArg, PyClass, PyFunc, PyObj
 from .node import get_node_root
 from .utils import get_module_and_relative_name, get_obj
@@ -69,10 +69,18 @@ def _list_references_in_config(config: ResolvedConfig) -> Iterable[ResolvedRefer
     for item in config.navigation:
         if isinstance(item, ResolvedReference):
             yield item
-        if isinstance(item, ResolvedSection):
+        elif isinstance(item, ResolvedSection):
             for sub_item in item.contents:
                 if isinstance(sub_item, ResolvedReference):
                     yield sub_item
+        elif isinstance(item, ResolvedTab):
+            for sub_item in item.contents:
+                if isinstance(sub_item, ResolvedReference):
+                    yield sub_item
+                elif isinstance(sub_item, ResolvedSection):
+                    for sub_sub_item in sub_item.contents:
+                        if isinstance(sub_sub_item, ResolvedReference):
+                            yield sub_sub_item
 
 
 def _get_summary_and_desc(parsed: Docstring) -> Tuple[Optional[str], Optional[str]]:
@@ -122,9 +130,11 @@ def _parse_func(func: FunctionType, qualname: str) -> PyFunc:
     args = []
     for param in parsed.params:
         args.append(
-            PyArg(name=param.arg_name, 
-                  type=param_types.get(param.arg_name, param.type_name), 
-                  desc=param.description)
+            PyArg(
+                name=param.arg_name,
+                type=param_types.get(param.arg_name, param.type_name),
+                desc=param.description,
+            )
         )
 
     returns = parsed.returns.description if parsed.returns else None
@@ -208,10 +218,10 @@ def _get_param_types(obj: Union[FunctionType, type]) -> Dict[str, Optional[str]]
         obj: The function to parse.
 
     Returns:
-        A dictionary of parameter names mapped to signature type hints. 
+        A dictionary of parameter names mapped to signature type hints.
     """
     assert isinstance(obj, (FunctionType, type)), obj
-    
+
     parameters = {}
 
     if not isinstance(obj, type):

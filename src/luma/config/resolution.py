@@ -17,8 +17,9 @@ from .resolved_config import (
     ResolvedReference,
     ResolvedSection,
     ResolvedSocial,
+    ResolvedTab,
 )
-from .user_config import Config, Link, NavigationItem, Page, Reference, Section, Social
+from .user_config import Config, Link, NavigationItem, Page, Reference, Section, Social, Tab
 
 
 def resolve_config(config: Config, project_root: str) -> ResolvedConfig:
@@ -65,6 +66,8 @@ def _resolve_navigation_item(item: NavigationItem, project_root: str):
         return _resolve_section(item, project_root)
     elif isinstance(item, Reference):
         return _resolve_reference(item)
+    elif isinstance(item, Tab):
+        return _resolve_tab(item, project_root)
     else:
         assert False, item
 
@@ -101,6 +104,22 @@ def _resolve_section(section: Section, project_root: str) -> ResolvedSection:
         _resolve_navigation_item(item, project_root) for item in section.contents
     ]
     return ResolvedSection(title=section.section, contents=resolved_contents)
+
+
+def _resolve_tab(tab: Tab, project_root: str) -> ResolvedTab:
+    """Resolve a tab navigation item.
+
+    Args:
+        tab: The tab to resolve
+        project_root: The project root directory
+
+    Returns:
+        The resolved tab with resolved contents
+    """
+    resolved_contents = [
+        _resolve_navigation_item(item, project_root) for item in tab.contents
+    ]
+    return ResolvedTab(title=tab.tab, contents=resolved_contents)
 
 
 def _resolve_reference(reference: Reference) -> ResolvedReference:

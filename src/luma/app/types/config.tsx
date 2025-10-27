@@ -23,7 +23,13 @@ export interface Section {
   contents: (Page | Reference | Link)[];
 }
 
-export type NavigationItem = Page | Reference | Section | Link;
+export interface Tab {
+  type: "tab";
+  title: string;
+  contents: (Page | Reference | Section | Link)[];
+}
+
+export type NavigationItem = Page | Reference | Section | Link | Tab;
 
 export interface Social {
   platform: string;

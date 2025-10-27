@@ -25,6 +25,8 @@ function getFirstPage(navigation: NavigationItem[]): string {
       return `/${item.path.slice(0, -3)}`;
     } else if (item.type == "section") {
       return getFirstPage(item.contents);
+    } else if (item.type == "tab") {
+      return getFirstPage(item.contents);
     } else if (item.type == "reference") {
       return item.relative_path;
     }

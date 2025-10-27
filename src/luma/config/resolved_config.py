@@ -39,10 +39,16 @@ class ResolvedSection(BaseModel):
     contents: List[Union[ResolvedPage, ResolvedReference, ResolvedLink]]
 
 
+class ResolvedTab(BaseModel):
+    type: Literal["tab"] = "tab"
+    title: str
+    contents: List[Union[ResolvedPage, ResolvedSection, ResolvedReference, ResolvedLink]]
+
+
 class ResolvedConfig(BaseModel):
     name: str
     favicon: Optional[str] = None
     navigation: List[
-        Union[ResolvedPage, ResolvedSection, ResolvedReference, ResolvedLink]
+        Union[ResolvedPage, ResolvedSection, ResolvedReference, ResolvedLink, ResolvedTab]
     ]
     socials: Optional[List[ResolvedSocial]] = None
