@@ -1,6 +1,6 @@
 import pytest
 
-from luma.models import DocstringExample, PyArg, PyObjType
+from luma.models import DocstringExample, PyArg, PyFunc, PyObjType
 from luma.parser import parse_obj
 
 
@@ -169,6 +169,36 @@ def test_returns():
     definition = parse_obj(f, "f")
 
     assert definition.returns == "Something."
+
+
+def test_type_annotation():
+    def f(x: int):
+        """
+
+        Args:
+            x:
+        """
+        pass
+
+    definition = parse_obj(f, qualname="f")
+
+    assert isinstance(definition, PyFunc)
+    assert definition.args[0].type == "int"
+
+
+def test_quoted_type_annotation():
+    def f(x: "int"):
+        """
+
+        Args:
+            x:
+        """
+        pass
+
+    definition = parse_obj(f, qualname="f")
+
+    assert isinstance(definition, PyFunc)
+    assert definition.args[0].type == "int"
 
 
 def test_comprehensive():

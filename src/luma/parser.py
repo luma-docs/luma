@@ -228,7 +228,23 @@ def _get_param_types(obj: Union[FunctionType, type]) -> Dict[str, Optional[str]]
         signature = inspect.signature(obj)
 
         for param_name, param in signature.parameters.items():
-            if param.annotation.__name__ != "_empty":
-                parameters[param_name] = param.annotation.__name__
+            annotation = _get_type_annotation(param)
+            if annotation is not None:
+                parameters[param_name] = annotation
 
     return parameters
+
+
+def _get_type_annotation(param: inspect.Parameter) -> Optional[str]:
+    if isinstance(param.annotation, str):
+        annotation = param.annotation
+
+    elif isinstance(param.annotation, type):
+        annotation = param.annotation.__name__
+        if annotation == "_empty":
+            annotation = None
+
+    else:
+        annotation = None
+
+    return annotation
