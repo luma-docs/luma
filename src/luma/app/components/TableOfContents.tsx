@@ -108,12 +108,12 @@ export function TableOfContents({ toc }: TableOfContentsProps) {
         <span className={styles.headerText}>On this page</span>
       </div>
       <ul className={styles.list}>
-        {toc.map((item) => {
+        {toc.map((item, index) => {
           const href = `#${item.id}`;
           const active = activeId === href;
           return (
             <li
-              key={item.title}
+              key={`${item.id}-${index}`}
               className={[
                 styles.item,
                 active ? styles.active : undefined,
