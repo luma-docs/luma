@@ -8,15 +8,20 @@ nav.container {
   height: 100vh;
   padding: 1.5rem 1rem 1rem;
   border-right: 1px solid var(--border-color);
+  width: var(--sidenav-width);
   min-width: var(--sidenav-width);
+  max-width: var(--sidenav-width);
 }
 
 span.sectionTitle {
   padding: 1rem 0.75rem 0.5rem;
   margin-top: 0.25rem;
-  display: inline-block;
+  display: block;
   color: #282a30;
   font-weight: 600;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 ul.sidenav {
@@ -34,7 +39,10 @@ a.sidenavItem {
   text-decoration: none;
   border-radius: 8px;
   transition: background 0.3s;
-  line-height: 1rem;
+  line-height: 1.3;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 a.sidenavItem:hover {
