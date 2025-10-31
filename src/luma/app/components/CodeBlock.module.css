@@ -10,6 +10,9 @@
   text-shadow: none;
   border-radius: 4px;
   margin: 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
 /* Output code block styling */
@@ -24,6 +27,9 @@
   padding: 1rem;
   margin: 0;
   border-radius: 0 0 4px 4px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
 .label {
