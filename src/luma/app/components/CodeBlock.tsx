@@ -20,7 +20,10 @@ export function CodeBlock({
   }, [children, isOutput]);
 
   return (
-    <div className={`${styles.code} ${isOutput ? styles.output : ""}`} aria-live="polite">
+    <div
+      className={`${styles.code} ${isOutput ? styles.output : ""}`}
+      aria-live="polite"
+    >
       {isOutput && <div className={styles.label}>Output</div>}
       <pre ref={ref} className={isOutput ? "" : `language-${language}`}>
         {children}
