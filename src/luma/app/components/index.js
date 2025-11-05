@@ -2,6 +2,7 @@ export * from "./Callout";
 export * from "./CodeBlock";
 export * from "./CrossRef";
 export * from "./Heading";
+export * from "./SearchBar";
 export * from "./SideNav";
 export * from "./TableOfContents";
 export * from "./Tabs";

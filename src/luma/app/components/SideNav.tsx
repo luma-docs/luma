@@ -2,6 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import styles from "./SideNav.module.css";
+import { SearchBar } from "./SearchBar";
 
 import {
   Page,
@@ -55,6 +56,7 @@ function SideNavLink({
 export function SideNav({ items }: SideNavProps) {
   return (
     <nav className={styles.container}>
+      <SearchBar />
       <ul className={`${styles.sidenav}`}>
         {items.map((item, itemIndex) => {
           if (item.type == "page" || item.type == "reference") {

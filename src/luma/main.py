@@ -7,8 +7,17 @@ import typer
 from typing_extensions import Annotated
 
 from .bootstrap import download_or_update_scaffold, download_starter_files
-from .config import create_or_update_config, load_config, resolve_config
-from .deploy import build_project, cleanup_build, deploy_project, monitor_deployment
+from .config import (
+    create_or_update_config,
+    load_config,
+    resolve_config,
+)
+from .deploy import (
+    build_project,
+    cleanup_build,
+    deploy_project,
+    monitor_deployment,
+)
 from .link import (
     link_config,
     link_existing_pages,
@@ -17,6 +26,7 @@ from .link import (
 )
 from .node import get_node_root, is_node_installed, run_node_dev
 from .parser import prepare_references
+from .search import build_search_index
 from .utils import get_project_root
 
 app = typer.Typer()
@@ -51,10 +61,12 @@ def init():
     download_or_update_scaffold(node_root)
 
     config = create_or_update_config(project_root, package_name)
-    link_config(config, project_root)
+    resolved_config = resolve_config(config, project_root=project_root)
+    link_config(resolved_config, project_root)
     if config.favicon:
         link_static_asset(config.favicon, project_root)
     link_existing_pages(project_root)
+    build_search_index(project_root, resolved_config)
 
 
 @app.command()
@@ -72,6 +84,7 @@ def dev(port: Annotated[Optional[int], typer.Option()] = None):
     if config.favicon:
         link_static_asset(config.favicon, project_root)
     link_existing_pages(project_root)
+    build_search_index(project_root, resolved_config)
     link_page_on_creation(project_root)
 
     run_node_dev(project_root, port)
@@ -90,6 +103,7 @@ def deploy(version: Annotated[Optional[str], typer.Option("--version", "-v")] = 
 
     link_config(resolved_config, project_root)
     link_existing_pages(project_root)
+    build_search_index(project_root, resolved_config)
 
     try:
         build_path = build_project(node_root)
