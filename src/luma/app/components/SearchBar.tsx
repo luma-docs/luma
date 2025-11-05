@@ -184,9 +184,7 @@ export function SearchBar() {
           onBlur={() => setIsFocused(false)}
           onKeyDown={handleKeyDown}
         />
-        {!isFocused && (
-          <kbd className={styles.keyboardShortcut}>/</kbd>
-        )}
+        {!isFocused && <kbd className={styles.keyboardShortcut}>/</kbd>}
       </div>
 
       {isOpen && results.length > 0 && (
