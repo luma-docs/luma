@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/bveeramani/luma/src/luma/app/**)",
+      "Read(//Users/bveeramani/luma/src/luma/**)",
+      "Bash(npm install:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
