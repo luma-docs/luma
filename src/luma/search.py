@@ -2,7 +2,7 @@ import json
 import logging
 import os
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from .config import (
     ResolvedConfig,
@@ -76,7 +76,7 @@ def _flatten_navigation(items: List[Any]) -> List[Any]:
 
 
 def _extract_page_content(
-    file_path: str, relative_path: str, title: str, section: str | None
+    file_path: str, relative_path: str, title: str, section: Optional[str]
 ) -> Dict[str, Any] | None:
     """Extract searchable content from a markdown file.
 
