@@ -77,7 +77,7 @@ def _flatten_navigation(items: List[Any]) -> List[Any]:
 
 def _extract_page_content(
     file_path: str, relative_path: str, title: str, section: Optional[str]
-) -> Dict[str, Any] | None:
+) -> Optional[Dict[str, Any]]:
     """Extract searchable content from a markdown file.
 
     Args:
