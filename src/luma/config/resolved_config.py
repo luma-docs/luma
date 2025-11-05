@@ -18,6 +18,7 @@ class ResolvedPage(BaseModel):
     type: Literal["page"] = "page"
     title: str
     path: str
+    section: Optional[str] = None
 
 
 class ResolvedLink(BaseModel):
@@ -31,6 +32,7 @@ class ResolvedReference(BaseModel):
     title: str
     relative_path: str
     apis: List[str]
+    section: Optional[str] = None
 
 
 class ResolvedSection(BaseModel):
@@ -42,13 +44,17 @@ class ResolvedSection(BaseModel):
 class ResolvedTab(BaseModel):
     type: Literal["tab"] = "tab"
     title: str
-    contents: List[Union[ResolvedPage, ResolvedSection, ResolvedReference, ResolvedLink]]
+    contents: List[
+        Union[ResolvedPage, ResolvedSection, ResolvedReference, ResolvedLink]
+    ]
 
 
 class ResolvedConfig(BaseModel):
     name: str
     favicon: Optional[str] = None
     navigation: List[
-        Union[ResolvedPage, ResolvedSection, ResolvedReference, ResolvedLink, ResolvedTab]
+        Union[
+            ResolvedPage, ResolvedSection, ResolvedReference, ResolvedLink, ResolvedTab
+        ]
     ]
     socials: Optional[List[ResolvedSocial]] = None

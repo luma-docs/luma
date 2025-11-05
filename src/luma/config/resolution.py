@@ -19,7 +19,16 @@ from .resolved_config import (
     ResolvedSocial,
     ResolvedTab,
 )
-from .user_config import Config, Link, NavigationItem, Page, Reference, Section, Social, Tab
+from .user_config import (
+    Config,
+    Link,
+    NavigationItem,
+    Page,
+    Reference,
+    Section,
+    Social,
+    Tab,
+)
 
 
 def resolve_config(config: Config, project_root: str) -> ResolvedConfig:
@@ -33,7 +42,8 @@ def resolve_config(config: Config, project_root: str) -> ResolvedConfig:
         The resolved config with inferred titles and validated references
     """
     resolved_navigation = [
-        _resolve_navigation_item(item, project_root) for item in config.navigation
+        _resolve_navigation_item(item, project_root, section=None)
+        for item in config.navigation
     ]
 
     resolved_socials = None
@@ -48,24 +58,27 @@ def resolve_config(config: Config, project_root: str) -> ResolvedConfig:
     )
 
 
-def _resolve_navigation_item(item: NavigationItem, project_root: str):
+def _resolve_navigation_item(
+    item: NavigationItem, project_root: str, section: Optional[str]
+):
     """Resolve a single navigation item.
 
     Args:
         item: The navigation item to resolve
         project_root: The project root directory
+        section: The section name if this item is inside a section, None otherwise
 
     Returns:
         The resolved navigation item
     """
     if isinstance(item, Page):
-        return resolve_page(item, project_root)
+        return resolve_page(item, project_root, section=section)
     elif isinstance(item, Link):
         return _resolve_link(item)
     elif isinstance(item, Section):
         return _resolve_section(item, project_root)
     elif isinstance(item, Reference):
-        return _resolve_reference(item)
+        return _resolve_reference(item, section=section)
     elif isinstance(item, Tab):
         return _resolve_tab(item, project_root)
     else:
@@ -101,7 +114,8 @@ def _resolve_section(section: Section, project_root: str) -> ResolvedSection:
         The resolved section with resolved contents
     """
     resolved_contents = [
-        _resolve_navigation_item(item, project_root) for item in section.contents
+        _resolve_navigation_item(item, project_root, section=section.section)
+        for item in section.contents
     ]
     return ResolvedSection(title=section.section, contents=resolved_contents)
 
@@ -117,16 +131,20 @@ def _resolve_tab(tab: Tab, project_root: str) -> ResolvedTab:
         The resolved tab with resolved contents
     """
     resolved_contents = [
-        _resolve_navigation_item(item, project_root) for item in tab.contents
+        _resolve_navigation_item(item, project_root, section=None)
+        for item in tab.contents
     ]
     return ResolvedTab(title=tab.tab, contents=resolved_contents)
 
 
-def _resolve_reference(reference: Reference) -> ResolvedReference:
+def _resolve_reference(
+    reference: Reference, *, section: Optional[str] = None
+) -> ResolvedReference:
     """Resolve a reference navigation item.
 
     Args:
         reference: The reference to resolve
+        section: The section name if this reference is inside a section, None otherwise
 
     Returns:
         The resolved reference with generated path
@@ -136,15 +154,19 @@ def _resolve_reference(reference: Reference) -> ResolvedReference:
         title=reference.reference,
         relative_path=relative_path,
         apis=reference.apis,
+        section=section,
     )
 
 
-def resolve_page(relative_path: str, project_root: str) -> ResolvedPage:
+def resolve_page(
+    relative_path: str, project_root: str, *, section: Optional[str] = None
+) -> ResolvedPage:
     """Resolve a page navigation item.
 
     Args:
         relative_path: The relative path to the page
         project_root: The project root directory
+        section: The section name if this page is inside a section, None otherwise
 
     Returns:
         The resolved page with inferred title
@@ -159,7 +181,7 @@ def resolve_page(relative_path: str, project_root: str) -> ResolvedPage:
         )
 
     title = _infer_title(local_path)
-    return ResolvedPage(title=title, path=relative_path)
+    return ResolvedPage(title=title, path=relative_path, section=section)
 
 
 def _infer_title(local_path: str) -> str:

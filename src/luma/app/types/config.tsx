@@ -2,6 +2,7 @@ export interface Page {
   type: "page";
   title: string;
   path: string;
+  section?: string;
 }
 
 export interface Link {
@@ -15,6 +16,7 @@ export interface Reference {
   title: string;
   relative_path: string;
   apis: string[];
+  section?: string;
 }
 
 export interface Section {
