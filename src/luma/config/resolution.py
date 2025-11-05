@@ -78,7 +78,7 @@ def _resolve_navigation_item(
     elif isinstance(item, Section):
         return _resolve_section(item, project_root)
     elif isinstance(item, Reference):
-        return _resolve_reference(item, section)
+        return _resolve_reference(item, section=section)
     elif isinstance(item, Tab):
         return _resolve_tab(item, project_root)
     else:
