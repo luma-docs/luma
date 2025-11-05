@@ -25,6 +25,7 @@ export function SearchBar() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -115,6 +116,24 @@ export function SearchBar() {
     inputRef.current?.blur();
   };
 
+  // Handle "/" keyboard shortcut
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      // Only trigger if not already focused on an input
+      if (
+        event.key === "/" &&
+        document.activeElement?.tagName !== "INPUT" &&
+        document.activeElement?.tagName !== "TEXTAREA"
+      ) {
+        event.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyPress);
+    return () => document.removeEventListener("keydown", handleKeyPress);
+  }, []);
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -158,9 +177,16 @@ export function SearchBar() {
           placeholder="Search..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => setIsOpen(true)}
+          onFocus={() => {
+            setIsOpen(true);
+            setIsFocused(true);
+          }}
+          onBlur={() => setIsFocused(false)}
           onKeyDown={handleKeyDown}
         />
+        {!isFocused && (
+          <kbd className={styles.keyboardShortcut}>/</kbd>
+        )}
       </div>
 
       {isOpen && results.length > 0 && (
