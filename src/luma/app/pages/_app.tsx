@@ -39,7 +39,7 @@ function hasTabs(navigation: NavigationItem[]): boolean {
 
 function findCurrentPage(
   navigation: NavigationItem[],
-  currentPath: string
+  currentPath: string,
 ): Page | Reference | null {
   for (const item of navigation) {
     if (item.type === "page") {
@@ -185,7 +185,7 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
   );
 
   const section = config?.navigation
-    ? findCurrentPage(config.navigation, currentPath)?.section ?? null
+    ? (findCurrentPage(config.navigation, currentPath)?.section ?? null)
     : null;
 
   return (
