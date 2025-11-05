@@ -3,6 +3,7 @@ import Head from "next/head";
 import { SideNav, TableOfContents } from "../components";
 import { TopNav } from "../components/TopNav";
 import { Footer } from "../components/Footer";
+import { Breadcrumb } from "../components/Breadcrumb";
 import VersionSelector from "../components/VersionSelector";
 import "prismjs";
 // Import other Prism themes here
@@ -30,9 +31,40 @@ import { Config, Tab, NavigationItem } from "../types/config";
 const config = configData as Config;
 
 import { TableOfContentsItem } from "../components/TableOfContents";
+import { Page, Reference } from "../types/config";
 
 function hasTabs(navigation: NavigationItem[]): boolean {
   return navigation.length > 0 && navigation[0].type === "tab";
+}
+
+function findCurrentPage(
+  navigation: NavigationItem[],
+  currentPath: string
+): Page | Reference | null {
+  for (const item of navigation) {
+    if (item.type === "page") {
+      const pagePath = `/${item.path.slice(0, -3)}`;
+      if (currentPath === pagePath) {
+        return item;
+      }
+    } else if (item.type === "reference") {
+      const refPath = `/${item.relative_path.slice(0, -3)}`;
+      if (currentPath === refPath) {
+        return item;
+      }
+    } else if (item.type === "section") {
+      const result = findCurrentPage(item.contents, currentPath);
+      if (result !== null) {
+        return result;
+      }
+    } else if (item.type === "tab") {
+      const result = findCurrentPage(item.contents, currentPath);
+      if (result !== null) {
+        return result;
+      }
+    }
+  }
+  return null;
 }
 
 function findActiveTabIndex(tabs: Tab[], currentPath: string): number {
@@ -152,6 +184,10 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
       item.id && (item.level === 2 || item.level === 3),
   );
 
+  const section = config?.navigation
+    ? findCurrentPage(config.navigation, currentPath)?.section ?? null
+    : null;
+
   return (
     <>
       <Head>
@@ -171,6 +207,7 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
             <div className="container">
               <div className="content">
                 <div className="content-wrapper">
+                  {section && <Breadcrumb section={section} />}
                   <Component {...pageProps} />
                 </div>
                 <Footer socials={config?.socials} />
