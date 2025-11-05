@@ -72,7 +72,7 @@ def _resolve_navigation_item(
         The resolved navigation item
     """
     if isinstance(item, Page):
-        return resolve_page(item, project_root, section)
+        return resolve_page(item, project_root, section=section)
     elif isinstance(item, Link):
         return _resolve_link(item)
     elif isinstance(item, Section):
