@@ -2,7 +2,7 @@ import inspect
 import json
 import logging
 import os
-from types import FunctionType
+from types import FunctionType, GenericAlias
 from typing import Any, Dict, Iterable, Optional, Tuple, Union
 
 from docstring_parser import Docstring, parse
@@ -13,6 +13,8 @@ from .node import get_node_root
 from .utils import get_module_and_relative_name, get_obj
 
 logger = logging.getLogger(__name__)
+
+MAX_FORMATTED_SIGNATURE_LENGTH = 80
 
 
 def prepare_references(project_root: str, config: ResolvedConfig) -> None:
@@ -27,7 +29,7 @@ def prepare_references(project_root: str, config: ResolvedConfig) -> None:
             try:
                 module, relative_name = get_module_and_relative_name(qualname)
             except ImportError:
-                logger.warning(f"Couldn't import '{module.__name__}'")
+                logger.warning(f"Couldn't import '{qualname}'")
                 continue
 
             try:
@@ -122,7 +124,7 @@ def _get_summary_and_desc(parsed: Docstring) -> Tuple[Optional[str], Optional[st
 def _parse_func(func: FunctionType, qualname: str) -> PyFunc:
     assert isinstance(func, FunctionType), func
 
-    signature = _get_signature(func, qualname)
+    signature = format_signature(func, qualname)
     parsed = parse(func.__doc__)
     summary, desc = _get_summary_and_desc(parsed)
     param_types = _get_param_types(func)
@@ -181,7 +183,7 @@ def _parse_cls(cls: type, qualname: str) -> PyClass:
 
     return PyClass(
         name=qualname,
-        signature=_get_signature(cls, qualname),
+        signature=format_signature(cls, qualname),
         summary=summary,
         desc=desc,
         examples=examples,
@@ -190,7 +192,7 @@ def _parse_cls(cls: type, qualname: str) -> PyClass:
     )
 
 
-def _get_signature(obj: Union[FunctionType, type], name: str) -> str:
+def format_signature(obj: Union[FunctionType, type], name: str) -> str:
     assert isinstance(obj, (FunctionType, type)), obj
 
     init_or_func = obj.__init__ if isinstance(obj, type) else obj
@@ -198,17 +200,63 @@ def _get_signature(obj: Union[FunctionType, type], name: str) -> str:
         # If you don't override the default constructor, `inspect.signature` looks like
         # 'cls(/, *args, **kwargs)'. To simplify, we special case this and just do
         # 'cls()'.
-        parameters = "()"
+        return f"{name}()"
+
+    signature = inspect.signature(init_or_func)
+
+    # Build list of formatted parameters, excluding 'self'. Each element is a string
+    # of the form 'name: type' or 'name' if no annotation is specified.
+    formatted_parameters: list[str] = []
+    for parameter in signature.parameters.values():
+        if parameter.name == "self":
+            continue
+
+        if parameter.annotation != inspect.Signature.empty:
+            formatted_parameters.append(
+                f"{parameter.name}: {_format_annotation(parameter.annotation)}"
+            )
+        else:
+            formatted_parameters.append(parameter.name)
+
+    # Try single-line signature first.
+    formatted_signature = f"{name}({', '.join(formatted_parameters)})"
+    if signature.return_annotation != inspect.Signature.empty:
+        formatted_signature += f" -> {_format_annotation(signature.return_annotation)}"
+
+    # If the signature is too long, wrap it at the commas.
+    if len(formatted_signature) > MAX_FORMATTED_SIGNATURE_LENGTH:
+        formatted_signature = f"{name}(\n"
+        for formatted_parameter in formatted_parameters:
+            formatted_signature += f"    {formatted_parameter},\n"
+        formatted_signature += ")"
+
+        if signature.return_annotation != inspect.Signature.empty:
+            formatted_signature += (
+                f" -> {_format_annotation(signature.return_annotation)}"
+            )
+
+    return formatted_signature
+
+
+def _format_annotation(annotation: Any) -> str:
+    # If the user provided a quoted type, used that quoted value directly.
+    if isinstance(annotation, str):
+        return annotation
+
+    # If the annotation looks `list[int]`, the repr looks best.
+    elif isinstance(annotation, GenericAlias):
+        return repr(annotation)
+
+    # If the annotation looks like `List[int]`, then the repr contains the `typing`
+    # module.
+    elif repr(annotation).startswith("typing."):
+        return repr(annotation).removeprefix("typing.")
+
+    elif hasattr(annotation, "__name__"):
+        return annotation.__name__
+
     else:
-        parameters: str = repr(inspect.signature(init_or_func))[
-            len("<Signature ") : -len(">")
-        ]
-
-    # HACK: Remove 'self' parameter from class methods.
-    if parameters.startswith("(self"):
-        parameters = parameters.replace("(self, ", "(")
-
-    return f"{name}{parameters}"
+        return repr(annotation)
 
 
 def _get_param_types(obj: Union[FunctionType, type]) -> Dict[str, Optional[str]]:

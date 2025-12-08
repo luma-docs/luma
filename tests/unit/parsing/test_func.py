@@ -1,7 +1,9 @@
+from typing import List
+
 import pytest
 
 from luma.models import DocstringExample, PyArg, PyFunc, PyObjType
-from luma.parser import parse_obj
+from luma.parser import format_signature, parse_obj
 
 
 def test_name():
@@ -238,3 +240,50 @@ def test_comprehensive():
         PyArg(name="y", type="int", desc="The second number."),
     ]
     assert definition.returns == "The sum of x and y."
+
+
+def test_short_signature_is_not_wrapped():
+    def f(x: int, y: int) -> int:
+        return 0
+
+    signature = format_signature(f, "f")
+
+    assert signature == "f(x: int, y: int) -> int"
+
+
+def test_signature_with_typing_list():
+    def f(x: List[int]):
+        return 0
+
+    signature = format_signature(f, "f")
+
+    assert signature == "f(x: List[int])"
+
+
+def test_signature_with_builtin_list():
+    def f(x: list[int]):
+        return 0
+
+    signature = format_signature(f, "f")
+
+    assert signature == "f(x: list[int])"
+
+
+def test_long_signature_wraps_at_commas():
+    def f(
+        very_long_parameter_name: int,
+        another_long_parameter_name: str,
+        yet_another_parameter: float,
+    ) -> int:
+        return 0
+
+    signature = format_signature(f, "f")
+
+    expected_signature = (
+        "f(\n"
+        "    very_long_parameter_name: int,\n"
+        "    another_long_parameter_name: str,\n"
+        "    yet_another_parameter: float,\n"
+        ") -> int"
+    )
+    assert signature == expected_signature
