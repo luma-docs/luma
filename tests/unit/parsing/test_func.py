@@ -269,6 +269,15 @@ def test_signature_with_builtin_list():
     assert signature == "f(x: list[int])"
 
 
+def test_signature_with_annotation_and_default_value():
+    def f(x: int = 0):
+        return 0
+
+    signature = format_signature(f, "f")
+
+    assert signature == "f(x: int = 0)"
+
+
 def test_long_signature_wraps_at_commas():
     def f(
         very_long_parameter_name: int,

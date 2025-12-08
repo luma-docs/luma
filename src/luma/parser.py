@@ -212,11 +212,16 @@ def format_signature(obj: Union[FunctionType, type], name: str) -> str:
             continue
 
         if parameter.annotation != inspect.Signature.empty:
-            formatted_parameters.append(
+            formatted_parameter = (
                 f"{parameter.name}: {_format_annotation(parameter.annotation)}"
             )
         else:
-            formatted_parameters.append(parameter.name)
+            formatted_parameter = parameter.name
+
+        if parameter.default != inspect.Parameter.empty:
+            formatted_parameter += " = " + repr(parameter.default)
+
+        formatted_parameters.append(formatted_parameter)
 
     # Try single-line signature first.
     formatted_signature = f"{name}({', '.join(formatted_parameters)})"
