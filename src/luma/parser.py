@@ -263,7 +263,7 @@ def format_annotation(annotation: Any) -> str:
         name = format_annotation(typing.get_origin(annotation))
         args = [format_annotation(arg) for arg in typing.get_args(annotation)]
         if args:
-            return f"{name}[{", ".join(args)}]"
+            return f"{name}[{', '.join(args)}]"
         else:
             return name
 
