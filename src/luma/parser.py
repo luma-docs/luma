@@ -2,7 +2,8 @@ import inspect
 import json
 import logging
 import os
-from types import FunctionType, GenericAlias
+import typing
+from types import FunctionType
 from typing import Any, Dict, Iterable, Optional, Tuple, Union
 
 from docstring_parser import Docstring, parse
@@ -213,7 +214,7 @@ def format_signature(obj: Union[FunctionType, type], name: str) -> str:
 
         if parameter.annotation != inspect.Signature.empty:
             formatted_parameter = (
-                f"{parameter.name}: {_format_annotation(parameter.annotation)}"
+                f"{parameter.name}: {format_annotation(parameter.annotation)}"
             )
         else:
             formatted_parameter = parameter.name
@@ -226,7 +227,7 @@ def format_signature(obj: Union[FunctionType, type], name: str) -> str:
     # Try single-line signature first.
     formatted_signature = f"{name}({', '.join(formatted_parameters)})"
     if signature.return_annotation != inspect.Signature.empty:
-        formatted_signature += f" -> {_format_annotation(signature.return_annotation)}"
+        formatted_signature += f" -> {format_annotation(signature.return_annotation)}"
 
     # If the signature is too long, wrap it at the commas.
     if len(formatted_signature) > MAX_FORMATTED_SIGNATURE_LENGTH:
@@ -237,25 +238,34 @@ def format_signature(obj: Union[FunctionType, type], name: str) -> str:
 
         if signature.return_annotation != inspect.Signature.empty:
             formatted_signature += (
-                f" -> {_format_annotation(signature.return_annotation)}"
+                f" -> {format_annotation(signature.return_annotation)}"
             )
 
     return formatted_signature
 
 
-def _format_annotation(annotation: Any) -> str:
+def format_annotation(annotation: Any) -> str:
     # If the user provided a quoted type, used that quoted value directly.
     if isinstance(annotation, str):
         return annotation
 
-    # If the annotation looks `list[int]`, the repr looks best.
-    elif isinstance(annotation, GenericAlias):
-        return repr(annotation)
+    elif annotation is type(None):
+        return "None"
 
-    # If the annotation looks like `List[int]`, then the repr contains the `typing`
-    # module.
-    elif repr(annotation).startswith("typing."):
-        return repr(annotation).removeprefix("typing.")
+    elif isinstance(annotation, typing.ForwardRef):
+        # HACK
+        return repr(annotation)[len("ForwardRef('") : -len("']")]
+
+    elif repr(typing.get_origin(annotation)) == "typing.Union":
+        return " | ".join(format_annotation(arg) for arg in typing.get_args(annotation))
+
+    elif typing.get_origin(annotation) is not None:
+        name = format_annotation(typing.get_origin(annotation))
+        args = [format_annotation(arg) for arg in typing.get_args(annotation)]
+        if args:
+            return f"{name}[{', '.join(args)}]"
+        else:
+            return name
 
     elif hasattr(annotation, "__name__"):
         return annotation.__name__
