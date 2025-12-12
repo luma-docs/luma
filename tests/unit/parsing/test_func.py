@@ -1,9 +1,9 @@
-from typing import List
+from typing import Any, List, Optional, Union
 
 import pytest
 
 from luma.models import DocstringExample, PyArg, PyFunc, PyObjType
-from luma.parser import format_signature, parse_obj
+from luma.parser import format_annotation, format_signature, parse_obj
 
 
 def test_name():
@@ -251,13 +251,35 @@ def test_short_signature_is_not_wrapped():
     assert signature == "f(x: int, y: int) -> int"
 
 
+@pytest.mark.parametrize(
+    "annotation, expected_string",
+    [
+        (str, "str"),
+        ("str", "str"),
+        (None, "None"),
+        (list, "list"),
+        (list[int], "list[int]"),
+        (list["int"], "list[int]"),
+        (List, "list"),
+        (List[int], "list[int]"),
+        (List["int"], "list[int]"),
+        (Union[int, str], "int | str"),
+        (Union["int", "str"], "int | str"),
+        (Optional[int], "int | None"),
+    ],
+)
+def test_format_annotation(annotation: Any, expected_string: str):
+    formatted_annotation = format_annotation(annotation)
+    assert formatted_annotation == expected_string
+
+
 def test_signature_with_typing_list():
     def f(x: List[int]):
         return 0
 
     signature = format_signature(f, "f")
 
-    assert signature == "f(x: List[int])"
+    assert signature == "f(x: list[int])"
 
 
 def test_signature_with_builtin_list():
