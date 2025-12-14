@@ -12,6 +12,7 @@
     "@markdoc/markdoc": "^0.4.0",
     "@markdoc/next.js": "^0.3.7",
     "js-yaml": "^4.1.0",
+    "linkify-urls": "^5.0.2",
     "minisearch": "^7.2.0",
     "next": "15.0.4",
     "prismjs": "^1.29.0",
