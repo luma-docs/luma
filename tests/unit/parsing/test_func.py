@@ -318,3 +318,42 @@ def test_long_signature_wraps_at_commas():
         ") -> int"
     )
     assert signature == expected_signature
+
+
+def test_positional_and_keyword():
+    def f(
+        positional_parameter: int,
+        /,
+        positional_or_keyword_parameter: str,
+        *,
+        keyword_parameter: float,
+    ) -> int:
+        return 0
+
+    signature = format_signature(f, "f")
+
+    expected_signature = (
+        "f(\n"
+        "    positional_parameter: int,\n"
+        "    /,\n"
+        "    positional_or_keyword_parameter: str,\n"
+        "    *,\n"
+        "    keyword_parameter: float,\n"
+        ") -> int"
+    )
+    assert signature == expected_signature
+
+def test_keyword_only():
+    def f(
+        *,
+        keyword_parameter: int,
+        another_keyword_parameter: str,
+    ) -> int:
+        return 0
+
+    signature = format_signature(f, "f")
+
+    expected_signature = (
+        "f(*, keyword_parameter: int, another_keyword_parameter: str) -> int"
+    )
+    assert signature == expected_signature
