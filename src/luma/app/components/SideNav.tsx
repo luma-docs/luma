@@ -18,9 +18,11 @@ interface SideNavProps {
 function SideNavLink({
   item,
   key,
+  addTopSpacing = false,
 }: {
   item: Page | Reference | LinkType;
   key: string;
+  addTopSpacing?: boolean;
 }) {
   const router = useRouter();
   const currentPath = router.asPath.split("#")[0].split("?")[0];
@@ -45,7 +47,10 @@ function SideNavLink({
   }
 
   return (
-    <li className={isActive ? styles.sideNavItemActive : ""}>
+    <li
+      className={isActive ? styles.sideNavItemActive : ""}
+      style={addTopSpacing ? { marginTop: "0.75rem" } : undefined}
+    >
       <Link className={styles.sidenavItem} key={key} href={href}>
         {linkText}
       </Link>
@@ -60,7 +65,15 @@ export function SideNav({ items }: SideNavProps) {
       <ul className={`${styles.sidenav}`}>
         {items.map((item, itemIndex) => {
           if (item.type == "page" || item.type == "reference") {
-            return <SideNavLink item={item} key={`section-${itemIndex}`} />;
+            const previousItemIsSection =
+              itemIndex > 0 && items[itemIndex - 1].type === "section";
+            return (
+              <SideNavLink
+                item={item}
+                key={`section-${itemIndex}`}
+                addTopSpacing={previousItemIsSection}
+              />
+            );
           }
           if (item.type == "section") {
             return (
