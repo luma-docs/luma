@@ -22,7 +22,7 @@ from .link import (
     link_config,
     link_existing_pages,
     link_page_on_creation,
-    link_static_asset,
+    link_static_assets,
 )
 from .node import get_node_root, is_node_installed, run_node_dev
 from .parser import prepare_references
@@ -63,9 +63,8 @@ def init():
     config = create_or_update_config(project_root, package_name)
     resolved_config = resolve_config(config, project_root=project_root)
     link_config(resolved_config, project_root)
-    if config.favicon:
-        link_static_asset(config.favicon, project_root)
     link_existing_pages(project_root)
+    link_static_assets(project_root)
     build_search_index(project_root, resolved_config)
 
 
@@ -81,9 +80,8 @@ def dev(port: Annotated[Optional[int], typer.Option()] = None):
     link_config(resolved_config, project_root)
     prepare_references(project_root, resolved_config)
 
-    if config.favicon:
-        link_static_asset(config.favicon, project_root)
     link_existing_pages(project_root)
+    link_static_assets(project_root)
     build_search_index(project_root, resolved_config)
     link_page_on_creation(project_root)
 
@@ -103,6 +101,7 @@ def deploy(version: Annotated[Optional[str], typer.Option("--version", "-v")] = 
 
     link_config(resolved_config, project_root)
     link_existing_pages(project_root)
+    link_static_assets(project_root)
     build_search_index(project_root, resolved_config)
 
     try:
