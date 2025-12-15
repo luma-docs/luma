@@ -126,12 +126,21 @@ pre[class*="language-"] {
 
 .token.variable,
 .token.operator,
-.token.function {
+.token.function,
+.token.prompt {
   color: hsl(221, 87%, 60%);
 }
 
 .token.url {
   color: hsl(198, 99%, 37%);
+}
+
+/* Python REPL prompt (>>> and ...) */
+.token.prompt {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 /* HTML overrides */
