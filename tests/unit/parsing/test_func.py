@@ -343,6 +343,7 @@ def test_positional_and_keyword():
     )
     assert signature == expected_signature
 
+
 def test_keyword_only():
     def f(
         *,
@@ -355,5 +356,22 @@ def test_keyword_only():
 
     expected_signature = (
         "f(*, keyword_parameter: int, another_keyword_parameter: str) -> int"
+    )
+    assert signature == expected_signature
+
+
+def test_positional_and_keyword_only():
+    def f(
+        positional_parameter: int,
+        /,
+        *,
+        keyword_parameter: str,
+    ) -> int:
+        return 0
+
+    signature = format_signature(f, "f")
+
+    expected_signature = (
+        "f(positional_parameter: int, /, *, keyword_parameter: str) -> int"
     )
     assert signature == expected_signature

@@ -216,6 +216,8 @@ def format_signature(obj: Union[FunctionType, type], name: str) -> str:
         if parameter.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD and previous_kind == inspect.Parameter.POSITIONAL_ONLY:
             formatted_parameters.append("/")
         elif parameter.kind == inspect.Parameter.KEYWORD_ONLY and previous_kind != inspect.Parameter.KEYWORD_ONLY:
+            if previous_kind == inspect.Parameter.POSITIONAL_ONLY:
+                formatted_parameters.append("/")
             formatted_parameters.append("*")
             
         previous_kind = parameter.kind
