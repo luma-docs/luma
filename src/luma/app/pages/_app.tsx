@@ -9,7 +9,6 @@ import "prismjs";
 // Import other Prism themes here
 import "prismjs/components/prism-bash.min";
 import "prismjs/components/prism-python.min";
-import "../lib/prism-python-repl"; // Extends Python to tokenize REPL prompts
 import "prismjs/components/prism-yaml.min";
 import "prismjs/components/prism-markdown.min";
 import "../styles/prism-theme.css";
