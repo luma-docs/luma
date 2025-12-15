@@ -36,6 +36,8 @@
   color: var(--text-secondary, #6f6e77);
   transition: color 0.2s ease;
   font-weight: var(--font-weight-medium);
+  overflow-wrap: break-word;
+  hyphens: none;
 }
 
 .link:hover {

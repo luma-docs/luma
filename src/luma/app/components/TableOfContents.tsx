@@ -123,7 +123,7 @@ export function TableOfContents({ toc }: TableOfContentsProps) {
                 .join(" ")}
             >
               <Link href={href} className={styles.link}>
-                {item.title}
+                {item.title.replace(/([._])/g, "$1\u200B")}
               </Link>
             </li>
           );
