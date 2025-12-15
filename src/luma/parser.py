@@ -208,9 +208,19 @@ def format_signature(obj: Union[FunctionType, type], name: str) -> str:
     # Build list of formatted parameters, excluding 'self'. Each element is a string
     # of the form 'name: type' or 'name' if no annotation is specified.
     formatted_parameters: list[str] = []
+    previous_kind = None
     for parameter in signature.parameters.values():
         if parameter.name == "self":
             continue
+
+        if parameter.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD and previous_kind == inspect.Parameter.POSITIONAL_ONLY:
+            formatted_parameters.append("/")
+        elif parameter.kind == inspect.Parameter.KEYWORD_ONLY and previous_kind != inspect.Parameter.KEYWORD_ONLY:
+            if previous_kind == inspect.Parameter.POSITIONAL_ONLY:
+                formatted_parameters.append("/")
+            formatted_parameters.append("*")
+            
+        previous_kind = parameter.kind
 
         if parameter.annotation != inspect.Signature.empty:
             formatted_parameter = (
