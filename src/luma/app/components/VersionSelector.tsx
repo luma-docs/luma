@@ -13,7 +13,7 @@ export default function VersionSelector() {
     const fetchVersions = async () => {
       try {
         const response = await fetch(
-          `https://luma-projects.s3.us-east-1.amazonaws.com/${package_name}/versions.json`,
+          `https://api.luma-docs.org/dev/packages/${package_name}/versions`,
         );
 
         if (!response.ok) {
