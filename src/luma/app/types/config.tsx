@@ -42,5 +42,5 @@ export interface Config {
   name: string;
   favicon: string | null;
   navigation: NavigationItem[];
-  socials?: Social[];
+  socials: Social[] | null;
 }
