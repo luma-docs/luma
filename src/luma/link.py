@@ -84,6 +84,7 @@ def _link_static_asset(project_root: str, relative_path: str):
         os.remove(dst)
 
     logger.debug(f"Linking file from '{src}' to '{dst}'")
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
     os.link(src, dst)
 
 
