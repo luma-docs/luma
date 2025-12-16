@@ -203,7 +203,7 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
                   {section && <Breadcrumb section={section} />}
                   <Component {...pageProps} />
                 </div>
-                <Footer socials={config.socials} />
+                <Footer socials={config?.socials} />
               </div>
               {validTocItems.length > 1 ? (
                 <TableOfContents toc={validTocItems} />

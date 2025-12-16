@@ -2,7 +2,7 @@ import styles from "./Footer.module.css";
 import { Social } from "../types/config";
 
 interface FooterProps {
-  socials: Social[] | null;
+  socials?: Social[] | null;
 }
 
 const ICONS = {
