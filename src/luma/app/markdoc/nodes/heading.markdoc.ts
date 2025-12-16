@@ -1,6 +1,7 @@
 import { Tag, Node, Config, RenderableTreeNode } from "@markdoc/markdoc";
 
 import { Heading } from "../../components";
+import { extractTextFromChildren } from "../utils";
 
 function generateID(
   children: RenderableTreeNode[],
@@ -9,9 +10,8 @@ function generateID(
   if (attributes.id && typeof attributes.id === "string") {
     return attributes.id;
   }
-  return children
-    .filter((child) => typeof child === "string")
-    .join(" ")
+  const text = extractTextFromChildren(children);
+  return text
     .replace(/[?]/g, "")
     .replace(/\s+/g, "-")
     .toLowerCase();

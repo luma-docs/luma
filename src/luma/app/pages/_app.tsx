@@ -32,6 +32,7 @@ const config = configData as Config;
 
 import { TableOfContentsItem } from "../components/TableOfContents";
 import { Page, Reference } from "../types/config";
+import { extractTextFromChildren } from "../markdoc/utils";
 
 function hasTabs(navigation: NavigationItem[]): boolean {
   return navigation.length > 0 && navigation[0].type === "tab";
@@ -97,12 +98,13 @@ function collectHeadings(
   // I think this function assumes the root node is an 'article' tag?
   if (Tag.isTag(node)) {
     if (node.name === "Heading") {
-      const title = node.children[0];
-
       const id = node.attributes.id || "ham"; // Assuming you have an ID generator
       const level = node.attributes.level || 1; // Default to level 1 if not provided
 
-      if (typeof title === "string") {
+      // Extract text from all children, including inline code
+      const title = extractTextFromChildren(node.children);
+
+      if (title) {
         sections.push({
           id,
           level,
