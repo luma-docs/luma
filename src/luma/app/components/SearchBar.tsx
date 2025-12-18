@@ -130,13 +130,20 @@ export function SearchBar() {
         document.activeElement?.tagName !== "TEXTAREA"
       ) {
         event.preventDefault();
-        inputRef.current?.focus();
+        setIsOpen(true);
       }
     };
 
     document.addEventListener("keydown", handleKeyPress);
     return () => document.removeEventListener("keydown", handleKeyPress);
   }, []);
+
+  // Focus input when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => inputRef.current?.focus(), 10);
+    }
+  }, [isOpen]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -219,11 +226,7 @@ export function SearchBar() {
       <div className={styles.container}>
         <button
           className={styles.triggerButton}
-          onClick={() => {
-            setIsOpen(true);
-            // Focus input after modal opens
-            setTimeout(() => inputRef.current?.focus(), 10);
-          }}
+          onClick={() => setIsOpen(true)}
         >
           <svg
             className={styles.searchIcon}
