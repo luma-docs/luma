@@ -2,15 +2,15 @@ import json
 import logging
 import os
 from pathlib import Path
-from pathspec import PathSpec
 
+from pathspec import PathSpec
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
 from .config import ResolvedConfig
 from .node import get_node_root
 
-STATIC_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp", ".gif", ".ico")
+STATIC_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp", ".gif", ".ico", ".svg")
 logger = logging.getLogger(__name__)
 
 
