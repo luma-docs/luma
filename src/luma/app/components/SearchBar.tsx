@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/router";
 import MiniSearch from "minisearch";
 import styles from "./SearchBar.module.css";
@@ -25,7 +26,6 @@ export function SearchBar() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -77,8 +77,7 @@ export function SearchBar() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!isOpen || results.length === 0) {
       if (e.key === "Escape") {
-        setIsOpen(false);
-        inputRef.current?.blur();
+        closeModal();
       }
       return;
     }
@@ -102,8 +101,7 @@ export function SearchBar() {
         break;
       case "Escape":
         e.preventDefault();
-        setIsOpen(false);
-        inputRef.current?.blur();
+        closeModal();
         break;
     }
   };
@@ -111,9 +109,15 @@ export function SearchBar() {
   // Navigate to selected result
   const navigateToResult = (result: SearchResult) => {
     router.push(result.path);
+    closeModal();
+  };
+
+  // Close modal and reset state
+  const closeModal = () => {
     setIsOpen(false);
     setQuery("");
-    inputRef.current?.blur();
+    setResults([]);
+    setSelectedIndex(0);
   };
 
   // Handle "/" keyboard shortcut
@@ -126,13 +130,20 @@ export function SearchBar() {
         document.activeElement?.tagName !== "TEXTAREA"
       ) {
         event.preventDefault();
-        inputRef.current?.focus();
+        setIsOpen(true);
       }
     };
 
     document.addEventListener("keydown", handleKeyPress);
     return () => document.removeEventListener("keydown", handleKeyPress);
   }, []);
+
+  // Focus input when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => inputRef.current?.focus(), 10);
+    }
+  }, [isOpen]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -151,61 +162,97 @@ export function SearchBar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.inputWrapper}>
-        <svg
-          className={styles.searchIcon}
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M7.333 12.667A5.333 5.333 0 1 0 7.333 2a5.333 5.333 0 0 0 0 10.667zM14 14l-2.9-2.9"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+  const modalContent = isOpen && (
+    <div className={styles.modalOverlay} onClick={closeModal}>
+      <div className={styles.modalPanel} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.inputWrapper}>
+          <svg
+            className={styles.searchIcon}
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7.333 12.667A5.333 5.333 0 1 0 7.333 2a5.333 5.333 0 0 0 0 10.667zM14 14l-2.9-2.9"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <input
+            ref={inputRef}
+            type="text"
+            className={styles.input}
+            placeholder="Search..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
-        </svg>
-        <input
-          ref={inputRef}
-          type="text"
-          className={styles.input}
-          placeholder="Search..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => {
-            setIsOpen(true);
-            setIsFocused(true);
-          }}
-          onBlur={() => setIsFocused(false)}
-          onKeyDown={handleKeyDown}
-        />
-        {!isFocused && <kbd className={styles.keyboardShortcut}>/</kbd>}
+        </div>
+
+        {results.length > 0 && (
+          <div ref={dropdownRef} className={styles.results}>
+            {results.map((result, index) => (
+              <button
+                key={result.id}
+                className={`${styles.result} ${
+                  index === selectedIndex ? styles.resultSelected : ""
+                }`}
+                onClick={() => navigateToResult(result)}
+                onMouseEnter={() => setSelectedIndex(index)}
+              >
+                <div className={styles.resultTitle}>{result.title}</div>
+                {result.section && (
+                  <div className={styles.resultSection}>{result.section}</div>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {query.trim() && results.length === 0 && (
+          <div className={styles.noResults}>No results found</div>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Trigger button in sidenav */}
+      <div className={styles.container}>
+        <button
+          className={styles.triggerButton}
+          onClick={() => setIsOpen(true)}
+        >
+          <svg
+            className={styles.searchIcon}
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7.333 12.667A5.333 5.333 0 1 0 7.333 2a5.333 5.333 0 0 0 0 10.667zM14 14l-2.9-2.9"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className={styles.triggerText}>Search...</span>
+          <kbd className={styles.keyboardShortcut}>/</kbd>
+        </button>
       </div>
 
-      {isOpen && results.length > 0 && (
-        <div ref={dropdownRef} className={styles.dropdown}>
-          {results.map((result, index) => (
-            <button
-              key={result.id}
-              className={`${styles.result} ${
-                index === selectedIndex ? styles.resultSelected : ""
-              }`}
-              onClick={() => navigateToResult(result)}
-              onMouseEnter={() => setSelectedIndex(index)}
-            >
-              <div className={styles.resultTitle}>{result.title}</div>
-              {result.section && (
-                <div className={styles.resultSection}>{result.section}</div>
-              )}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+      {/* Portal modal to document.body */}
+      {typeof document !== "undefined" &&
+        modalContent &&
+        createPortal(modalContent, document.body)}
+    </>
   );
 }
