@@ -10,9 +10,10 @@ interface SearchDocument {
   id: string;
   title: string;
   path: string;
-  headings: string;
   content: string;
   section: string;
+  heading: string;
+  headingLevel: number;
 }
 
 interface SearchResult {
@@ -20,6 +21,8 @@ interface SearchResult {
   title: string;
   path: string;
   section: string;
+  heading: string;
+  headingLevel: number;
 }
 
 export function SearchBar() {
@@ -36,10 +39,10 @@ export function SearchBar() {
     const documents = searchIndexData as SearchDocument[];
 
     const miniSearch = new MiniSearch({
-      fields: ["title", "headings", "content"],
-      storeFields: ["title", "path", "section"],
+      fields: ["title", "heading", "content"],
+      storeFields: ["title", "path", "section", "heading", "headingLevel"],
       searchOptions: {
-        boost: { title: 3, headings: 2, content: 1 },
+        boost: { title: 3, heading: 2, content: 1 },
         fuzzy: 0.2,
         prefix: true,
       },
@@ -64,6 +67,8 @@ export function SearchBar() {
         title: result.title,
         path: result.path,
         section: result.section,
+        heading: result.heading,
+        headingLevel: result.headingLevel,
       }));
       setResults(limitedResults);
       setSelectedIndex(0);
@@ -204,7 +209,21 @@ export function SearchBar() {
                 onClick={() => navigateToResult(result)}
                 onMouseEnter={() => setSelectedIndex(index)}
               >
-                <div className={styles.resultTitle}>{result.title}</div>
+                <div className={styles.resultTitle}>
+                  {result.heading ? (
+                    <>
+                      <span className={styles.resultPageTitle}>
+                        {result.title}
+                      </span>
+                      <span className={styles.resultHeadingSeparator}> › </span>
+                      <span className={styles.resultHeading}>
+                        {result.heading}
+                      </span>
+                    </>
+                  ) : (
+                    result.title
+                  )}
+                </div>
                 {result.section && (
                   <div className={styles.resultSection}>{result.section}</div>
                 )}

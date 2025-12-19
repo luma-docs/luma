@@ -33,20 +33,18 @@ def build_search_index(project_root: str, config: ResolvedConfig) -> None:
         if isinstance(item, ResolvedPage):
             page_path = os.path.join(pages_path, item.path)
             if os.path.exists(page_path):
-                doc = _extract_page_content(
+                docs = _extract_page_content(
                     page_path, item.path, item.title, item.section
                 )
-                if doc:
-                    search_docs.append(doc)
+                search_docs.extend(docs)
         elif isinstance(item, ResolvedReference):
             # Index API reference pages
             page_path = os.path.join(pages_path, item.relative_path)
             if os.path.exists(page_path):
-                doc = _extract_page_content(
+                docs = _extract_page_content(
                     page_path, item.relative_path, item.title, item.section
                 )
-                if doc:
-                    search_docs.append(doc)
+                search_docs.extend(docs)
 
     # Write search index
     output_path = os.path.join(node_path, "data", "search-index.json")
@@ -75,9 +73,33 @@ def _flatten_navigation(items: List[Any]) -> List[Any]:
     return result
 
 
+def _slugify(text: str) -> str:
+    """Convert heading text to URL-friendly slug.
+
+    Args:
+        text: The heading text to slugify.
+
+    Returns:
+        URL-friendly slug.
+    """
+    # Convert to lowercase
+    slug = text.lower()
+    # Remove inline code backticks
+    slug = re.sub(r"`([^`]+)`", r"\1", slug)
+    # Replace spaces and underscores with hyphens
+    slug = re.sub(r"[\s_]+", "-", slug)
+    # Remove non-alphanumeric chars except hyphens and dots
+    slug = re.sub(r"[^\w.-]", "", slug)
+    # Replace multiple consecutive hyphens with single hyphen
+    slug = re.sub(r"-+", "-", slug)
+    # Remove leading/trailing hyphens
+    slug = slug.strip("-")
+    return slug
+
+
 def _extract_page_content(
     file_path: str, relative_path: str, title: str, section: Optional[str]
-) -> Optional[Dict[str, Any]]:
+) -> List[Dict[str, Any]]:
     """Extract searchable content from a markdown file.
 
     Args:
@@ -87,45 +109,58 @@ def _extract_page_content(
         section: Parent section name (if any).
 
     Returns:
-        Dictionary with page metadata and content for search indexing.
+        List of dictionaries with page/heading metadata for search indexing.
     """
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
     except Exception as e:
         logger.warning(f"Failed to read '{file_path}': {e}")
-        return None
+        return []
 
-    # Extract headings (h1-h3)
-    headings = []
-    for match in re.finditer(r"^#{1,3}\s+(.+)$", content, re.MULTILINE):
-        headings.append(match.group(1).strip())
-
-    # Remove markdown syntax for cleaner content
-    # Remove code blocks
-    clean_content = re.sub(r"```[\s\S]*?```", "", content)
-    # Remove inline code
-    clean_content = re.sub(r"`[^`]+`", "", clean_content)
-    # Remove headings
-    clean_content = re.sub(r"^#+\s+.+$", "", clean_content, flags=re.MULTILINE)
-    # Remove links but keep text
-    clean_content = re.sub(r"\[([^\]]+)\]\([^\)]+\)", r"\1", clean_content)
-    # Remove bold/italic
-    clean_content = re.sub(r"[*_]{1,2}([^*_]+)[*_]{1,2}", r"\1", clean_content)
-    # Remove extra whitespace
-    clean_content = re.sub(r"\s+", " ", clean_content).strip()
-
-    # Limit content to first 300 characters
-    content_preview = clean_content[:300] if clean_content else ""
-
-    # Generate URL path
+    # Generate base URL path
     url_path = "/" + relative_path.replace(".md", "")
 
-    return {
-        "id": url_path,
-        "title": title,
-        "path": url_path,
-        "headings": " ".join(headings),  # Join headings for indexing
-        "content": content_preview,
-        "section": section or "",
-    }
+    results = []
+
+    # First, add entry for the page itself
+    # Remove markdown syntax for cleaner content
+    clean_content = re.sub(r"```[\s\S]*?```", "", content)
+    clean_content = re.sub(r"`[^`]+`", "", clean_content)
+    clean_content = re.sub(r"^#+\s+.+$", "", clean_content, flags=re.MULTILINE)
+    clean_content = re.sub(r"\[([^\]]+)\]\([^\)]+\)", r"\1", clean_content)
+    clean_content = re.sub(r"[*_]{1,2}([^*_]+)[*_]{1,2}", r"\1", clean_content)
+    clean_content = re.sub(r"\s+", " ", clean_content).strip()
+    content_preview = clean_content[:300] if clean_content else ""
+
+    results.append(
+        {
+            "id": url_path,
+            "title": title,
+            "path": url_path,
+            "content": content_preview,
+            "section": section or "",
+            "heading": "",
+            "headingLevel": 0,
+        }
+    )
+
+    # Extract individual headings (h1-h3) and create separate entries
+    for match in re.finditer(r"^(#{1,3})\s+(.+)$", content, re.MULTILINE):
+        heading_level = len(match.group(1))
+        heading_text = match.group(2).strip()
+        heading_slug = _slugify(heading_text)
+
+        results.append(
+            {
+                "id": f"{url_path}#{heading_slug}",
+                "title": title,
+                "path": f"{url_path}#{heading_slug}",
+                "content": "",
+                "section": section or "",
+                "heading": heading_text,
+                "headingLevel": heading_level,
+            }
+        )
+
+    return results
