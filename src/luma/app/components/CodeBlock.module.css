@@ -11,8 +11,7 @@
   border-radius: 4px;
   margin: 0;
   overflow-x: auto;
-  white-space: pre-wrap;
-  word-break: break-all;
+  white-space: pre;
 }
 
 /* Output code block styling */
@@ -28,8 +27,7 @@
   margin: 0;
   border-radius: 0 0 4px 4px;
   overflow-x: auto;
-  white-space: pre-wrap;
-  word-break: break-all;
+  white-space: pre;
 }
 
 .label {
