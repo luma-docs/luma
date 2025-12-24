@@ -141,6 +141,9 @@
   cursor: pointer;
   transition: background 0.15s;
   border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
 }
 
 .result:last-child {
@@ -150,6 +153,19 @@
 .result:hover,
 .resultSelected {
   background: #f4f2f4;
+}
+
+.resultIcon {
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+  display: flex;
+  align-items: center;
+  margin-top: 0.125rem;
+}
+
+.resultContent {
+  flex: 1;
+  min-width: 0;
 }
 
 .resultTitle {

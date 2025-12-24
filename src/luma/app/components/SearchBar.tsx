@@ -14,6 +14,7 @@ interface SearchDocument {
   section: string;
   heading: string;
   headingLevel: number;
+  type: string;
 }
 
 interface SearchResult {
@@ -23,7 +24,74 @@ interface SearchResult {
   section: string;
   heading: string;
   headingLevel: number;
+  type: string;
 }
+
+// Icon components
+const PageIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M9 1H3.5C3.10218 1 2.72064 1.15804 2.43934 1.43934C2.15804 1.72064 2 2.10218 2 2.5V13.5C2 13.8978 2.15804 14.2794 2.43934 14.5607C2.72064 14.842 3.10218 15 3.5 15H12.5C12.8978 15 13.2794 14.842 13.5607 14.5607C13.842 14.2794 14 13.8978 14 13.5V6M9 1L14 6M9 1V6H14M5 8.5H11M5 11H11"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const HeadingIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M3 5.5H13M3 10.5H13M6.5 3L5.5 13M10.5 3L9.5 13"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const CodeIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M10 12L14 8L10 4M6 4L2 8L6 12"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// Helper to get the icon for a result
+const getResultIcon = (result: SearchResult) => {
+  if (result.type === "reference") {
+    return <CodeIcon />;
+  } else if (result.heading) {
+    return <HeadingIcon />;
+  } else {
+    return <PageIcon />;
+  }
+};
 
 export function SearchBar() {
   const [query, setQuery] = useState("");
@@ -40,7 +108,14 @@ export function SearchBar() {
 
     const miniSearch = new MiniSearch({
       fields: ["title", "heading", "content"],
-      storeFields: ["title", "path", "section", "heading", "headingLevel"],
+      storeFields: [
+        "title",
+        "path",
+        "section",
+        "heading",
+        "headingLevel",
+        "type",
+      ],
       searchOptions: {
         boost: { title: 3, heading: 2, content: 1 },
         fuzzy: 0.2,
@@ -69,6 +144,7 @@ export function SearchBar() {
         section: result.section,
         heading: result.heading,
         headingLevel: result.headingLevel,
+        type: result.type,
       }));
       setResults(limitedResults);
       setSelectedIndex(0);
@@ -209,24 +285,30 @@ export function SearchBar() {
                 onClick={() => navigateToResult(result)}
                 onMouseEnter={() => setSelectedIndex(index)}
               >
-                <div className={styles.resultTitle}>
-                  {result.heading ? (
-                    <>
-                      <span className={styles.resultPageTitle}>
-                        {result.title}
-                      </span>
-                      <span className={styles.resultHeadingSeparator}> › </span>
-                      <span className={styles.resultHeading}>
-                        {result.heading}
-                      </span>
-                    </>
-                  ) : (
-                    result.title
+                <div className={styles.resultIcon}>{getResultIcon(result)}</div>
+                <div className={styles.resultContent}>
+                  <div className={styles.resultTitle}>
+                    {result.heading ? (
+                      <>
+                        <span className={styles.resultPageTitle}>
+                          {result.title}
+                        </span>
+                        <span className={styles.resultHeadingSeparator}>
+                          {" "}
+                          ›{" "}
+                        </span>
+                        <span className={styles.resultHeading}>
+                          {result.heading}
+                        </span>
+                      </>
+                    ) : (
+                      result.title
+                    )}
+                  </div>
+                  {result.section && (
+                    <div className={styles.resultSection}>{result.section}</div>
                   )}
                 </div>
-                {result.section && (
-                  <div className={styles.resultSection}>{result.section}</div>
-                )}
               </button>
             ))}
           </div>
