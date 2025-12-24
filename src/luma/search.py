@@ -159,6 +159,7 @@ def _extract_page_content(
     # Skip the first H1 to avoid duplicating the page-level entry
     headings = list(re.finditer(r"^(#{1,3})\s+(.+)$", content, re.MULTILINE))
     skip_first_h1 = True
+    slug_counts: Dict[str, int] = {}  # Track slug usage to handle duplicates
 
     for match in headings:
         heading_level = len(match.group(1))
@@ -171,11 +172,19 @@ def _extract_page_content(
 
         heading_slug = _slugify(heading_text)
 
+        # Handle duplicate slugs by appending a counter
+        if heading_slug in slug_counts:
+            slug_counts[heading_slug] += 1
+            unique_slug = f"{heading_slug}-{slug_counts[heading_slug]}"
+        else:
+            slug_counts[heading_slug] = 1
+            unique_slug = heading_slug
+
         results.append(
             {
-                "id": f"{url_path}#{heading_slug}",
+                "id": f"{url_path}#{unique_slug}",
                 "title": title,
-                "path": f"{url_path}#{heading_slug}",
+                "path": f"{url_path}#{unique_slug}",
                 "content": "",
                 "section": section or "",
                 "heading": heading_text,
