@@ -42,6 +42,11 @@ export default function VersionSelector() {
     setIsOpen((prev) => !prev);
   }, []);
 
+  // Don't show selector if there's only one or no versions
+  if (versions.length <= 1) {
+    return null;
+  }
+
   return (
     <div className={styles.container}>
       {isOpen && (
