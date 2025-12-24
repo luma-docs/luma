@@ -13,12 +13,25 @@
   margin-bottom: 4px;
   max-height: 300px;
   overflow-y: auto;
-  min-width: fit-content;
+  min-width: 150px;
   white-space: nowrap;
-  padding: 0;
+  padding: 0.25rem;
   border-radius: 8px;
   background: white;
-  transition: background 0.3s;
+  border: 1px solid #d1d5db;
+  animation: dropdownAppear 200ms ease-out;
+  transform-origin: bottom;
+}
+
+@keyframes dropdownAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .versionOption {
@@ -33,70 +46,54 @@
   transition: background 0.3s;
   line-height: 1rem;
   background: none;
-  border-radius: 8px;
-  cursor: pointer
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
 }
 
 .versionOption:hover {
   background: rgba(0, 0, 0, 0.1);
   color: var(--color-text-tertiary);
-  border-radius: 8px;
 }
 
 .versionButton {
   background: none;
   border: none;
-  padding: 8px 8px 8px 16px;
+  padding: 8px 8px 8px 14px;
   font-size: 14px;
   color: var(--color-text-tertiary);
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 4px;
+  border-radius: 8px;
   transition: background 0.3s;
-  border-radius: 8px;
-}
-
-.versionButtonActive {
-  background: rgba(0, 0, 0, 0.2);
-  border: none;
-  border-radius: 8px;
-  padding: 8px 8px 8px 16px;
-  font-size: 14px;
-  color: var(--color-text-tertiary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 4px;
 }
 
 .versionButton:hover {
   background: rgba(0, 0, 0, 0.1);
-  color: var(--color-text-tertiary);
-  border-radius: 8px;
 }
 
-.listIcon {
+.versionButtonActive {
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 8px 8px 14px;
+  font-size: 14px;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-left: 2px;
-  margin-right: 4px;
+  align-items: center;
+  gap: 4px;
   transition: background 0.3s;
 }
 
-.listIcon span {
-  display: block;
-  height: 2px;
-  background-color: #4a5568;
-  border-radius: 1px;
+.versionButtonActive:hover {
+  background: rgba(0, 0, 0, 0.1);
 }
 
-.listIcon span:nth-child(1),
-.listIcon span:nth-child(2) {
-  width: 12px;
-}
-
-.listIcon span:nth-child(3) {
-  width: 8px;
+.chevron {
+  color: #4a5568;
+  flex-shrink: 0;
 }
