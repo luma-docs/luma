@@ -10,11 +10,6 @@ export default function VersionSelector() {
   const package_name = process.env.NEXT_PUBLIC_PACKAGE_NAME;
   const currentVersion = router.basePath.substring(1) || "latest";
 
-  // Don't show selector if there's only one or no versions
-  if (versions.length <= 1) {
-    return null;
-  }
-  
   useEffect(() => {
     const fetchVersions = async () => {
       try {
@@ -47,7 +42,7 @@ export default function VersionSelector() {
   const toggleDropdown = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
-  
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -67,6 +62,11 @@ export default function VersionSelector() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
+
+  // Don't show selector if there's only one or no versions
+  if (versions.length <= 1) {
+    return null;
+  }
 
   return (
     <div ref={containerRef} className={styles.container}>
