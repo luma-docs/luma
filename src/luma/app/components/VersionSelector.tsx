@@ -63,6 +63,11 @@ export default function VersionSelector() {
     };
   }, [isOpen]);
 
+  // Don't show selector if there's only one or no versions
+  if (versions.length <= 1) {
+    return null;
+  }
+
   return (
     <div ref={containerRef} className={styles.container}>
       {isOpen && (
