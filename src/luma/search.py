@@ -156,9 +156,19 @@ def _extract_page_content(
     )
 
     # Extract individual headings (h1-h3) and create separate entries
-    for match in re.finditer(r"^(#{1,3})\s+(.+)$", content, re.MULTILINE):
+    # Skip the first H1 to avoid duplicating the page-level entry
+    headings = list(re.finditer(r"^(#{1,3})\s+(.+)$", content, re.MULTILINE))
+    skip_first_h1 = True
+
+    for match in headings:
         heading_level = len(match.group(1))
         heading_text = match.group(2).strip()
+
+        # Skip the first H1 heading to avoid duplication with page entry
+        if skip_first_h1 and heading_level == 1:
+            skip_first_h1 = False
+            continue
+
         heading_slug = _slugify(heading_text)
 
         results.append(
