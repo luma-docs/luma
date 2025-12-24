@@ -34,7 +34,7 @@ def build_search_index(project_root: str, config: ResolvedConfig) -> None:
             page_path = os.path.join(pages_path, item.path)
             if os.path.exists(page_path):
                 docs = _extract_page_content(
-                    page_path, item.path, item.title, item.section
+                    page_path, item.path, item.title, item.section, doc_type="page"
                 )
                 search_docs.extend(docs)
         elif isinstance(item, ResolvedReference):
@@ -42,7 +42,11 @@ def build_search_index(project_root: str, config: ResolvedConfig) -> None:
             page_path = os.path.join(pages_path, item.relative_path)
             if os.path.exists(page_path):
                 docs = _extract_page_content(
-                    page_path, item.relative_path, item.title, item.section
+                    page_path,
+                    item.relative_path,
+                    item.title,
+                    item.section,
+                    doc_type="reference",
                 )
                 search_docs.extend(docs)
 
@@ -98,7 +102,11 @@ def _slugify(text: str) -> str:
 
 
 def _extract_page_content(
-    file_path: str, relative_path: str, title: str, section: Optional[str]
+    file_path: str,
+    relative_path: str,
+    title: str,
+    section: Optional[str],
+    doc_type: str,
 ) -> List[Dict[str, Any]]:
     """Extract searchable content from a markdown file.
 
@@ -107,6 +115,7 @@ def _extract_page_content(
         relative_path: Relative path for URL generation.
         title: Page title.
         section: Parent section name (if any).
+        doc_type: Type of document ("page" or "reference").
 
     Returns:
         List of dictionaries with page/heading metadata for search indexing.
@@ -142,6 +151,7 @@ def _extract_page_content(
             "section": section or "",
             "heading": "",
             "headingLevel": 0,
+            "type": doc_type,
         }
     )
 
@@ -160,6 +170,7 @@ def _extract_page_content(
                 "section": section or "",
                 "heading": heading_text,
                 "headingLevel": heading_level,
+                "type": doc_type,
             }
         )
 
