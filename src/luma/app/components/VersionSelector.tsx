@@ -1,14 +1,20 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
 import styles from "./VersionSelector.module.css";
 
 export default function VersionSelector() {
   const [versions, setVersions] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const package_name = process.env.NEXT_PUBLIC_PACKAGE_NAME;
   const currentVersion = router.basePath.substring(1) || "latest";
 
+  // Don't show selector if there's only one or no versions
+  if (versions.length <= 1) {
+    return null;
+  }
+  
   useEffect(() => {
     const fetchVersions = async () => {
       try {
@@ -41,14 +47,29 @@ export default function VersionSelector() {
   const toggleDropdown = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
+  
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
 
-  // Don't show selector if there's only one or no versions
-  if (versions.length <= 1) {
-    return null;
-  }
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   return (
-    <div className={styles.container}>
+    <div ref={containerRef} className={styles.container}>
       {isOpen && (
         <div className={styles.dropdown}>
           {versions
@@ -69,11 +90,32 @@ export default function VersionSelector() {
         onClick={toggleDropdown}
       >
         {currentVersion}
-        <div className={styles.listIcon}>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+        <svg
+          className={styles.chevron}
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {isOpen ? (
+            <path
+              d="M12 10L8 6L4 10"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          ) : (
+            <path
+              d="M4 6L8 10L12 6"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          )}
+        </svg>
       </button>
     </div>
   );
