@@ -8,7 +8,7 @@ socials:
 navigation:
   - overview.md
 
-  - section: Write your docs
+  - section: How to guides
     contents:
       - how-to/add-a-page.md
       - how-to/add-an-api-reference.md
