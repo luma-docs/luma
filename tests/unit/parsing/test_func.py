@@ -89,6 +89,57 @@ def test_desc_with_multiple_paragraphs():
     assert definition.desc == "One.\n\nTwo."
 
 
+def test_desc_with_unordered_list():
+    def f():
+        """Summary.
+
+        This function does:
+        - Item 1
+        - Item 2
+        - Item 3
+        """
+
+    definition = parse_obj(f, "f")
+
+    assert definition.desc == "This function does:\n- Item 1\n- Item 2\n- Item 3"
+
+
+def test_desc_with_numbered_list():
+    def f():
+        """Summary.
+
+        Steps:
+        1. First step
+        2. Second step
+        3. Third step
+        """
+
+    definition = parse_obj(f, "f")
+
+    assert definition.desc == "Steps:\n1. First step\n2. Second step\n3. Third step"
+
+
+def test_desc_with_list_and_multiple_paragraphs():
+    def f():
+        """Summary.
+
+        First paragraph.
+
+        List of items:
+        - Item 1
+        - Item 2
+
+        Final paragraph.
+        """
+
+    definition = parse_obj(f, "f")
+
+    assert (
+        definition.desc
+        == "First paragraph.\n\nList of items:\n- Item 1\n- Item 2\n\nFinal paragraph."
+    )
+
+
 def test_desc_with_no_summary():
     def f():
         """

@@ -111,13 +111,10 @@ def _get_summary_and_desc(parsed: Docstring) -> Tuple[Optional[str], Optional[st
     if not desc_paragraphs:
         desc = None
     else:
-        desc = ""
-        for i, paragraph in enumerate(desc_paragraphs):
-            desc += " ".join(paragraph.split("\n")).strip()
-            if i < len(desc_paragraphs) - 1:
-                desc += "\n\n"
-        if not desc:
-            desc = None
+        # Preserve newlines within description paragraphs to maintain Markdown
+        # formatting (lists, code blocks, etc.)
+        desc = "\n\n".join(paragraph for paragraph in desc_paragraphs)
+        desc = desc.strip() or None
 
     return summary, desc
 
