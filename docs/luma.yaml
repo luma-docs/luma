@@ -8,13 +8,13 @@ socials:
 navigation:
   - overview.md
 
-  - section: Write your docs
+  - section: How to guides
     contents:
       - how-to/add-a-page.md
-      - how-to/add-a-section.md
       - how-to/add-an-api-reference.md
+      - how-to/add-social-media-icons.md
       - how-to/customize-the-favicon.md
-      - how-to/link-to-an-api.md
+      - how-to/group-pages-in-the-sidenav.md
       - how-to/publish-your-docs.md
 
   - section: Basic syntax
