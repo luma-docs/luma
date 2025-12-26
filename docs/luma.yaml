@@ -8,21 +8,22 @@ socials:
 navigation:
   - overview.md
 
-  - section: Showcase
-    contents:
-      - link: https://requests.luma-docs.org/
-        title: requests
-
-  - section: Write your docs
+  - section: How to guides
     contents:
       - how-to/add-a-page.md
-      - how-to/add-a-section.md
       - how-to/add-an-api-reference.md
+      - how-to/add-social-media-icons.md
       - how-to/customize-the-favicon.md
-      - how-to/link-to-an-api.md
+      - how-to/group-pages-in-the-sidenav.md
       - how-to/publish-your-docs.md
 
-  - section: Components
+  - section: Basic syntax
     contents:
-      - components/callouts.md
-      - components/tabs.md
+      - syntax/callouts.md
+      - syntax/code-snippets.md
+      - syntax/images.md
+      - syntax/headings.md
+      - syntax/links.md
+      - syntax/lists.md
+      - syntax/tabs.md
+      - syntax/quotes.md

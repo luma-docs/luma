@@ -34,7 +34,7 @@ def build_search_index(project_root: str, config: ResolvedConfig) -> None:
             page_path = os.path.join(pages_path, item.path)
             if os.path.exists(page_path):
                 docs = _extract_page_content(
-                    page_path, item.path, item.title, item.section
+                    page_path, item.path, item.title, item.section, doc_type="page"
                 )
                 search_docs.extend(docs)
         elif isinstance(item, ResolvedReference):
@@ -42,7 +42,11 @@ def build_search_index(project_root: str, config: ResolvedConfig) -> None:
             page_path = os.path.join(pages_path, item.relative_path)
             if os.path.exists(page_path):
                 docs = _extract_page_content(
-                    page_path, item.relative_path, item.title, item.section
+                    page_path,
+                    item.relative_path,
+                    item.title,
+                    item.section,
+                    doc_type="reference",
                 )
                 search_docs.extend(docs)
 
@@ -98,7 +102,11 @@ def _slugify(text: str) -> str:
 
 
 def _extract_page_content(
-    file_path: str, relative_path: str, title: str, section: Optional[str]
+    file_path: str,
+    relative_path: str,
+    title: str,
+    section: Optional[str],
+    doc_type: str,
 ) -> List[Dict[str, Any]]:
     """Extract searchable content from a markdown file.
 
@@ -107,6 +115,7 @@ def _extract_page_content(
         relative_path: Relative path for URL generation.
         title: Page title.
         section: Parent section name (if any).
+        doc_type: Type of document ("page" or "reference").
 
     Returns:
         List of dictionaries with page/heading metadata for search indexing.
@@ -142,24 +151,45 @@ def _extract_page_content(
             "section": section or "",
             "heading": "",
             "headingLevel": 0,
+            "type": doc_type,
         }
     )
 
     # Extract individual headings (h1-h3) and create separate entries
-    for match in re.finditer(r"^(#{1,3})\s+(.+)$", content, re.MULTILINE):
+    # Skip the first H1 to avoid duplicating the page-level entry
+    headings = list(re.finditer(r"^(#{1,3})\s+(.+)$", content, re.MULTILINE))
+    skip_first_h1 = True
+    slug_counts: Dict[str, int] = {}  # Track slug usage to handle duplicates
+
+    for match in headings:
         heading_level = len(match.group(1))
         heading_text = match.group(2).strip()
+
+        # Skip the first H1 heading to avoid duplication with page entry
+        if skip_first_h1 and heading_level == 1:
+            skip_first_h1 = False
+            continue
+
         heading_slug = _slugify(heading_text)
+
+        # Handle duplicate slugs by appending a counter
+        if heading_slug in slug_counts:
+            slug_counts[heading_slug] += 1
+            unique_slug = f"{heading_slug}-{slug_counts[heading_slug]}"
+        else:
+            slug_counts[heading_slug] = 1
+            unique_slug = heading_slug
 
         results.append(
             {
-                "id": f"{url_path}#{heading_slug}",
+                "id": f"{url_path}#{unique_slug}",
                 "title": title,
-                "path": f"{url_path}#{heading_slug}",
+                "path": f"{url_path}#{unique_slug}",
                 "content": "",
                 "section": section or "",
                 "heading": heading_text,
                 "headingLevel": heading_level,
+                "type": doc_type,
             }
         )
 

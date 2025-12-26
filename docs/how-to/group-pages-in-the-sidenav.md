@@ -1,4 +1,4 @@
-# Add a section
+# Group pages in the sidenav
 
 Sections allow you to group related pages and API references in the sidebar.
 
