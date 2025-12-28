@@ -98,11 +98,16 @@ def link_page_on_creation(project_root: str):
 
 def link_first_page_to_index(project_root: str, config: ResolvedConfig):
     first_page = _get_first_page_path(config)
-    index_path = os.path.join(get_node_root(project_root), "index.md")
 
-    with open(index_path, "w") as index:
-        for line in open(os.path.join(project_root, first_page)):
-            index.write(line)
+    src = os.path.join(project_root, first_page)
+    dst = os.path.join(get_node_root(project_root), "pages", "index.md")
+
+    if os.path.exists(dst):
+        os.remove(dst)
+
+    logger.debug(f"Linking page from '{src}' to '{dst}'")
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    os.link(src, dst)
 
 
 def _get_first_page_path(config: ResolvedConfig):
