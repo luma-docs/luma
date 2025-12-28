@@ -8,8 +8,8 @@ version = "0.0.14"
 description = ""
 authors = ["The Luma Team <bveeramani@berkeley.edu>"]
 maintainers = [
-  {name = "Balaji Veeramani", email = "bveeramani@berkeley.edu"},
-  {name = "Nicholas Spevacek", email = "nspevacek@wisc.edu"}
+    "Balaji Veeramani <bveeramani@berkeley.edu>",
+    "Nicholas Spevacek <nspevacek@wisc.edu>"
 ]
 readme = "README.md"
 packages = [{ include = "luma", from = "src" }]
