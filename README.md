@@ -6,7 +6,7 @@
 [![PyPI version](https://badge.fury.io/py/luma-docs.svg)](https://badge.fury.io/py/luma-docs)
 ![versions](https://img.shields.io/pypi/pyversions/luma-docs.svg)
 [![Documentation](https://img.shields.io/badge/Documentation%20-Introduction%20-%20%23007ec6)](https://luma-docs.org/)
-[![Discord](https://img.shields.io/discord/1335378384754311294?color=%237289da&label=Discord)](https://discord.gg/6JDzxXyJKg)
+[![Discord](https://img.shields.io/discord/1335378384754311294?color=%237289da&label=Discord)](https://discord.gg/Bq4nTdMUwQ)
 
 </div>
 
