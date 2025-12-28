@@ -28,6 +28,7 @@
   border-radius: 0 0 4px 4px;
   overflow-x: auto;
   white-space: pre;
+  font-size: var(--font-size-code);
 }
 
 .label {
