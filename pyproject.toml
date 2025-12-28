@@ -6,7 +6,7 @@ include = [
 ]
 version = "0.0.14"
 description = ""
-authors = ["The Luma Team <bveeramani@berkeley.edu>"]
+authors = ["The Luma Team <bveeramani@berkeley.edu, nick.spev@gmail.com>"]
 readme = "README.md"
 packages = [{ include = "luma", from = "src" }]
 license = "Apache-2.0"
