@@ -1,16 +1,17 @@
-import type { NextConfig } from "next";
+const withMarkdoc = require("@markdoc/next.js");
 
-const withMarkdoc = require('@markdoc/next.js');
-const version = process.env.NEXT_PUBLIC_RELEASE_VERSION ? process.env.NEXT_PUBLIC_RELEASE_VERSION : null;
+const version = process.env.NEXT_PUBLIC_RELEASE_VERSION
+  ? process.env.NEXT_PUBLIC_RELEASE_VERSION
+  : null;
 
-module.exports = withMarkdoc(/* options */)({
-  pageExtensions: ['md', 'mdoc', 'js', 'jsx', 'ts', 'tsx'],
-  basePath: version ? `/${version}` : '',
-});
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  pageExtensions: ["md", "mdoc", "js", "jsx", "ts", "tsx"],
+  basePath: version ? `/${version}` : "",
+  output: "export",
 
-const nextConfig: NextConfig = {
-  /* config options here */
   reactStrictMode: true,
 };
 
-export default nextConfig;
+// 4. Wrap the final config with Markdoc and export it
+module.exports = withMarkdoc(/* options */)(nextConfig);
