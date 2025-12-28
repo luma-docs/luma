@@ -9,7 +9,7 @@ description = ""
 authors = ["The Luma Team <bveeramani@berkeley.edu>"]
 maintainers = [
   {name = "Balaji Veeramani", email = "bveeramani@berkeley.edu"},
-  {name = "Nicholas Spevacek", email = "nspevacek@wisc.edu}
+  {name = "Nicholas Spevacek", email = "nspevacek@wisc.edu"}
 ]
 readme = "README.md"
 packages = [{ include = "luma", from = "src" }]
