@@ -97,7 +97,7 @@ def link_page_on_creation(project_root: str):
 
 
 def link_first_page_to_index(project_root: str, config: ResolvedConfig):
-    first_page = _get_first_page_path(config)
+    first_page = _get_first_page_path(config.navigation)
 
     src = os.path.join(project_root, first_page)
     dst = os.path.join(get_node_root(project_root), "pages", "index.md")
@@ -110,8 +110,8 @@ def link_first_page_to_index(project_root: str, config: ResolvedConfig):
     os.link(src, dst)
 
 
-def _get_first_page_path(config: ResolvedConfig):
-    for item in config.navigation:
+def _get_first_page_path(items):
+    for item in items:
         if item.type == "page":
             return item.path
         elif item.type == "section":
