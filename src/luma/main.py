@@ -108,6 +108,7 @@ def deploy(version: Annotated[Optional[str], typer.Option("--version", "-v")] = 
     build_search_index(project_root, resolved_config)
 
     try:
+        logger.info("Deploying project...")
         build_path = build_project(node_root)
         deploy_project(build_path, config.name, version)
         monitor_deployment(config.name)
