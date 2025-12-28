@@ -1,7 +1,7 @@
-import { Config, Node, Tag } from '@markdoc/markdoc';
+import { Config, Node, Tag } from "@markdoc/markdoc";
 
 export const image = {
-  render: 'img',
+  render: "img",
   attributes: {
     src: { type: String, required: true },
     alt: { type: String },
@@ -14,7 +14,7 @@ export const image = {
     const version = process.env.NEXT_PUBLIC_RELEASE_VERSION || null;
     const basePath = version ? `/${version}` : "";
 
-    const modifiedSrc = attributes.src.startsWith('http') || attributes.src.startsWith('/')
+    const modifiedSrc = attributes.src.startsWith("http")
       ? attributes.src 
       : `${basePath}/${attributes.src}`;
     
