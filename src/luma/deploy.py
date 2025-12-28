@@ -70,7 +70,7 @@ def build_project(node_root: str) -> str:
     Returns:
         The path to the tempfile containing the zipped Luma project
     """
-    logger.info("Building project...")
+    logger.debug("Building project...")
     ignore_spec = _load_ignore_spec(node_root)
     temp_zip = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
 
@@ -105,7 +105,7 @@ def deploy_project(build_path: str, package_name: str, version: Optional[str]):
         The string ID corresponding to the submitted deployment, used for
         monitoring deployment status.
     """
-    logger.info("Queueing deployment...")
+    logger.debug("Queueing deployment...")
 
     if not os.path.exists(build_path):
         logger.error("Build file not found.")
@@ -144,7 +144,7 @@ def monitor_deployment(package_name: str):
         deployment_id: The id of the deployment to monitor
         package_name: The name of the package being deployed
     """
-    logger.info("Monitoring deployment...")
+    logger.debug("Monitoring deployment...")
     timeout = time.time() + POLLING_TIMEOUT_SECONDS
 
     while time.time() < timeout:
