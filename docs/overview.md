@@ -50,7 +50,7 @@ Hit `Ctrl + C` to stop the development server.
 
 ### Publish your documentation
 
-Join [our Discord](https://discord.gg/e7TP6nqCS5) to acquire an API key. Then, run the `deploy` command to publish
+Join [our Discord](https://discord.gg/Bq4nTdMUwQ) to acquire an API key. Then, run the `deploy` command to publish
 your documentation.
 
 ```
