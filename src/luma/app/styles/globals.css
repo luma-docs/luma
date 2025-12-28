@@ -74,8 +74,22 @@ li.active {
 }
 
 code {
+  background-color: #f6f8fa;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  border: 1px solid #e1e4e8;
+  font-size: 0.9em;
   overflow-wrap: break-word;
   word-wrap: break-word;
+}
+
+/* Reset inline code styles for code blocks */
+pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  font-size: inherit;
 }
 
 hr {

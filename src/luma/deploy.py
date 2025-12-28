@@ -177,12 +177,12 @@ def has_deployment_finished(package_name: str) -> bool:
         status = body["status"]
 
         if status == "READY":
-            logger.info(f"Deployment successful! https://{package_name.lower()}.luma-docs.org")
+            logger.info(f"Deployment successful! {body['url']}")
         elif status == "ERROR":
             logger.error(f"Deployment failed: {body['errorMessage']}")
             raise typer.Exit(1)
         elif status == "CANCELED":
-            logger.warn(f"Deployment canceled: {body['errorMessage']}")
+            logger.warning(f"Deployment canceled: {body['errorMessage']}")
             raise typer.Exit(1)
         else:
             return False

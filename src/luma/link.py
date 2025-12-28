@@ -96,6 +96,32 @@ def link_page_on_creation(project_root: str):
     observer.start()
 
 
+def link_first_page_to_index(project_root: str, config: ResolvedConfig):
+    first_page = _get_first_page_path(config.navigation)
+
+    src = os.path.join(project_root, first_page)
+    dst = os.path.join(get_node_root(project_root), "pages", "index.md")
+
+    if os.path.exists(dst):
+        os.remove(dst)
+
+    logger.debug(f"Linking page from '{src}' to '{dst}'")
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    os.link(src, dst)
+
+
+def _get_first_page_path(items):
+    for item in items:
+        if item.type == "page":
+            return item.path
+        elif item.type == "section":
+            return _get_first_page_path(item.contents)
+        elif item.type == "tab":
+            return _get_first_page_path(item.contents)
+        elif item.type == "reference":
+            return item.relative_path
+
+
 class _FileLinker(FileSystemEventHandler):
     def __init__(self, project_root: str):
         self._project_root = Path(project_root)
