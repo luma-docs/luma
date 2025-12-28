@@ -4,6 +4,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
+from .rst_converter import convert_rst_to_markdown
+
 
 class PyObjType(str, Enum):
     CLASS = "class"
@@ -42,22 +44,26 @@ class PyFunc(PyObj):
         markdown = f"## {self.name}\n"
         markdown += f"\n```python\n{self.signature}\n```\n"
 
-        if self.summary:
-            markdown += f"\n{self.summary}\n"
+        summary_md = convert_rst_to_markdown(self.summary)
+        if summary_md:
+            markdown += f"\n{summary_md}\n"
 
-        if self.desc:
-            markdown += f"\n{self.desc}\n"
+        desc_md = convert_rst_to_markdown(self.desc)
+        if desc_md:
+            markdown += f"\n{desc_md}\n"
 
         if self.args:
             markdown += "\n**Arguments**\n\n"
             for arg in self.args:
+                desc_md = convert_rst_to_markdown(arg.desc) or arg.desc
                 if arg.type:
-                    markdown += f"- **{arg.name}** ({arg.type}): {arg.desc}\n"
+                    markdown += f"- **{arg.name}** ({arg.type}): {desc_md}\n"
                 else:
-                    markdown += f"- **{arg.name}**: {arg.desc}\n"
+                    markdown += f"- **{arg.name}**: {desc_md}\n"
 
-        if self.returns:
-            markdown += f"\n**Returns**\n\n{self.returns}\n"
+        returns_md = convert_rst_to_markdown(self.returns)
+        if returns_md:
+            markdown += f"\n**Returns**\n\n{returns_md}\n"
 
         if self.examples:
             markdown += "\n**Examples**\n"
@@ -77,19 +83,22 @@ class PyClass(PyObj):
         markdown = f"## {self.name}\n"
         markdown += f"\n```python\n{self.signature}\n```\n"
 
-        if self.summary:
-            markdown += f"\n{self.summary}\n"
+        summary_md = convert_rst_to_markdown(self.summary)
+        if summary_md:
+            markdown += f"\n{summary_md}\n"
 
-        if self.desc:
-            markdown += f"\n{self.desc}\n"
+        desc_md = convert_rst_to_markdown(self.desc)
+        if desc_md:
+            markdown += f"\n{desc_md}\n"
 
         if self.args:
             markdown += "\n**Arguments**\n\n"
             for arg in self.args:
+                desc_md = convert_rst_to_markdown(arg.desc) or arg.desc
                 if arg.type:
-                    markdown += f"- **{arg.name}** ({arg.type}): {arg.desc}\n"
+                    markdown += f"- **{arg.name}** ({arg.type}): {desc_md}\n"
                 else:
-                    markdown += f"- **{arg.name}**: {arg.desc}\n"
+                    markdown += f"- **{arg.name}**: {desc_md}\n"
 
         if self.examples:
             markdown += "\n**Examples**\n"

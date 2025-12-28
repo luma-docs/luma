@@ -26,6 +26,7 @@ pydantic = "^2.10.3"
 docstring-parser = "^0.16"
 pyyaml = "^6.0.2"
 python-frontmatter = "^1.1.0"
+docutils = "^0.21"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.8.0"
