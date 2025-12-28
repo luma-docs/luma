@@ -83,6 +83,7 @@ def dev(port: Annotated[Optional[int], typer.Option()] = None):
 
     link_existing_pages(project_root)
     link_static_assets(project_root)
+    link_first_page_to_index(project_root, resolved_config)
     build_search_index(project_root, resolved_config)
     link_page_on_creation(project_root)
 
