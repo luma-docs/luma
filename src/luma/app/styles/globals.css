@@ -97,3 +97,25 @@ hr {
   border-top: 1px solid var(--border-color);
   margin: 2rem 0rem;
 }
+
+blockquote {
+  margin: 1.5rem 0;
+  padding: 12px 16px 12px 20px;
+  border-left: 4px solid #3b82f6;
+  background-color: #f7fcff;
+  color: #4b5563;
+  font-style: italic;
+  border-radius: 4px;
+}
+
+blockquote p {
+  margin: 0.5em 0;
+}
+
+blockquote p:first-child {
+  margin-top: 0;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
