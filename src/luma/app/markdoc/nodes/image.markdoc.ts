@@ -14,9 +14,18 @@ export const image = {
     const version = process.env.NEXT_PUBLIC_RELEASE_VERSION || null;
     const basePath = version ? `/${version}` : "";
 
-    const modifiedSrc = attributes.src.startsWith("http")
-      ? attributes.src 
-      : `${basePath}/${attributes.src}`;
+    console.log(attributes.src)
+    var imagePath = attributes.src
+
+    if (imagePath.startsWith("/")) {
+        imagePath = imagePath.slice(1)
+    }
+
+    console.log(imagePath)
+
+    const modifiedSrc = imagePath.startsWith("http")
+      ? imagePath 
+      : `${basePath}/${imagePath}`;
     
     return new Tag(
       this.render,
