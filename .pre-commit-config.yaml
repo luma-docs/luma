@@ -1,0 +1,17 @@
+repos:
+  - repo: local
+    hooks:
+      - id: lint
+        name: Lint
+        entry: make lint
+        language: system
+        types: [python]
+        pass_filenames: true
+        require_serial: true
+      - id: test
+        name: Test
+        entry: make test
+        language: system
+        types: [python]
+        pass_filenames: true
+        require_serial: true

@@ -1,0 +1,24 @@
+name: Increment version
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "./pyproject.toml"
+
+jobs:
+  bump-version:
+    if: github.event.pull_request.merged == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Increment version
+        uses: apowis/pyproject-bump-version@v0.0.1
+        with:
+          file_to_bump: "./pyproject.toml"
+          bump_type: "patch"
+          main_branch: "main"
+          python_version: "3.10"

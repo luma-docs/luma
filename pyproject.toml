@@ -27,6 +27,7 @@ docstring-parser = "^0.16"
 pyyaml = "^6.0.2"
 python-frontmatter = "^1.1.0"
 docutils = "^0.21"
+pre-commit = "^4.5.1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.8.0"
