@@ -8,8 +8,6 @@ const version = process.env.NEXT_PUBLIC_RELEASE_VERSION
 const nextConfig = {
   pageExtensions: ["md", "mdoc", "js", "jsx", "ts", "tsx"],
   basePath: version ? `/${version}` : "",
-  output: "export",
-
   reactStrictMode: true,
 };
 
