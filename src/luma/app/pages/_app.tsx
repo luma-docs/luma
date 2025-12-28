@@ -213,7 +213,7 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
                 <div className="toc-placeholder" />
               )}
             </div>
-            {process.env.NEXT_PUBLIC_RELEASE_VERSION != null && (
+            {process.env.NEXT_PUBLIC_PACKAGE_NAME != null && (
               <VersionSelector />
             )}
           </main>
