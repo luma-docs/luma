@@ -64,7 +64,7 @@ class TestCodeBlocks:
     def hello():
         print("world")"""
         result = convert_rst_to_markdown(rst)
-        expected = """Example:\n\n```\ndef hello():\n    print("world")\n```"""
+        expected = """Example:\n\n```python\ndef hello():\n    print("world")\n```"""
         assert result == expected
 
     def test_doctest_block(self):
