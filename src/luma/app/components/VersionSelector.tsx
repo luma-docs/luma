@@ -14,7 +14,7 @@ export default function VersionSelector() {
     const fetchVersions = async () => {
       try {
         const response = await fetch(
-          `https://api.luma-docs.org/dev/packages/${package_name}/versions`,
+          `https://api.luma-docs.org/v1/packages/${package_name}/versions`,
         );
 
         if (!response.ok) {

@@ -111,7 +111,7 @@ def deploy_project(build_path: str, package_name: str, version: Optional[str]):
         logger.error("Build file not found.")
         raise typer.Exit(1)
 
-    api_url = f"https://api.luma-docs.org/dev/packages/{package_name}"
+    api_url = f"https://api.luma-docs.org/v1/packages/{package_name}"
     if version:
         api_url += f"/versions/{version}"
 
@@ -169,7 +169,7 @@ def has_deployment_finished(package_name: str) -> bool:
     """
     try:
         response = requests.get(
-            f"https://api.luma-docs.org/dev/packages/{package_name}/deployments",
+            f"https://api.luma-docs.org/v1/packages/{package_name}/deployments",
             headers={"x-api-key": _get_api_key()},
         )
 
