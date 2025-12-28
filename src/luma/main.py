@@ -21,6 +21,7 @@ from .deploy import (
 from .link import (
     link_config,
     link_existing_pages,
+    link_first_page_to_index,
     link_page_on_creation,
     link_static_assets,
 )
@@ -102,6 +103,7 @@ def deploy(version: Annotated[Optional[str], typer.Option("--version", "-v")] = 
     link_config(resolved_config, project_root)
     link_existing_pages(project_root)
     link_static_assets(project_root)
+    link_first_page_to_index(project_root, resolved_config)
     build_search_index(project_root, resolved_config)
 
     try:
