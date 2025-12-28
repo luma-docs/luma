@@ -175,7 +175,7 @@ class MarkdownWriter(nodes.NodeVisitor):
         code = node.astext()
         # Add leading newline only if not already present
         prefix = "" if self.output and self.output[-1].endswith("\n\n") else "\n"
-        self.output.append(f"{prefix}```\n{code}\n```\n")
+        self.output.append(f"{prefix}```python\n{code}\n```\n")
         raise nodes.SkipNode
 
     def visit_doctest_block(self, node: nodes.Node) -> None:
