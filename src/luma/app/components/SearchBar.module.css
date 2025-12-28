@@ -19,7 +19,9 @@
   border-radius: 6px;
   outline: none;
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   text-align: left;
 }
 
@@ -92,7 +94,7 @@
 
 .searchIcon {
   position: absolute;
-  left: 1rem;
+  left: 0.75rem;
   color: var(--color-text-tertiary);
   pointer-events: none;
 }
