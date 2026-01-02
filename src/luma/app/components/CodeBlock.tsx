@@ -25,7 +25,7 @@ export function CodeBlock({
         .replace(
           /(<span class="token operator">&gt;&gt;<\/span><span class="token operator">&gt;<\/span>)/g,
           '<span class="prompt-symbol">$1</span>',
-        )
+        );
       ref.current.innerHTML = processedHtml;
     }
   }, [children, isOutput]);
