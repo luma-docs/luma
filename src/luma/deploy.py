@@ -10,6 +10,7 @@ import keyring
 import requests
 import typer
 from pathspec import PathSpec
+from rich.console import Console
 
 POLLING_TIMEOUT_SECONDS = 15 * 60
 POLLING_INTERVAL_SECONDS = 10
@@ -134,7 +135,7 @@ def deploy_project(build_path: str, package_name: str, version: Optional[str]):
         raise typer.Exit(1)
 
 
-def monitor_deployment(package_name: str):
+def monitor_deployment(package_name: str, console: Console):
     """
     Monitor the status of the given deployment for up to `POLLING_TIMEOUT_SECONDS`. Checks
     the completion status of the deployment and will continue to poll every
@@ -148,7 +149,7 @@ def monitor_deployment(package_name: str):
     timeout = time.time() + POLLING_TIMEOUT_SECONDS
 
     while time.time() < timeout:
-        if has_deployment_finished(package_name):
+        if has_deployment_finished(package_name, console):
             return
 
         time.sleep(POLLING_INTERVAL_SECONDS)
@@ -156,7 +157,7 @@ def monitor_deployment(package_name: str):
     logger.warn("Timed out while monitoring deployment.")
 
 
-def has_deployment_finished(package_name: str) -> bool:
+def has_deployment_finished(package_name: str, console: Console) -> bool:
     """
     Check if the deployment for the given package name has finished.
 
@@ -177,12 +178,12 @@ def has_deployment_finished(package_name: str) -> bool:
         status = body["status"]
 
         if status == "READY":
-            logger.info(f"Deployment successful! {body['url']}")
+            console.print(f"[bold green]Deployment successful: {body['url']}")
         elif status == "ERROR":
-            logger.error(f"Deployment failed: {body['errorMessage']}")
+            console.print(f"[bold red]Deployment failed: {body['errorMessage']}")
             raise typer.Exit(1)
         elif status == "CANCELED":
-            logger.warning(f"Deployment canceled: {body['errorMessage']}")
+            console.print(f"[bold red]Deployment canceled: {body['errorMessage']}")
             raise typer.Exit(1)
         else:
             return False

@@ -5,6 +5,7 @@ from typing import Optional
 
 import typer
 from typing_extensions import Annotated
+from rich.console import Console
 
 from .bootstrap import download_or_update_scaffold, download_starter_files
 from .config import (
@@ -107,13 +108,14 @@ def deploy(version: Annotated[Optional[str], typer.Option("--version", "-v")] = 
     link_first_page_to_index(project_root, resolved_config)
     build_search_index(project_root, resolved_config)
 
-    try:
-        logger.info("Deploying project...")
-        build_path = build_project(node_root)
-        deploy_project(build_path, config.name, version)
-        monitor_deployment(config.name)
-    finally:
-        cleanup_build(build_path)
+    console = Console()
+    with console.status("Deploying project..."):
+        try:
+            build_path = build_project(node_root)
+            deploy_project(build_path, config.name, version)
+            monitor_deployment(config.name, console)
+        finally:
+            cleanup_build(build_path)
 
 
 def main():
