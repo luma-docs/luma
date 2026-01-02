@@ -42,3 +42,10 @@
   border-bottom: 1px solid #505864;
   border-radius: 4px 4px 0 0;
 }
+
+.code :global(.prompt-symbol) {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
