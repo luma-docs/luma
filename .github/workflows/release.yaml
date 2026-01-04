@@ -1,24 +1,57 @@
-name: Release a new version
-
+name: Release package
 on:
   workflow_dispatch:
+    inputs:
+      version_type:
+        type: choice
+        description: Version type to increment
+        default: patch
+        options:
+          - major
+          - minor
+          - patch
+
+permissions:
+  contents: write
 
 jobs:
-  pypi:
-    name: Build and Publish to PyPI
+  release:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
 
-      - name: Install Poetry
+      - name: Set up Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          cache-dependency-path: ./src/luma/app/package-lock.json
+
+      - name: Increment version
+        id: inc
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+            poetry version ${{ inputs.version_type || 'patch' }}
+            NEW_VERSION=$(poetry version -s)
+
+            cd src/luma/app
+            npm version $NEW_VERSION --no-git-tag-version
+
+            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Increment version to ${{ steps.inc.outputs.version }} [skip ci]"
 
       - name: Configure Poetry
         run: poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN }}
