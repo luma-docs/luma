@@ -24,6 +24,68 @@ class TestBasicText:
         assert result == expected
 
 
+class TestHeadings:
+    """Test heading conversion."""
+
+    def test_simple_heading(self):
+        """Simple heading should convert to # heading."""
+        rst = """Chapter Title
+=============
+
+Some content."""
+        result = convert_rst_to_markdown(rst)
+        expected = "# Chapter Title\n\nSome content."
+        assert result == expected
+
+    def test_nested_headings(self):
+        """Nested headings should have correct levels."""
+        rst = """Main Title
+==========
+
+Section
+-------
+
+Some text."""
+        result = convert_rst_to_markdown(rst)
+        expected = "# Main Title\n\n## Section\n\nSome text."
+        assert result == expected
+
+    def test_deeply_nested_headings(self):
+        """Test multiple heading levels."""
+        rst = """Level 1
+=======
+
+Level 2
+-------
+
+Level 3
+~~~~~~~
+
+Content here."""
+        result = convert_rst_to_markdown(rst)
+        assert "# Level 1" in result
+        assert "## Level 2" in result
+        assert "### Level 3" in result
+        assert "Content here" in result
+
+    def test_heading_with_content_between(self):
+        """Headings with content between should work."""
+        rst = """First Section
+=============
+
+Some paragraph here.
+
+Second Section
+--------------
+
+More content."""
+        result = convert_rst_to_markdown(rst)
+        assert "# First Section" in result
+        assert "Some paragraph here" in result
+        assert "## Second Section" in result
+        assert "More content" in result
+
+
 class TestInlineFormatting:
     """Test inline formatting conversion."""
 

@@ -193,6 +193,14 @@ def _infer_title(local_path: str) -> str:
     Returns:
         The inferred title, or "Untitled Page" if no title is found
     """
+    # Handle RST files differently
+    if local_path.endswith(".rst"):
+        title = _get_first_heading_rst(local_path)
+        if title is None:
+            title = "Untitled Page"
+        return title
+
+    # Handle Markdown files
     post = frontmatter.load(local_path)
     title = post.metadata.get("title", None)
 
@@ -219,6 +227,39 @@ def _get_first_heading(local_path: str) -> Optional[str]:
             match = re.match(r"^(#{1,6})\s+(.*)", line.strip())
             if match:
                 return match.group(2)  # the heading text
+    return None
+
+
+def _get_first_heading_rst(local_path: str) -> Optional[str]:
+    """Get the first heading from an RST file.
+
+    Args:
+        local_path: The local path to the RST file
+
+    Returns:
+        The first heading text, or None if no heading is found
+    """
+    with open(local_path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    # RST headings are underlined with special characters
+    # Look for a line followed by a line of === or --- or similar
+    underline_chars = {"=", "-", "~", "`", "#", "^", "+", "*", ":", "'", '"'}
+
+    for i in range(len(lines) - 1):
+        current_line = lines[i].strip()
+        next_line = lines[i + 1].strip()
+
+        # Check if next line is all the same underline character
+        if (
+            current_line
+            and next_line
+            and len(set(next_line)) == 1
+            and next_line[0] in underline_chars
+            and len(next_line) >= len(current_line)
+        ):
+            return current_line
+
     return None
 
 

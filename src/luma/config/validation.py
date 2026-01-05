@@ -15,14 +15,14 @@ SUPPORTED_SOCIAL_PLATFORMS = {"discord", "github", "twitter", "slack"}
 
 
 def validate_page_exists(path: str, project_root: str) -> None:
-    """Validate that a page file exists and is a markdown file.
+    """Validate that a page file exists and is a markdown or RST file.
 
     Args:
         path: The relative path to the page
         project_root: The project root directory
 
     Raises:
-        ValueError: If the page doesn't exist or isn't a markdown file
+        ValueError: If the page doesn't exist or isn't a markdown/RST file
     """
     if path.startswith(("http://", "https://")):
         return
@@ -34,10 +34,11 @@ def validate_page_exists(path: str, project_root: str) -> None:
             "exist. Create the file or update the config to point to an existing file."
         )
 
-    if not path.endswith(".md"):
+    if not (path.endswith(".md") or path.endswith(".rst")):
         raise ValueError(
             f"Your config references a page at '{path}', but the file isn't a "
-            "Markdown file. Luma only supports Markdown files."
+            "Markdown or RST file. Luma only supports Markdown (.md) and "
+            "reStructuredText (.rst) files."
         )
 
 
