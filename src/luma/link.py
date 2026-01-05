@@ -9,6 +9,7 @@ from watchdog.observers import Observer
 
 from .config import ResolvedConfig
 from .node import get_node_root
+from .rst_converter import convert_rst_to_markdown
 
 STATIC_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp", ".gif", ".ico", ".svg")
 logger = logging.getLogger(__name__)
@@ -25,7 +26,7 @@ def link_config(resolved_config: ResolvedConfig, project_root: str):
 def link_existing_pages(project_root: str):
     for dir_path, _, filenames in os.walk(project_root):
         for filename in filenames:
-            if not filename.endswith(".md"):
+            if not (filename.endswith(".md") or filename.endswith(".rst")):
                 continue
 
             file_path = os.path.join(dir_path, filename)
@@ -38,14 +39,40 @@ def link_existing_pages(project_root: str):
 
 def _link_page(project_root: str, relative_path: str):
     src = os.path.join(project_root, relative_path)
-    dst = os.path.join(get_node_root(project_root), "pages", relative_path)
 
-    if os.path.exists(dst):
-        os.remove(dst)
+    # For RST files, convert to Markdown and write to .md file
+    if relative_path.endswith(".rst"):
+        # Read RST content
+        with open(src, "r", encoding="utf-8") as f:
+            rst_content = f.read()
 
-    logger.debug(f"Linking page from '{src}' to '{dst}'")
-    os.makedirs(os.path.dirname(dst), exist_ok=True)
-    os.link(src, dst)
+        # Convert to Markdown
+        md_content = convert_rst_to_markdown(rst_content)
+        if md_content is None:
+            md_content = ""
+
+        # Write to .md file in .luma/pages/
+        # Replace .rst extension with .md
+        md_relative_path = relative_path[:-4] + ".md"
+        dst = os.path.join(get_node_root(project_root), "pages", md_relative_path)
+
+        if os.path.exists(dst):
+            os.remove(dst)
+
+        logger.debug(f"Converting and writing RST page from '{src}' to '{dst}'")
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        with open(dst, "w", encoding="utf-8") as f:
+            f.write(md_content)
+    else:
+        # For Markdown files, create hard link as before
+        dst = os.path.join(get_node_root(project_root), "pages", relative_path)
+
+        if os.path.exists(dst):
+            os.remove(dst)
+
+        logger.debug(f"Linking page from '{src}' to '{dst}'")
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        os.link(src, dst)
 
 
 def link_static_assets(project_root: str):
@@ -99,15 +126,34 @@ def link_page_on_creation(project_root: str):
 def link_first_page_to_index(project_root: str, config: ResolvedConfig):
     first_page = _get_first_page_path(config.navigation)
 
-    src = os.path.join(project_root, first_page)
-    dst = os.path.join(get_node_root(project_root), "pages", "index.md")
+    # Check if it's an RST file that needs conversion
+    if first_page.endswith(".rst"):
+        # For RST files, copy the already-converted markdown from .luma/pages/
+        md_first_page = first_page[:-4] + ".md"
+        converted_src = os.path.join(get_node_root(project_root), "pages", md_first_page)
+        dst = os.path.join(get_node_root(project_root), "pages", "index.md")
 
-    if os.path.exists(dst):
-        os.remove(dst)
+        if os.path.exists(dst):
+            os.remove(dst)
 
-    logger.debug(f"Linking page from '{src}' to '{dst}'")
-    os.makedirs(os.path.dirname(dst), exist_ok=True)
-    os.link(src, dst)
+        logger.debug(f"Copying converted RST page from '{converted_src}' to '{dst}'")
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+
+        with open(converted_src, "r", encoding="utf-8") as f:
+            content = f.read()
+        with open(dst, "w", encoding="utf-8") as f:
+            f.write(content)
+    else:
+        # For Markdown files, create hard link as before
+        src = os.path.join(project_root, first_page)
+        dst = os.path.join(get_node_root(project_root), "pages", "index.md")
+
+        if os.path.exists(dst):
+            os.remove(dst)
+
+        logger.debug(f"Linking page from '{src}' to '{dst}'")
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        os.link(src, dst)
 
 
 def _get_first_page_path(items):
@@ -129,8 +175,24 @@ class _FileLinker(FileSystemEventHandler):
     def on_created(self, event):
         if not event.is_directory:
             relative_path = Path(event.src_path).relative_to(self._project_root)
-            if str(relative_path).startswith(".luma") or not str(
-                relative_path
-            ).endswith(".md"):
+            relative_path_str = str(relative_path)
+            if relative_path_str.startswith(".luma"):
                 return
-            _link_page(self._project_root, relative_path)
+            if not (
+                relative_path_str.endswith(".md") or relative_path_str.endswith(".rst")
+            ):
+                return
+            _link_page(str(self._project_root), relative_path_str)
+
+    def on_modified(self, event):
+        """Handle file modifications - re-convert RST files when they change."""
+        if not event.is_directory:
+            relative_path = Path(event.src_path).relative_to(self._project_root)
+            relative_path_str = str(relative_path)
+            # Only re-process RST files on modification
+            # Markdown files use hard links, so changes are automatically reflected
+            if relative_path_str.startswith(".luma"):
+                return
+            if not relative_path_str.endswith(".rst"):
+                return
+            _link_page(str(self._project_root), relative_path_str)

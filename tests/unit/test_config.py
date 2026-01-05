@@ -20,3 +20,22 @@ def test_page_infers_correct_title(content, expected_title, tmp_path):
     resolved_page = resolve_page("file.md", project_root=tmp_path)
 
     assert resolved_page == ResolvedPage(title=expected_title, path="file.md")
+
+
+@pytest.mark.parametrize(
+    "content, expected_title",
+    [
+        ("My Title\n========\n\nContent here.", "My Title"),
+        ("My Title\n--------\n\nContent here.", "My Title"),
+        ("Chapter\n~~~~~~~\n\nSome text.", "Chapter"),
+        ("First Heading\n=============\n\nSecond Heading\n--------------", "First Heading"),
+        ("No heading here", "Untitled Page"),
+    ],
+)
+def test_rst_page_infers_correct_title(content, expected_title, tmp_path):
+    with open(tmp_path / "file.rst", "w") as file:
+        file.write(content)
+
+    resolved_page = resolve_page("file.rst", project_root=tmp_path)
+
+    assert resolved_page == ResolvedPage(title=expected_title, path="file.rst")

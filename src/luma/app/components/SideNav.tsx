@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import styles from "./SideNav.module.css";
 import { SearchBar } from "./SearchBar";
+import { stripFileExtension } from "../lib/utils";
 
 import {
   Page,
@@ -31,7 +32,7 @@ function SideNavLink({
   let isActive: boolean;
   let linkText: string;
   if (item.type == "page") {
-    href = `/${item.path.slice(0, -3)}`;
+    href = `/${stripFileExtension(item.path)}`;
     isActive = currentPath === href;
     linkText = item.title;
   } else if (item.type == "link") {
@@ -39,7 +40,7 @@ function SideNavLink({
     isActive = false;
     linkText = item.title;
   } else if (item.type == "reference") {
-    href = `/${item.relative_path.slice(0, -3)}`;
+    href = `/${stripFileExtension(item.relative_path)}`;
     isActive = currentPath === href;
     linkText = item.title;
   } else {

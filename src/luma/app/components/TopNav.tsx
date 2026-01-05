@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import styles from "./TopNav.module.css";
 import { Tab, NavigationItem } from "../types/config";
+import { stripFileExtension } from "../lib/utils";
 
 interface TopNavProps {
   tabs: Tab[];
@@ -11,12 +12,12 @@ interface TopNavProps {
 function getFirstPagePath(items: NavigationItem[]): string | null {
   for (const item of items) {
     if (item.type === "page") {
-      return `/${item.path.slice(0, -3)}`;
+      return `/${stripFileExtension(item.path)}`;
     } else if (item.type === "section") {
       const path = getFirstPagePath(item.contents);
       if (path) return path;
     } else if (item.type === "reference") {
-      return `/${item.relative_path.slice(0, -3)}`;
+      return `/${stripFileExtension(item.relative_path)}`;
     }
   }
   return null;

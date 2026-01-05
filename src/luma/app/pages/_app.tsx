@@ -26,6 +26,7 @@ const config = configData as Config;
 import { TableOfContentsItem } from "../components/TableOfContents";
 import { Page, Reference } from "../types/config";
 import { extractTextFromChildren } from "../markdoc/utils";
+import { stripFileExtension } from "../lib/utils";
 
 function hasTabs(navigation: NavigationItem[]): boolean {
   return navigation.length > 0 && navigation[0].type === "tab";
@@ -37,12 +38,12 @@ function findCurrentPage(
 ): Page | Reference | null {
   for (const item of navigation) {
     if (item.type === "page") {
-      const pagePath = `/${item.path.slice(0, -3)}`;
+      const pagePath = `/${stripFileExtension(item.path)}`;
       if (currentPath === pagePath) {
         return item;
       }
     } else if (item.type === "reference") {
-      const refPath = `/${item.relative_path.slice(0, -3)}`;
+      const refPath = `/${stripFileExtension(item.relative_path)}`;
       if (currentPath === refPath) {
         return item;
       }
@@ -64,10 +65,10 @@ function findCurrentPage(
 function findActiveTabIndex(tabs: Tab[], currentPath: string): number {
   function pathMatchesItem(item: NavigationItem, path: string): boolean {
     if (item.type === "page") {
-      const pagePath = `/${item.path.slice(0, -3)}`;
+      const pagePath = `/${stripFileExtension(item.path)}`;
       return path === pagePath;
     } else if (item.type === "reference") {
-      const refPath = `/${item.relative_path.slice(0, -3)}`;
+      const refPath = `/${stripFileExtension(item.relative_path)}`;
       return path === refPath;
     } else if (item.type === "section") {
       return item.contents.some((subitem) => pathMatchesItem(subitem, path));

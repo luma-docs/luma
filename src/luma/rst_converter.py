@@ -113,6 +113,9 @@ class MarkdownWriter(nodes.NodeVisitor):
         self.output: List[str] = []
         self._list_depth = 0
         self._in_list_item = False
+        self._section_level = 0
+        self._document_title_seen = False
+        self._subtitle_seen = False
 
     def unknown_visit(self, node: nodes.Node) -> None:
         """Called for node types without a specific visit method."""
@@ -139,6 +142,60 @@ class MarkdownWriter(nodes.NodeVisitor):
     def visit_Text(self, node: nodes.Text) -> None:
         """Handle plain text nodes."""
         self.output.append(node.astext())
+
+    # === Headings ===
+
+    def visit_section(self, node: nodes.Node) -> None:
+        """Handle section nodes (increment heading level)."""
+        self._section_level += 1
+
+    def depart_section(self, node: nodes.Node) -> None:
+        """Finish section (decrement heading level)."""
+        self._section_level -= 1
+
+    def visit_title(self, node: nodes.Node) -> None:
+        """Handle title nodes (convert to Markdown headings).
+
+        Document title (first title in document) is level 1.
+        Section titles are level 2+.
+        """
+        # Add spacing before heading if not at start
+        if self.output and not self.output[-1].endswith("\n\n"):
+            self.output.append("\n\n")
+
+        # Determine heading level
+        # Document title (parent is document node) is always level 1
+        if isinstance(node.parent, nodes.document):
+            level = 1
+            self._document_title_seen = True
+        else:
+            # Section titles: use section level (starting at 1 for first nested section)
+            # Add offset based on what we've seen before:
+            # - If we've seen a document title, add 1
+            # - If we've also seen a subtitle, add another 1
+            level = self._section_level
+            if self._document_title_seen:
+                level += 1
+            if self._subtitle_seen:
+                level += 1
+
+        level = min(max(level, 1), 6)
+        heading_marker = "#" * level
+        title_text = node.astext()
+        self.output.append(f"{heading_marker} {title_text}\n\n")
+        raise nodes.SkipNode
+
+    def visit_subtitle(self, node: nodes.Node) -> None:
+        """Handle subtitle nodes (convert to level 2 headings)."""
+        # Add spacing before heading if not at start
+        if self.output and not self.output[-1].endswith("\n\n"):
+            self.output.append("\n\n")
+
+        # Subtitles are always level 2 (immediately after document title)
+        subtitle_text = node.astext()
+        self.output.append(f"## {subtitle_text}\n\n")
+        self._subtitle_seen = True
+        raise nodes.SkipNode
 
     # === Inline formatting ===
 
