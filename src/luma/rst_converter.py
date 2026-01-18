@@ -4,11 +4,14 @@ This module provides utilities for converting RST-formatted text (commonly found
 Python docstrings) to Markdown format suitable for rendering in documentation.
 """
 
+import logging
 from typing import List, Optional
 
 from docutils import nodes
 from docutils.core import publish_doctree
 from docutils.utils import SystemMessage
+
+logger = logging.getLogger(__name__)
 
 
 def convert_rst_to_markdown(rst_text: Optional[str]) -> Optional[str]:
@@ -32,7 +35,6 @@ def convert_rst_to_markdown(rst_text: Optional[str]) -> Optional[str]:
 
     try:
         # Parse RST into docutils document tree
-        import sys
 
         from docutils.parsers.rst import roles
 
@@ -88,7 +90,7 @@ def convert_rst_to_markdown(rst_text: Optional[str]) -> Optional[str]:
             settings_overrides={
                 "report_level": 1,  # Suppress warnings
                 "halt_level": 5,  # Don't halt on errors
-                "Warning_stream": sys.stdout,
+                "warning_stream": False,  # Don't log warnings to stdout.
             },
         )
 
@@ -97,6 +99,11 @@ def convert_rst_to_markdown(rst_text: Optional[str]) -> Optional[str]:
         doctree.walkabout(visitor)
 
         result = "".join(visitor.output).strip()
+
+        # Log all system messages.
+        for msg in doctree.findall(nodes.system_message):
+            logger.debug(msg)
+
         return result if result else None
 
     except SystemMessage:
