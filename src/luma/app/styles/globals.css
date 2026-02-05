@@ -32,6 +32,25 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.dark {
+  --border-color: #374151;
+  --color-text-primary: #ede8e8;
+  --color-text-tertiary: #7d838d;
+  --color-link-primary: #60a5fa;
+  --color-link-hover: #93c5fd;
+  --bg-primary: black;
+  --bg-secondary: black;
+  --code-bg: #1f2937;
+  --code-border: #374151;
+  --blockquote-bg: #1e3a5f;
+  --blockquote-border: #60a5fa;
+  --blockquote-text: #d1d5db;
+}
+
+.dark body {
+  background-color: black
+}
+
 p,
 li {
   line-height: 1.5em;
@@ -54,6 +73,12 @@ h3 {
   word-wrap: break-word;
 }
 
+.dark h1,
+.dark h2,
+.dark h3 {
+  color: white;
+}
+
 a {
   color: var(--color-link-primary);
   text-decoration: none;
@@ -70,6 +95,11 @@ a.sidenav {
   text-decoration: none;
 }
 
+.dark a.sidenav {
+  color: white;
+  text-decoration: none;
+}
+
 li.active {
   color: #282a30;
 }
@@ -82,6 +112,10 @@ code {
   font-size: 0.9em;
   overflow-wrap: break-word;
   word-wrap: break-word;
+}
+
+.dark code {
+  background-color: #181717;
 }
 
 /* Reset inline code styles for code blocks */
@@ -107,6 +141,11 @@ blockquote {
   color: #4b5563;
   font-style: italic;
   border-radius: 4px;
+}
+
+.dark blockquote {
+  background-color: #0e101a;
+  color: white;
 }
 
 blockquote p {

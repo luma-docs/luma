@@ -14,16 +14,34 @@ div.info {
   border-color: #d1ecfa;
 }
 
+:global(.dark) div.info {
+  color: #178dd1;
+  background: #0c0c15;
+  border-color: #41494d;
+}
+
 div.warning {
   color: #783510;
   background: #fffdf5;
   border-color: #ffceb8;
 }
 
+:global(.dark) div.warning {
+  color: #e4631e;
+  background: #0e0e08;
+  border-color: #4d3e38;
+}
+
 div.tip {
   color: #064e3b;
   background: #f5fefa;
   border-color: #d1f1e2;
+}
+
+:global(.dark) div.tip {
+  color: #12e2aa;
+  background: #080e0b;
+  border-color: #333b37;
 }
 
 div.callout :global(p) {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import styles from "./SideNav.module.css";
 import { SearchBar } from "./SearchBar";
 import { stripFileExtension } from "../lib/utils";
+import ThemeToggle from "./ThemeToggle";
 
 import {
   Page,
@@ -100,6 +101,9 @@ export function SideNav({ items }: SideNavProps) {
           }
         })}
       </ul>
+      <div className={styles.themeToggleWrapper}>
+        <ThemeToggle />
+      </div>
     </nav>
   );
 }

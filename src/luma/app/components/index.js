@@ -6,4 +6,5 @@ export * from "./SearchBar";
 export * from "./SideNav";
 export * from "./TableOfContents";
 export * from "./Tabs";
+export * from "./ThemeToggle";
 export * from "./TopNav";

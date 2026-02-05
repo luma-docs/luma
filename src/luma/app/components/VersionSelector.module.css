@@ -23,6 +23,10 @@
   transform-origin: bottom;
 }
 
+:global(.dark) .dropdown {
+  background: black;
+}
+
 @keyframes dropdownAppear {
   from {
     opacity: 0;
@@ -52,9 +56,19 @@
   text-align: left;
 }
 
+:global(.dark) .versionOption {
+  color: white;
+  background: black;
+}
+
 .versionOption:hover {
   background: rgba(0, 0, 0, 0.1);
   color: var(--color-text-tertiary);
+}
+
+:global(.dark) .versionOption:hover {
+  background: rgb(70, 70, 70);
+  color: white;
 }
 
 .versionButton {
@@ -71,8 +85,16 @@
   transition: background 0.3s;
 }
 
+:global(.dark) .versionButton {
+  color: white;
+}
+
 .versionButton:hover {
   background: rgba(0, 0, 0, 0.1);
+}
+
+:global(.dark) .versionButton:hover {
+  background: rgb(70, 70, 70);
 }
 
 .versionButtonActive {
@@ -89,6 +111,10 @@
   transition: background 0.3s;
 }
 
+:global(.dark) .versionButtonActive {
+  color: white;
+}
+
 .versionButtonActive:hover {
   background: rgba(0, 0, 0, 0.1);
 }
@@ -96,4 +122,8 @@
 .chevron {
   color: #4a5568;
   flex-shrink: 0;
+}
+
+:global(.dark) .chevron {
+  color: white;
 }
