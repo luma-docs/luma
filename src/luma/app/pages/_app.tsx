@@ -28,6 +28,8 @@ import { Page, Reference } from "../types/config";
 import { extractTextFromChildren } from "../markdoc/utils";
 import { stripFileExtension } from "../lib/utils";
 
+import { ThemeProvider } from "next-themes";
+
 function hasTabs(navigation: NavigationItem[]): boolean {
   return navigation.length > 0 && navigation[0].type === "tab";
 }
@@ -186,89 +188,96 @@ export default function MyApp({ Component, pageProps }: AppProps<MyAppProps>) {
 
   return (
     <>
-      <Head>
-        <title>{title}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="referrer" content="strict-origin" />
-        <meta name="title" content={title} />
-        {description && <meta name="description" content={description} />}
-        <link rel="shortcut icon" href={faviconHref} />
-        <link rel="icon" href={faviconHref} />
-      </Head>
-      <div className="page">
-        <SideNav items={sideNavItems} />
-        <div className="main-wrapper">
-          {usingTabs && <TopNav tabs={tabs} activeTabIndex={activeTabIndex} />}
-          <main className="main">
-            <div className="container">
-              <div className="content">
-                <div className="content-wrapper">
-                  {section && <Breadcrumb section={section} />}
-                  <Component {...pageProps} />
-                </div>
-                <Footer socials={config?.socials} />
-              </div>
-              {validTocItems.length > 1 ? (
-                <TableOfContents toc={validTocItems} />
-              ) : (
-                <div className="toc-placeholder" />
-              )}
-            </div>
-            {process.env.NEXT_PUBLIC_PACKAGE_NAME != null && (
-              <VersionSelector />
+      <ThemeProvider attribute="class">
+        <Head>
+          <title>{title}</title>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
+          <meta name="referrer" content="strict-origin" />
+          <meta name="title" content={title} />
+          {description && <meta name="description" content={description} />}
+          <link rel="shortcut icon" href={faviconHref} />
+          <link rel="icon" href={faviconHref} />
+        </Head>
+        <div className="page">
+          <SideNav items={sideNavItems} />
+          <div className="main-wrapper">
+            {usingTabs && (
+              <TopNav tabs={tabs} activeTabIndex={activeTabIndex} />
             )}
-          </main>
+            <main className="main">
+              <div className="container">
+                <div className="content">
+                  <div className="content-wrapper">
+                    {section && <Breadcrumb section={section} />}
+                    <Component {...pageProps} />
+                  </div>
+                  <Footer socials={config?.socials} />
+                </div>
+                {validTocItems.length > 1 ? (
+                  <TableOfContents toc={validTocItems} />
+                ) : (
+                  <div className="toc-placeholder" />
+                )}
+              </div>
+              {process.env.NEXT_PUBLIC_PACKAGE_NAME != null && (
+                <VersionSelector />
+              )}
+            </main>
+          </div>
         </div>
-      </div>
-      <style jsx>
-        {`
-          .page {
-            position: fixed;
-            display: flex;
-            width: 100vw;
-            flex-grow: 1;
-          }
-          .main-wrapper {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            overflow: hidden;
-          }
-          .main {
-            overflow: auto;
-            flex-grow: 1;
-            height: 100vh;
-            font-size: var(--font-size-base);
-          }
-          .container {
-            position: relative;
-            max-width: 90rem;
-            margin: 0 auto;
-            padding-right: 4rem;
-            display: flex;
-            justify-content: center;
-            min-height: 100%;
-          }
-          .content {
-            width: 640px;
-            margin: 0 auto 1rem;
-            padding-top: 48px;
-            display: flex;
-            flex-direction: column;
-            min-height: calc(100% - 48px - 96px - 4rem);
-          }
-          .content-wrapper {
-            flex: 1 0 auto;
-            padding-bottom: 2rem;
-          }
-          .content-wrapper :global(*:first-child) {
-            margin-top: 0;
-          }
-          .toc-placeholder {
-            flex: 0 0 250px; /* Same as TOC width */
-          }
-        `}
-      </style>
+        <style jsx>
+          {`
+            .page {
+              position: fixed;
+              display: flex;
+              width: 100vw;
+              flex-grow: 1;
+            }
+            .main-wrapper {
+              display: flex;
+              flex-direction: column;
+              flex-grow: 1;
+              overflow: hidden;
+            }
+            .main {
+              overflow: auto;
+              flex-grow: 1;
+              height: 100vh;
+              font-size: var(--font-size-base);
+            }
+            .container {
+              position: relative;
+              max-width: 90rem;
+              margin: 0 auto;
+              padding-right: 4rem;
+              display: flex;
+              justify-content: center;
+              min-height: 100%;
+            }
+            .content {
+              width: 640px;
+              margin: 0 auto 1rem;
+              padding-top: 48px;
+              display: flex;
+              flex-direction: column;
+              min-height: calc(100% - 48px - 96px - 4rem);
+            }
+            .content-wrapper {
+              flex: 1 0 auto;
+              padding-bottom: 2rem;
+            }
+            .content-wrapper :global(*:first-child) {
+              margin-top: 0;
+            }
+            .toc-placeholder {
+              flex: 0 0 250px; /* Same as TOC width */
+            }
+          `}
+        </style>
+      </ThemeProvider>
     </>
   );
 }

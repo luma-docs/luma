@@ -1,6 +1,6 @@
 {
   "name": "docs",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -15,6 +15,7 @@
     "linkify-urls": "^5.0.2",
     "minisearch": "^7.2.0",
     "next": "15.0.5",
+    "next-themes": "^0.4.6",
     "prismjs": "^1.29.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

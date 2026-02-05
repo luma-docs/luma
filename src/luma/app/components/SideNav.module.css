@@ -24,6 +24,10 @@ span.sectionTitle {
   hyphens: auto;
 }
 
+:global(.dark) span.sectionTitle {
+  color: white;
+}
+
 ul.sidenav {
   padding: 0;
   list-style-type: none;
@@ -45,13 +49,32 @@ a.sidenavItem {
   hyphens: auto;
 }
 
+:global(.dark) a.sidenavItem {
+  color: rgb(213, 200, 200);
+}
+
 a.sidenavItem:hover {
   background: rgba(0, 0, 0, 0.1);
   color: var(--color-text-tertiary);
+}
+
+:global(.dark) a.sidenavItem:hover {
+  background: rgb(70, 70, 70);
 }
 
 li.sideNavItemActive {
   color: #282a30;
   background: #f4f2f4;
   border-radius: 8px;
+}
+
+:global(.dark) li.sideNavItemActive {
+  color: black;
+  background: rgb(35, 35, 35);
+}
+
+div.themeToggleWrapper {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
 }

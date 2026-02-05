@@ -58,6 +58,10 @@
   font-size: 0.875rem;
 }
 
+:global(.dark) .header {
+  color: rgb(196, 175, 175);
+}
+
 .icon {
   color: var(--text-secondary, #6f6e77);
 }
