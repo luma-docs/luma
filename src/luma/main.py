@@ -96,7 +96,7 @@ def deploy(version: Annotated[Optional[str], typer.Option("--version", "-v")] = 
     project_root = get_project_root()
 
     node_root = get_node_root(project_root)
-    #download_or_update_scaffold(node_root)
+    download_or_update_scaffold(node_root)
 
     config = load_config(os.getcwd())
     resolved_config = resolve_config(config, project_root=project_root)
